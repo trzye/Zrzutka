@@ -1,0 +1,7 @@
+rootProject.name = 'krs-request-transport-objects'
+
+include "common"
+project(":common").projectDir = new File("../common")
+
+include "krs-data-model"
+project(":krs-data-model").projectDir = new File("../krs-data-model")

@@ -1,0 +1,9 @@
+rootProject.name = "app-ear"
+
+include "krs-rest-services"
+include "krs-logic-business-layer"
+include "krs-request-transport-objects"
+include "common"
+include "krs-data-model"
+include "krs-data-model-access"
+include "krs-web-pages"

@@ -1,0 +1,51 @@
+group "app-ear"
+version "0.1"
+
+apply plugin: "java"
+apply plugin: "kotlin"
+apply plugin: "ear"
+apply plugin: "war"
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    apply plugin: "idea"
+}
+
+dependencies {
+	deploy project(path: ":krs-rest-services", configuration: "archives")
+    deploy project(path: ":krs-web-pages", configuration: "archives")
+    deploy project("krs-logic-business-layer")
+    deploy project("krs-data-model-access")
+    earlib project(":common")
+    earlib project(":krs-data-model")
+    earlib project(":krs-request-transport-objects")
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    providedCompile "javax:javaee-api:7.0"
+}
+
+compileJava {
+    targetCompatibility = "1.7"
+    sourceCompatibility = "1.8"
+}
+
+ear {
+    deploymentDescriptor {  
+        applicationName = "krs"
+    }
+}
+buildscript {
+    ext.kotlin_version = "1.0.4"
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+sourceSets {
+    main.java.srcDirs += "src/main/kotlin"
+}

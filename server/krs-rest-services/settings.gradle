@@ -1,0 +1,13 @@
+rootProject.name = "krs-rest-services"
+
+include "krs-logic-business-layer"
+project(":krs-logic-business-layer").projectDir = new File("../krs-logic-business-layer")
+
+include "common"
+project(":common").projectDir = new File("../common")
+
+include "krs-request-transport-objects"
+project(":krs-request-transport-objects").projectDir = new File("../krs-request-transport-objects")
+
+include "krs-data-model"
+project(":krs-data-model").projectDir = new File("../krs-data-model")
