@@ -1,11 +1,24 @@
 <resources>
     <string name="app_name">Zrzutka</string>
 
+    <!-- Auto generated string values -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Dialog common buttons -->
+    <string name="dialog_yes">Tak</string>
+    <string name="dialog_no">Nie</string>
+    <string name="dialog_ok">OK</string>
+
+    <!-- Contribution edit strings -->
+    <string name="contribution_edit_toolbar_title">Dane zrzutki</string>
+    <string name="contribution_edit_title_hint">Tytuł zrzutki</string>
+    <string name="empty_title_warning">Tytuł nie może być pusty</string>
+
+    <!-- Alert dialogs strings -->
+    <string name="alert_dialog_back_pressed_title">Czy jesteś pewny?</string>
+
+
 </resources>

@@ -8,11 +8,11 @@ data class Contribution private constructor(
         @Id @GeneratedValue val id: Long? = null,
         @Column var title: String ="",
         @Column(columnDefinition = "DATE") var startDate: Date = Date(),
-        @Column(columnDefinition = "DATE") var endDate: Date? = null
+        @Column(columnDefinition = "DATE") var endDate: Date = Date()
 ) {
 
     private constructor() : this(null)
-    constructor(title: String, startDate: Date = Date(), endDate: Date? = null) : this(null, title, startDate, endDate)
+    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate)
 
     @ManyToOne private val _contributors: MutableCollection<Contributor> = mutableListOf()
     val contributors: List<Contributor> get() = _contributors.toList()

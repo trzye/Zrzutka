@@ -1,10 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="layout.ContributionEditFragment">
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -12,12 +10,11 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Dane zrzutki"/>
+            app:title="@string/contribution_edit_toolbar_title"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -39,20 +36,19 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText"
-                android:hint="Tytuł zrzutki"
+                android:id="@+id/contributionTitleEditText"
+                android:hint="@string/contribution_edit_title_hint"
                 android:imeOptions="actionDone"
                 android:lines="1"
                 android:inputType="textAutoCorrect"/>
 
             <com.squareup.timessquare.CalendarPickerView
                 android:paddingTop="@dimen/activity_horizontal_margin"
-                android:id="@+id/calendar_view"
+                android:id="@+id/contributionDateRangePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:titleTextColor="@color/colorAccent"
-                app:headerTextColor="@color/colorPrimary"
-                />
+                app:headerTextColor="@color/colorPrimary" />
 
 
         </LinearLayout>
