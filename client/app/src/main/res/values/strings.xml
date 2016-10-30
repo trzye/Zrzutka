@@ -20,5 +20,10 @@
     <!-- Alert dialogs strings -->
     <string name="alert_dialog_back_pressed_title">Czy jesteś pewny?</string>
 
+    <!-- Contribution Fragment -->
+    <string name="tab_contributors">Uczestnicy</string>
+    <string name="tab_summary">Podsumowanie</string>
+    <string name="tab_purchases">Zakupy</string>
+
 
 </resources>

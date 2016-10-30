@@ -33,4 +33,10 @@
         </menu>
     </item>
 
+    <item
+        android:id="@+id/nav_none"
+        android:title="none"
+        android:visible="false"
+        android:checkable="true"/>
+
 </menu>

@@ -8,22 +8,30 @@ import android.content.Context
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import com.squareup.timessquare.CalendarPickerView
 import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import java.util.*
 
-fun createContributionEditDialog(ctx: Context, contribution: Contribution): Dialog = Builder(ctx)
+fun createContributionEditDialog(ctx: Context, contribution: Contribution, okAction: () -> Any): Dialog = Builder(ctx)
         .setPositiveButton(R.string.dialog_ok, { dialogInterface, i -> })
         .create()
         .apply {
             val view = createDialogView(this)
             val calendar = createCalendar(contribution, view)
             setView(view)
+            setContributionTitle(contribution, view)
             setOnBackPressedListener()
-            setOnPositiveButtonActions(emptyTitleAction(view), { dismiss() })
+            setOnPositiveButtonActions(emptyTitleAction(view), {okAction(); dismiss()})
+            setSoftKeyboardInputMode()
         }
+
+private fun setContributionTitle(contribution: Contribution, view: View) {
+    val title = view.findViewById(R.id.contributionTitleEditText) as TextView
+    title.text = contribution.title
+}
 
 private fun createDialogView(dialog: AlertDialog) =
         dialog.layoutInflater.inflate(R.layout.contribution_edit, null)
@@ -58,7 +66,7 @@ private fun AlertDialog.setOnBackPressedListener() = setOnKeyListener {
 private fun AlertDialog.setOnPositiveButtonActions(onEmptyTitle: () -> Unit, actionSuccess: () -> Unit) = setOnShowListener {
     getButton(BUTTON_POSITIVE).setOnClickListener {
         val editText = findViewById(R.id.contributionTitleEditText) as TextView
-        if (editText.text.isEmpty())
+        if (editText.text.trim().isEmpty())
             onEmptyTitle()
         else
             actionSuccess()
@@ -69,5 +77,9 @@ private fun emptyTitleAction(dialogView: View) = {
     Snackbar.make(dialogView, R.string.empty_title_warning, Snackbar.LENGTH_SHORT).apply {
         view.setBackgroundColor(ContextCompat.getColor(dialogView.context, R.color.colorError))
     }.show()
+}
+
+private fun AlertDialog.setSoftKeyboardInputMode() {
+    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 }
 

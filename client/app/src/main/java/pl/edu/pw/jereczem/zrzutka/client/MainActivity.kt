@@ -1,5 +1,7 @@
 package pl.edu.pw.jereczem.zrzutka.client
 
+import android.app.Fragment
+import android.app.FragmentManager
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
@@ -14,11 +16,11 @@ import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DATABASE_FILENAME
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DatabaseService
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.createContributionEditDialog
-import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit private var dbService: DatabaseService
+    lateinit private var fragmentChanger: FragmentChanger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +30,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         deleteDatabase(DATABASE_FILENAME)
         dbService = DatabaseService(this)
+        fragmentChanger = FragmentChanger(fragmentManager, findViewById(R.id.nav_view) as NavigationView)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton?
-        fab!!.setOnClickListener { createContributionEditDialog(this, Contribution("Test", Date(1230000000), Date(9230000000))).show() }
+
+        fab!!.setOnClickListener {
+            val initContribution = Contribution("")
+            createContributionEditDialog(
+                    this,
+                    initContribution,
+                    {fragmentChanger.changeToContributionFragment()}
+            ).show()
+        }
 
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
@@ -78,7 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val id = item.itemId
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            fragmentChanger.changeToMainFragment()
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -96,4 +107,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return true
     }
+
 }
+
+private class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView){
+
+    private fun changeFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
+    }
+
+    fun changeToMainFragment() {
+        changeFragment(MainFragment())
+    }
+    fun changeToContributionFragment() {
+        changeFragment(ContributionFragment())
+        uncheckMenuItems()
+    }
+
+    private fun uncheckMenuItems() {
+        for (i in 0..navigationView.menu.size() - 1)
+            navigationView.menu.getItem(i).isChecked = false
+        navigationView.setCheckedItem(R.id.nav_none)
+    }
+
+}
+
