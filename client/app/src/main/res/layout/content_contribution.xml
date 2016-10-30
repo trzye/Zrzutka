@@ -8,6 +8,7 @@
     tools:context="pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionFragment"
     android:id="@+id/mainFragment">
 
+
     <TabHost
         android:id="@+id/contributionTabHost"
         android:layout_width="match_parent"
@@ -23,7 +24,8 @@
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"/>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"

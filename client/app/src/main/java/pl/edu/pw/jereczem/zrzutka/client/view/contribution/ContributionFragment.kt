@@ -1,12 +1,15 @@
 package pl.edu.pw.jereczem.zrzutka.client
 
-import android.app.Fragment
+import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
+import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TabHost
+import android.widget.TextView
 
 class ContributionFragment : Fragment(){
 
@@ -19,10 +22,17 @@ class ContributionFragment : Fragment(){
         val tabHost = (view.findViewById(R.id.contributionTabHost) as TabHost).apply {
             setup()
         }
+//
+//        tabHost.addTab(summaryLabel, R.id.summaryTab)
+//        tabHost.addTab(contributorsLabel, R.id.contributorsTab)
+//        tabHost.addTab(purchasesLabel, R.id.purchasesTab)
 
-        tabHost.addTab(summaryLabel, R.id.summaryTab)
-        tabHost.addTab(contributorsLabel, R.id.contributorsTab)
-        tabHost.addTab(purchasesLabel, R.id.purchasesTab)
+//        val x = createTabView(view.context, "Test")
+
+        setupTab(tabHost, view.findViewById(R.id.contributorsTab), contributorsLabel, android.R.drawable.ic_dialog_email)
+        setupTab(tabHost, view.findViewById(R.id.summaryTab), summaryLabel, android.R.drawable.ic_dialog_email)
+        setupTab(tabHost, view.findViewById(R.id.purchasesTab), purchasesLabel, android.R.drawable.ic_dialog_email)
+
 
         return view
     }
@@ -31,9 +41,24 @@ class ContributionFragment : Fragment(){
         addTab(
                 newTabSpec(contributorsLabel).apply {
                     setContent(layoutId)
-                    setIndicator(contributorsLabel)
+                    setIndicator("", ContextCompat.getDrawable(activity, android.R.drawable.ic_dialog_email))
                 }
         )
+    }
+
+    private fun setupTab(mTabHost: TabHost, view: View, tag: String, icon: Int) {
+        val tabview = createTabView(mTabHost.context, tag, icon)
+        val setContent = mTabHost.newTabSpec(tag).setIndicator(tabview).setContent { view }
+        mTabHost.addTab(setContent)
+    }
+
+    private fun createTabView(context: Context, text: String, icon: Int): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null)
+        val tv = view.findViewById(R.id.tabsText) as TextView
+        val im = view.findViewById(R.id.tabsImage) as ImageView
+        im.setImageDrawable(ContextCompat.getDrawable(context, icon))
+        tv.text = text
+        return view
     }
 
 }

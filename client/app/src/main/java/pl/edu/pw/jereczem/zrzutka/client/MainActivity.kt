@@ -1,10 +1,10 @@
 package pl.edu.pw.jereczem.zrzutka.client
 
-import android.app.Fragment
-import android.app.FragmentManager
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         deleteDatabase(DATABASE_FILENAME)
         dbService = DatabaseService(this)
-        fragmentChanger = FragmentChanger(fragmentManager, findViewById(R.id.nav_view) as NavigationView)
+        fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton?
 
@@ -39,7 +39,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             createContributionEditDialog(
                     this,
                     initContribution,
-                    {fragmentChanger.changeToContributionFragment()}
+                    {
+                        toolbar?.setNavigationIcon(android.R.drawable.ic_dialog_email)
+                        toolbar?.title = "Srutututu"
+                        toolbar?.subtitle = "turududum"
+                        fragmentChanger.changeToContributionFragment()
+                    }
             ).show()
         }
 
