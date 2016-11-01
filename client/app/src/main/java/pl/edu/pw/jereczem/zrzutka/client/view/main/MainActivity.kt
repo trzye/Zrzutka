@@ -1,7 +1,6 @@
 package pl.edu.pw.jereczem.zrzutka.client.view.main
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -15,15 +14,16 @@ import android.view.MenuItem
 import pl.edu.pw.jereczem.zrzutka.client.ContributionMainFragment
 import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
+import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contributor
+import pl.edu.pw.jereczem.zrzutka.client.model.friend.Friend
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DATABASE_FILENAME
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DatabaseService
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ActualManagedContribution
-import pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs.createContributionEditDialog
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit private var dbService: DatabaseService
-    lateinit private var fragmentChanger: FragmentChanger
+    lateinit var fragmentChanger: FragmentChanger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,19 +34,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         deleteDatabase(DATABASE_FILENAME)
         dbService = DatabaseService(this)
         fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView, this)
+        fragmentChanger.changeToContributionFragment(Contribution("TEST").apply {
+            for (i in 1..100){
+                addContributor(Contributor(Friend("Friend $i"), this))
+            }
+        })
 
-        val fab = findViewById(R.id.fab) as FloatingActionButton?
-
-        fab!!.setOnClickListener {
-            val initContribution = Contribution("")
-            createContributionEditDialog(
-                    this,
-                    initContribution,
-                    {
-                        fragmentChanger.changeToContributionFragment(initContribution)
-                    }
-            ).show()
-        }
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
         val toggle = ActionBarDrawerToggle(
@@ -113,7 +106,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     companion object {
-        private class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView, activity: AppCompatActivity){
+        public class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView, activity: AppCompatActivity){
 
             val toolbarManager = ToolbarManager(activity)
 

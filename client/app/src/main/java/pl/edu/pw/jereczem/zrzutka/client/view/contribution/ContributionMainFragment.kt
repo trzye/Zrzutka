@@ -9,6 +9,7 @@ package pl.edu.pw.jereczem.zrzutka.client
  import android.view.ViewGroup
  import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableFragment
  import pl.edu.pw.jereczem.zrzutka.client.view.contribution.navigation.ContributionPagerAdapter
+ import pl.edu.pw.jereczem.zrzutka.client.view.main.ToolbarManager
 
 class ContributionMainFragment : Fragment(){
 

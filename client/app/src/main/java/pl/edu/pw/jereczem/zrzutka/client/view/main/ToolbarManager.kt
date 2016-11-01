@@ -1,17 +1,18 @@
 package pl.edu.pw.jereczem.zrzutka.client.view.main
 
-import android.animation.ObjectAnimator
-import android.support.v7.app.AppCompatActivity
+import android.app.Activity
+import android.support.design.widget.CoordinatorLayout.LayoutParams
 import android.support.v7.widget.Toolbar
 import android.view.View
-import kotlinx.android.synthetic.main.activity_main.view.*
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs.createContributionEditDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ToolbarManager(val activity: AppCompatActivity){
+class ToolbarManager(val activity: Activity){
 
     val dateFormat = SimpleDateFormat("dd.MM.yyy", Locale.getDefault())
     val toolbar = activity.findViewById(R.id.appBarMainToolbar) as Toolbar
@@ -51,6 +52,7 @@ class ToolbarManager(val activity: AppCompatActivity){
         else
             "${dateFormat.format(contribution.startDate)} - ${dateFormat.format(contribution.endDate)}"
     }
+
 }
 
 private fun Date.hasSameYYMMDDas(date: Date): Boolean {
