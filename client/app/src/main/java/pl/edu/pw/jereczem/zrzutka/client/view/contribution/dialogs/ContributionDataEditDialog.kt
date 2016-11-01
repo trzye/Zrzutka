@@ -1,4 +1,4 @@
-package pl.edu.pw.jereczem.zrzutka.client.view.contribution
+package pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs
 
 import android.app.AlertDialog
 import android.app.AlertDialog.BUTTON_POSITIVE
@@ -13,31 +13,39 @@ import android.widget.TextView
 import com.squareup.timessquare.CalendarPickerView
 import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
+import pl.edu.pw.jereczem.zrzutka.client.view.common.AlertDialogs
+import pl.edu.pw.jereczem.zrzutka.client.view.extensions.isBackPressed
 import java.util.*
 
-fun createContributionEditDialog(ctx: Context, contribution: Contribution, okAction: () -> Any): Dialog = Builder(ctx)
+fun createContributionEditDialog(ctx: Context, contribution: Contribution, okAction: () -> Unit): Dialog = Builder(ctx)
         .setPositiveButton(R.string.dialog_ok, { dialogInterface, i -> })
         .create()
         .apply {
             val view = createDialogView(this)
+            val title = view.findViewById(R.id.contributionTitleEditText) as TextView
             val calendar = createCalendar(contribution, view)
             setView(view)
-            setContributionTitle(contribution, view)
+            title.setContributionTitle(contribution, view)
             setOnBackPressedListener()
-            setOnPositiveButtonActions(emptyTitleAction(view), {okAction(); dismiss()})
-            setSoftKeyboardInputMode()
+            setOnPositiveButtonActions(emptyTitleAction(view), {
+                contribution.startDate = calendar.selectedDates.first()
+                contribution.endDate = calendar.selectedDates.last()
+                contribution.title = title.text.toString()
+                okAction()
+                dismiss()
+            })
+//            setSoftKeyboardInputMode()
         }
 
-private fun setContributionTitle(contribution: Contribution, view: View) {
-    val title = view.findViewById(R.id.contributionTitleEditText) as TextView
-    title.text = contribution.title
+private fun TextView.setContributionTitle(contribution: Contribution, view: View) {
+    text = contribution.title
 }
 
 private fun createDialogView(dialog: AlertDialog) =
         dialog.layoutInflater.inflate(R.layout.contribution_edit, null)
 
 
-private fun createCalendar(contribution: Contribution, dialogView: View) : CalendarPickerView{
+private fun createCalendar(contribution: Contribution, dialogView: View) : CalendarPickerView {
     val DATES_RANGE = 5
     val calendarView = dialogView.findViewById(R.id.contributionDateRangePicker) as CalendarPickerView
     val cMin = Date(contribution.startDate.time).apply { addYears(-DATES_RANGE) }

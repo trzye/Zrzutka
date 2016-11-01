@@ -1,4 +1,4 @@
-package pl.edu.pw.jereczem.zrzutka.client.view.contribution
+package pl.edu.pw.jereczem.zrzutka.client.view.extensions
 
 import android.view.KeyEvent
 

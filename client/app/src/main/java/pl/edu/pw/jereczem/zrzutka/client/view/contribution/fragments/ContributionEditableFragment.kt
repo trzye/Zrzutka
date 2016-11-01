@@ -1,4 +1,4 @@
-package pl.edu.pw.jereczem.zrzutka.client
+package pl.edu.pw.jereczem.zrzutka.client.view.contribution
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class MainFragment : Fragment(){
+abstract class ContributionEditableFragment : Fragment(){
+    abstract val labelId: Int
+    abstract val layoutId: Int
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.content_main, null)
+        val view = inflater.inflate(layoutId, null)
+        return view
     }
-
 }

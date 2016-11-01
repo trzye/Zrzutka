@@ -9,6 +9,7 @@ data class Contribution private constructor(
         @Column var title: String ="",
         @Column(columnDefinition = "DATE") var startDate: Date = Date(),
         @Column(columnDefinition = "DATE") var endDate: Date = Date()
+//        @OneToOne val summary: Summary? = null
 ) {
 
     private constructor() : this(null)
@@ -51,6 +52,10 @@ data class Contribution private constructor(
         _purchases.remove(purchase)
         purchase.contribution = null
     }
+
+}
+
+class Summary {
 
 }
 

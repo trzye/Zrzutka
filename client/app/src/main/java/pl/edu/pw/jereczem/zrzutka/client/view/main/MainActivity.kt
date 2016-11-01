@@ -1,4 +1,4 @@
-package pl.edu.pw.jereczem.zrzutka.client
+package pl.edu.pw.jereczem.zrzutka.client.view.main
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -12,10 +12,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import pl.edu.pw.jereczem.zrzutka.client.ContributionMainFragment
+import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DATABASE_FILENAME
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DatabaseService
-import pl.edu.pw.jereczem.zrzutka.client.view.contribution.createContributionEditDialog
+import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ActualManagedContribution
+import pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs.createContributionEditDialog
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         deleteDatabase(DATABASE_FILENAME)
         dbService = DatabaseService(this)
-        fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView)
+        fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView, this)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton?
 
@@ -40,14 +43,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     this,
                     initContribution,
                     {
-                        toolbar?.setNavigationIcon(android.R.drawable.ic_dialog_email)
-                        toolbar?.title = "Srutututu"
-                        toolbar?.subtitle = "turududum"
-                        fragmentChanger.changeToContributionFragment()
+                        fragmentChanger.changeToContributionFragment(initContribution)
                     }
             ).show()
         }
-
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
         val toggle = ActionBarDrawerToggle(
@@ -113,27 +112,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    companion object {
+        private class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView, activity: AppCompatActivity){
+
+            val toolbarManager = ToolbarManager(activity)
+
+            private fun changeFragment(fragment: Fragment) {
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
+            }
+
+            fun changeToMainFragment() {
+                toolbarManager.setupForMainFragment()
+                changeFragment(MainFragment())
+            }
+            fun changeToContributionFragment(contribution: Contribution) {
+                toolbarManager.setupForContribution(contribution)
+                ActualManagedContribution.contribution = contribution
+                changeFragment(ContributionMainFragment())
+                uncheckMenuItems()
+            }
+
+            private fun uncheckMenuItems() {
+                for (i in 0..navigationView.menu.size() - 1)
+                    navigationView.menu.getItem(i).isChecked = false
+                navigationView.setCheckedItem(R.id.nav_none)
+            }
+
+        }
+    }
 }
 
-private class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView){
 
-    private fun changeFragment(fragment: Fragment) {
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
-    }
-
-    fun changeToMainFragment() {
-        changeFragment(MainFragment())
-    }
-    fun changeToContributionFragment() {
-        changeFragment(ContributionFragment())
-        uncheckMenuItems()
-    }
-
-    private fun uncheckMenuItems() {
-        for (i in 0..navigationView.menu.size() - 1)
-            navigationView.menu.getItem(i).isChecked = false
-        navigationView.setCheckedItem(R.id.nav_none)
-    }
-
-}
 

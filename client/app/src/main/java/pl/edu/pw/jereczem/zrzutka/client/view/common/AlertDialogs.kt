@@ -1,4 +1,4 @@
-package pl.edu.pw.jereczem.zrzutka.client.view.contribution
+package pl.edu.pw.jereczem.zrzutka.client.view.common
 
 import android.app.AlertDialog
 import android.app.AlertDialog.Builder
