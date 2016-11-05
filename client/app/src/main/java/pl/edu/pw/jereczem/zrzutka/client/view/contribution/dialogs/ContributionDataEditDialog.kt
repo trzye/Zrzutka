@@ -14,7 +14,7 @@ import com.squareup.timessquare.CalendarPickerView
 import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import pl.edu.pw.jereczem.zrzutka.client.view.common.AlertDialogs
-import pl.edu.pw.jereczem.zrzutka.client.view.extensions.isBackPressed
+import pl.edu.pw.jereczem.zrzutka.client.view.common.extensions.isBackPressed
 import java.util.*
 
 fun createContributionEditDialog(ctx: Context, contribution: Contribution, okAction: () -> Unit): Dialog = Builder(ctx)

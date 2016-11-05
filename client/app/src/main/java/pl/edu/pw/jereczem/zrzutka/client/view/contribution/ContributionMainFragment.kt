@@ -9,7 +9,6 @@ package pl.edu.pw.jereczem.zrzutka.client
  import android.view.ViewGroup
  import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableFragment
  import pl.edu.pw.jereczem.zrzutka.client.view.contribution.navigation.ContributionPagerAdapter
- import pl.edu.pw.jereczem.zrzutka.client.view.main.ToolbarManager
 
 class ContributionMainFragment : Fragment(){
 
@@ -31,15 +30,15 @@ class ContributionMainFragment : Fragment(){
     private fun tabLayoutSetup(fragments: List<ContributionEditableFragment>, view: View, viewPager: ViewPager): TabLayout {
         return (view.findViewById(R.id.tabLayout) as TabLayout).apply {
             tabGravity = TabLayout.GRAVITY_FILL
-            tabLabelsSetup(fragments, view)
             onTabSelectedSetup(viewPager)
+            setupWithViewPager(viewPager)
+            tabLabelsSetup(fragments)
         }
     }
 
-    private fun TabLayout.tabLabelsSetup(fragments: List<ContributionEditableFragment>, view: View) {
-        fragments.forEach {
-            fragment ->
-            addTab(newTab().setText(view.resources.getString(fragment.labelId)))
+    private fun TabLayout.tabLabelsSetup(fragments: List<ContributionEditableFragment>) {
+        fragments.forEachIndexed { i, fragment ->
+            getTabAt(i)?.setText(fragment.labelId)
         }
     }
 

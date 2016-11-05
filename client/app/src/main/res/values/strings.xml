@@ -11,6 +11,7 @@
     <string name="dialog_yes">Tak</string>
     <string name="dialog_no">Nie</string>
     <string name="dialog_ok">OK</string>
+    <string name="undo">Cofnij</string>
 
     <!-- Contribution edit strings -->
     <string name="contribution_edit_toolbar_title">Dane zrzutki</string>
@@ -24,6 +25,9 @@
     <string name="tab_contributors">Uczestnicy</string>
     <string name="tab_summary">Podsumowanie</string>
     <string name="tab_purchases">Zakupy</string>
+
+    <!-- Contributors fragment -->
+    <string name="contributor_deleted">Usunięto uczestnika</string>
 
 
 </resources>

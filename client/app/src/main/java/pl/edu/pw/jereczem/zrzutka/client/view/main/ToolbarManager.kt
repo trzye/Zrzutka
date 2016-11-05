@@ -1,6 +1,7 @@
 package pl.edu.pw.jereczem.zrzutka.client.view.main
 
 import android.app.Activity
+import android.graphics.drawable.Drawable
 import android.support.design.widget.CoordinatorLayout.LayoutParams
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import pl.edu.pw.jereczem.zrzutka.client.R
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
+import pl.edu.pw.jereczem.zrzutka.client.view.common.AlertDialogs
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs.createContributionEditDialog
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,8 +29,6 @@ class ToolbarManager(val activity: Activity){
 
     fun setupForContribution(contribution: Contribution, editable: Boolean = true){
         toolbar.title = contribution.title
-//        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-//        toolbar.overflowIcon = activity.getDrawable(R.drawable.ic_check_white_24dp)
         toolbar.subtitle = createSubtitle(contribution)
         if(editable){
             toolbar.setOnClickListener {
@@ -52,6 +52,7 @@ class ToolbarManager(val activity: Activity){
         else
             "${dateFormat.format(contribution.startDate)} - ${dateFormat.format(contribution.endDate)}"
     }
+
 
 }
 

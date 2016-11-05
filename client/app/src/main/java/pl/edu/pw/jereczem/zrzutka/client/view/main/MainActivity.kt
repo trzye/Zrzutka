@@ -18,7 +18,7 @@ import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contributor
 import pl.edu.pw.jereczem.zrzutka.client.model.friend.Friend
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DATABASE_FILENAME
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DatabaseService
-import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ActualManagedContribution
+import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -35,10 +35,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dbService = DatabaseService(this)
         fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView, this)
         fragmentChanger.changeToContributionFragment(Contribution("TEST").apply {
-            for (i in 1..100){
+            for (i in 1..10){
                 addContributor(Contributor(Friend("Friend $i"), this))
             }
         })
+
 
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
@@ -60,25 +61,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

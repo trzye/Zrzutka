@@ -1,4 +1,4 @@
-package pl.edu.pw.jereczem.zrzutka.client.view.contribution
+package pl.edu.pw.jereczem.zrzutka.client.controller
 
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 
