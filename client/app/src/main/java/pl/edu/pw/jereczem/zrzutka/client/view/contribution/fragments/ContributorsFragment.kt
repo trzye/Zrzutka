@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import de.hdodenhof.circleimageview.CircleImageView
 import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
@@ -38,7 +39,7 @@ class ContributorsFragment : ContributionEditableFragment() {
             val friend = Friend("Test")
             val contributor = Contributor(friend = friend, contribution = ActualManagedContribution.contribution)
             adapter.addContributor(contributor)
-            contributorsRecyclerView.scrollToPosition(adapter.contributors.lastIndex)
+            contributorsRecyclerView.scrollToPosition(0)
         }
 
         return view
@@ -51,19 +52,29 @@ class ContributorsFragment : ContributionEditableFragment() {
         val toDelete = actualContributors.filterNot { c -> modifiedContributors.contains(c) }
         val toAdd = modifiedContributors.filterNot { c -> actualContributors.contains(c) }
         toDelete.forEach { contribution.removeContributor(it) }
-        toAdd.forEach { contribution.addContributor(it) }
+        toAdd.forEach { if (it != null) contribution.addContributor(it) }
         super.onStop()
     }
 
 }
 
-class ContributorsAdapter(val contributors: MutableList<Contributor>, val recyclerView: RecyclerView) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
+class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyclerView: RecyclerView) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
+
+    init {
+        contributors.add(null)
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.contributorName.text = contributors[position].friend.getShowingName()
-        holder.contributorInitials.text = contributors[position].friend.getShowingName().getInitials()
-        holder.contributorCircle.setImageResource(setColor(contributors[position].friend.colorId))
-        holder.contributorsRemove.visibility = View.VISIBLE
+        val contributor = contributors[position]
+        if(contributor != null) {
+            holder.contributorName.text = contributor.friend.getShowingName()
+            holder.contributorInitials.text = contributor.friend.getShowingName().getInitials()
+            holder.contributorCircle.setImageResource(setColor(contributor.friend.colorId))
+            holder.contributorsRemove.visibility = View.VISIBLE
+            holder.layout.visibility = View.VISIBLE
+        } else {
+            holder.layout.visibility = View.INVISIBLE
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -112,6 +123,7 @@ class ContributorsAdapter(val contributors: MutableList<Contributor>, val recycl
         val contributorInitials = view.findViewById(R.id.contributorInitials) as TextView
         val contributorCircle = view.findViewById(R.id.contributorCircle) as CircleImageView
         val contributorsRemove: View = view.findViewById(R.id.contributorsRemove)
+        val layout: View = view.findViewById(R.id.item_contributor_id)
 
         init {
             contributorsRemove.setOnClickListener(this)
@@ -134,7 +146,7 @@ class ContributorsAdapter(val contributors: MutableList<Contributor>, val recycl
     fun remove(position: Int): Contributor {
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, contributors.size)
-        return contributors.removeAt(position)
+        return contributors.removeAt(position)!!
     }
 
     fun addContributor(position: Int, contributor: Contributor) {
@@ -146,7 +158,7 @@ class ContributorsAdapter(val contributors: MutableList<Contributor>, val recycl
     }
 
     fun addContributor(contributor: Contributor) {
-        addContributor(contributors.size, contributor)
+        addContributor(0, contributor)
     }
 
 }
