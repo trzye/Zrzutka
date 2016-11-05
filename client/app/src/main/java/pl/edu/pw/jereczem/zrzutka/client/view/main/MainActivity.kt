@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit private var dbService: DatabaseService
     lateinit var fragmentChanger: FragmentChanger
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -34,13 +35,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         deleteDatabase(DATABASE_FILENAME)
         dbService = DatabaseService(this)
         fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView, this)
-        fragmentChanger.changeToContributionFragment(Contribution("TEST").apply {
-            for (i in 1..10){
-                addContributor(Contributor(Friend("Friend $i"), this))
-            }
-        })
-
-
+        fragmentChanger.changeToContributionFragment(ActualManagedContribution.contribution)
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
         val toggle = ActionBarDrawerToggle(
@@ -88,7 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     companion object {
-        public class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView, activity: AppCompatActivity){
+        class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView, activity: AppCompatActivity){
 
             val toolbarManager = ToolbarManager(activity)
 
@@ -102,7 +97,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             fun changeToContributionFragment(contribution: Contribution) {
                 toolbarManager.setupForContribution(contribution)
-                ActualManagedContribution.contribution = contribution
                 changeFragment(ContributionMainFragment())
                 uncheckMenuItems()
             }
