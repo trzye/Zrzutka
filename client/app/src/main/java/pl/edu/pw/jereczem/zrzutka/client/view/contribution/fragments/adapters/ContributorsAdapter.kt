@@ -63,15 +63,39 @@ class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyc
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            val deleted = contributorsAdapter.remove(position)
+            var deleted = contributorsAdapter.fakeRemove(position)
             Snackbar.make(v, R.string.contributor_deleted, Snackbar.LENGTH_SHORT).apply {
                 setAction(R.string.undo, {
-                    contributorsAdapter.addContributor(position, deleted)
+                    contributorsAdapter.undoFakeRemove(position, deleted)
+                    deleted = null
                 })
+
+                setCallback(object: Snackbar.Callback(){
+                    override fun onDismissed(snackbar: Snackbar?, event: Int) {
+                        if(deleted != null){
+                            ActualManagedContribution.contribution.removeContributor(deleted!!)
+                        }
+                    }
+                })
+
             }.show()
             contributorsRemove.visibility = View.INVISIBLE
         }
 
+    }
+
+    fun undoFakeRemove(position: Int, contributor: Contributor?){
+        contributors.add(position, contributor)
+        notifyItemInserted(position)
+        notifyItemRangeChanged(position, contributors.size)
+        if (position == 0)
+            recyclerView.scrollToPosition(0)
+    }
+
+    fun fakeRemove(position: Int): Contributor?{
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, contributors.size)
+        return contributors.removeAt(position)
     }
 
     fun remove(position: Int): Contributor {

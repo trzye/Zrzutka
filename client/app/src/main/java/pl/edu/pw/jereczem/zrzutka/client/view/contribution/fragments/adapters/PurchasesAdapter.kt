@@ -108,16 +108,37 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>, val recyclerView: 
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            val deleted = purchasesAdapter.remove(position)
-            Snackbar.make(v, R.string.purchase_deleted, Snackbar.LENGTH_SHORT).apply {
+            var deleted = purchasesAdapter.fakeRemove(position)
+            Snackbar.make(v, R.string.contributor_deleted, Snackbar.LENGTH_SHORT).apply {
                 setAction(R.string.undo, {
-                    purchasesAdapter.addPurchase(position, deleted)
-                    purchaseRemove.visibility = View.VISIBLE
+                    purchasesAdapter.undoFakeRemove(position, deleted)
+                    deleted = null
+                })
+
+                setCallback(object: Snackbar.Callback(){
+                    override fun onDismissed(snackbar: Snackbar?, event: Int) {
+                        if(deleted != null)
+                            ActualManagedContribution.contribution.removePurchase(deleted!!)
+                    }
                 })
             }.show()
             purchaseRemove.visibility = View.INVISIBLE
         }
 
+    }
+
+    fun undoFakeRemove(position: Int, purchase: Purchase?){
+        purchases.add(position, purchase)
+        notifyItemInserted(position)
+        notifyItemRangeChanged(position, purchases.size)
+        if (position == 0)
+            recyclerView.scrollToPosition(0)
+    }
+
+    fun fakeRemove(position: Int): Purchase?{
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, purchases.size)
+        return purchases.removeAt(position)
     }
 
     fun remove(position: Int): Purchase {
