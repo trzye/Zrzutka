@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import de.hdodenhof.circleimageview.CircleImageView
 import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
-import pl.edu.pw.jereczem.zrzutka.client.controller.setColor
+import pl.edu.pw.jereczem.zrzutka.client.view.common.setColor
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contributor
 import pl.edu.pw.jereczem.zrzutka.client.model.friend.Friend
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableFragment

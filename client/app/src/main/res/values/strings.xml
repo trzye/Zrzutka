@@ -30,5 +30,9 @@
     <string name="contributor_deleted">Usunięto uczestnika</string>
     <string name="purchase_deleted">Usunięto zakup</string>
 
+    <!-- Purchases item  -->
+    <string name="contributor">Uczestnik</string>
+    <string name="contributor_paid">Wpłata</string>
+    <string name="contributor_toPay">Należność</string>
 
 </resources>

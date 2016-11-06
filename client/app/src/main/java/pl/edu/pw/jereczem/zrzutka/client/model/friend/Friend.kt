@@ -1,6 +1,6 @@
 package pl.edu.pw.jereczem.zrzutka.client.model.friend
 
-import pl.edu.pw.jereczem.zrzutka.client.controller.randColor
+import pl.edu.pw.jereczem.zrzutka.client.view.common.randColor
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity

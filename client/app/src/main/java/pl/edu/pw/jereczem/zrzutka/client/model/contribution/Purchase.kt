@@ -1,6 +1,6 @@
 package pl.edu.pw.jereczem.zrzutka.client.model.contribution
 
-import pl.edu.pw.jereczem.zrzutka.client.controller.randColor
+import pl.edu.pw.jereczem.zrzutka.client.view.common.randColor
 import javax.persistence.*
 
 @Entity

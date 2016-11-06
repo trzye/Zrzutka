@@ -1,5 +1,6 @@
 package pl.edu.pw.jereczem.zrzutka.client
 
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -10,10 +11,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListAdapter
+import android.widget.ListView
+import android.widget.TextView
 import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
-import pl.edu.pw.jereczem.zrzutka.client.controller.setColor
+import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Charge
+import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
+import pl.edu.pw.jereczem.zrzutka.client.view.common.setColor
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contributor
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Purchase
+import pl.edu.pw.jereczem.zrzutka.client.model.friend.Friend
+import pl.edu.pw.jereczem.zrzutka.client.view.common.extensions.toReadablePriceString
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableFragment
 
 class PurchasesFragment : ContributionEditableFragment() {
@@ -30,14 +39,23 @@ class PurchasesFragment : ContributionEditableFragment() {
         val layoutManager = LinearLayoutManager(activity)
         purchasesRecyclerView.layoutManager = layoutManager
 
-        adapter = PurchasesAdapter(ActualManagedContribution.contribution.purchases.reversed().toMutableList(), purchasesRecyclerView)
+        val contribution = Contribution("Jakiś zakup").apply {
+            addContributor(Contributor(Friend("Maciek")))
+            addContributor(Contributor(Friend("Andrzej")))
+            addPurchase(Purchase("Prezent 1", 120.0))
+            addContributor(Contributor(Friend("Wojtek")))
+            addPurchase(Purchase("Prezent 2", 130.0))
+        }
+
+        adapter = PurchasesAdapter(contribution.purchases.reversed().toMutableList(), purchasesRecyclerView)
         purchasesRecyclerView.adapter = adapter
+        purchasesRecyclerView.setHasFixedSize(true);
+
 
         val fab = view.findViewById(R.id.fab) as FloatingActionButton?
 
         fab!!.setOnClickListener {
-            val purchase = Purchase(name = "Test",price = 100.0)
-            adapter.addPurchase(purchase)
+            adapter.addPurchase(Purchase("Test", 100.0, contribution).apply { contribution.addPurchase(this) })
             purchasesRecyclerView.scrollToPosition(0)
         }
 
@@ -63,15 +81,25 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
         val purchase = purchases[position]
         if(purchase != null){
             holder.layout.visibility = View.VISIBLE
-            holder.mainContent.background = ResourcesCompat.getDrawable(holder.itemView.resources, setColor(purchase.colorId), null)
-            holder.setClickListener(openedPurchases, purchase)
-            if(openedPurchases.contains(purchase))
-                holder.purchaseContent.visibility = View.VISIBLE
-            else
-                holder.purchaseContent.visibility = View.GONE
+            holder.purchaseTitle.text = purchase.name
+            holder.purchaseSubtitle.text = purchase.price.toReadablePriceString()
+            holder.mainContent.background = getDrawableColor(holder, purchase)
+            holder.purchasesListItems.adapter = PurchaseContributorAdapter(holder.view.context, purchase.charges)
+            expandHandling(holder, purchase)
         } else {
             holder.layout.visibility = View.INVISIBLE
         }
+    }
+
+    private fun getDrawableColor(holder: ViewHolder, purchase: Purchase)
+            = ResourcesCompat.getDrawable(holder.itemView.resources, setColor(purchase.colorId), null)
+
+    private fun expandHandling(holder: ViewHolder, purchase: Purchase) {
+        holder.setClickListener(openedPurchases, purchase)
+        if (openedPurchases.contains(purchase)) {
+            holder.purchaseContent.visibility = View.VISIBLE
+        } else
+            holder.purchaseContent.visibility = View.GONE
     }
 
     override fun getItemCount(): Int {
@@ -85,6 +113,10 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
         val purchaseContent: View = view.findViewById(R.id.purchaseContent)
         val hidePurchaseContentButton: View = view.findViewById(R.id.hidePurchaseContentButton)
         val purchaseRemove: View = view.findViewById(R.id.actionDeletePurchase)
+        val purchaseTitle = view.findViewById(R.id.purchaseTitle) as TextView
+        val purchaseSubtitle = view.findViewById(R.id.purchaseSubtitle) as TextView
+        val purchasesListItems = view.findViewById(R.id.purchasesListItems) as ListView
+
 
         init {
             purchaseRemove.setOnClickListener(this)
@@ -138,5 +170,27 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
         addPurchase(0, purchase)
     }
 
+
+}
+
+private class PurchaseContributorAdapter(context: Context, charges: List<Charge>) : ArrayAdapter<Charge>(context, 0, charges) {
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val charge = getItem(position)
+        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.charge_list_item, parent, false)
+
+        (view.findViewById(R.id.chargeContributor) as TextView).apply {
+            text = charge.charged?.friend?.getShowingName()
+        }
+        (view.findViewById(R.id.chargeContributorPaid) as TextView).apply {
+            text = charge.amountPaid.toReadablePriceString()
+        }
+        (view.findViewById(R.id.chargeContributorToPay) as TextView).apply {
+            text = charge.amountToPay.toReadablePriceString()
+        }
+
+        return view
+
+    }
 
 }
