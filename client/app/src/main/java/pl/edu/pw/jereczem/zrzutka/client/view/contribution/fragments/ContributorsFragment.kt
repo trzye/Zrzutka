@@ -16,7 +16,7 @@ import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableF
 class ContributorsFragment : ContributionEditableFragment() {
     override val layoutId = R.layout.contributors_fragment
     override val labelId = R.string.tab_contributors
-    lateinit private var adapter: ContributorsAdapter
+    private var adapter: ContributorsAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
@@ -29,7 +29,7 @@ class ContributorsFragment : ContributionEditableFragment() {
         val fab = view.findViewById(R.id.fab) as FloatingActionButton?
 
         fab!!.setOnClickListener {
-            adapter.addContributor(Contributor(Friend("Testowy")))
+            adapter?.addContributor(Contributor(Friend("Testowy")))
             contributorsRecyclerView.scrollToPosition(0)
         }
     }
@@ -48,6 +48,7 @@ class ContributorsFragment : ContributionEditableFragment() {
 
     override fun refresh() {
         Log.d("D/Zrzutka", "Contributors refreshed")
+        adapter?.snackBars?.forEach { it.snackbar.view.visibility = View.INVISIBLE; it.snackbar.dismiss(); it.action()}
         if(view != null) {
             setAdapter(view!!)
         }

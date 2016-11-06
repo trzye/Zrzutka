@@ -17,6 +17,8 @@ class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyc
         contributors.add(null)
     }
 
+    val snackBars = mutableListOf<SnackContainer>()
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contributor = contributors[position]
         if(contributor != null) {
@@ -68,17 +70,11 @@ class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyc
                 setAction(R.string.undo, {
                     contributorsAdapter.undoFakeRemove(position, deleted)
                     deleted = null
+                    contributorsAdapter.snackBars.filter { it.snackbar == this}.forEach {  contributorsAdapter.snackBars.remove(it)  }
                 })
-
-                setCallback(object: Snackbar.Callback(){
-                    override fun onDismissed(snackbar: Snackbar?, event: Int) {
-                        if(deleted != null){
-                            ActualManagedContribution.contribution.removeContributor(deleted!!)
-                        }
-                    }
-                })
-
-            }.show()
+            }.apply { contributorsAdapter.snackBars.add(
+                    SnackContainer(this, {  ActualManagedContribution.contribution.removeContributor(deleted!!) })
+            ) }.show()
             contributorsRemove.visibility = View.INVISIBLE
         }
 

@@ -2,6 +2,7 @@ package pl.edu.pw.jereczem.zrzutka.client
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -15,7 +16,7 @@ import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableF
 class PurchasesFragment : ContributionEditableFragment() {
     override val layoutId = R.layout.purchases_fragment
     override val labelId = R.string.tab_purchases
-    lateinit private var adapter: PurchasesAdapter
+    private var adapter: PurchasesAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
@@ -29,7 +30,7 @@ class PurchasesFragment : ContributionEditableFragment() {
 
         fab!!.setOnClickListener {
             val purchase = Purchase("TEST")
-            adapter.addPurchase(purchase)
+            adapter?.addPurchase(purchase)
             purchasesRecyclerView.scrollToPosition(0)
         }
     }
@@ -43,12 +44,12 @@ class PurchasesFragment : ContributionEditableFragment() {
 
         adapter = PurchasesAdapter(ActualManagedContribution.contribution.purchases.reversed().toMutableList(), purchasesRecyclerView)
         purchasesRecyclerView.adapter = adapter
-        purchasesRecyclerView.setHasFixedSize(true);
+        purchasesRecyclerView.setHasFixedSize(true)
         return purchasesRecyclerView
     }
 
     override fun refresh() {
-        Log.d("D/Zrzutka", "Purchase refreshed")
+        adapter?.snackBars?.forEach { it.snackbar.view.visibility = View.INVISIBLE; it.snackbar.dismiss(); it.action()}
         if (view != null) setAdapter(view!!)
     }
 

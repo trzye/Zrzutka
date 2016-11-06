@@ -22,6 +22,9 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>, val recyclerView: 
         purchases.add(null)
     }
 
+    val snackBars = mutableListOf<SnackContainer>()
+
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.purchase_list_item, parent, false)
         return ViewHolder(view, this)
@@ -113,15 +116,11 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>, val recyclerView: 
                 setAction(R.string.undo, {
                     purchasesAdapter.undoFakeRemove(position, deleted)
                     deleted = null
+                    purchasesAdapter.snackBars.filter { it.snackbar == this}.forEach {  purchasesAdapter.snackBars.remove(it)  }
                 })
-
-                setCallback(object: Snackbar.Callback(){
-                    override fun onDismissed(snackbar: Snackbar?, event: Int) {
-                        if(deleted != null)
-                            ActualManagedContribution.contribution.removePurchase(deleted!!)
-                    }
-                })
-            }.show()
+            }.apply { purchasesAdapter.snackBars.add(
+                    SnackContainer(this, {  ActualManagedContribution.contribution.removePurchase(deleted!!) })
+            ) }.show()
             purchaseRemove.visibility = View.INVISIBLE
         }
 
@@ -164,3 +163,5 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>, val recyclerView: 
 
 
 }
+
+class SnackContainer(val snackbar: Snackbar,val action: () -> Unit){}
