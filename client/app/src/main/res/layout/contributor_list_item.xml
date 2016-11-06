@@ -65,7 +65,8 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_marginLeft="72dp"
-        android:background="@color/colorCardsBackground"
+        android:alpha="0.12"
+        android:background="@color/colorBlack"
         />
 
 </LinearLayout>

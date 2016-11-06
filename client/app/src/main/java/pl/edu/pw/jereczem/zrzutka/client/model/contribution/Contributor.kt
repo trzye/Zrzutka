@@ -11,6 +11,7 @@ data class Contributor private constructor (
 ){
     private constructor() : this(null)
     constructor(friend: Friend, contribution: Contribution) : this(null, friend, contribution)
+    constructor(friend: Friend) : this(null, friend, null)
 
     @ManyToOne private val _charges: MutableCollection<Charge> = mutableListOf()
     val charges: List<Charge> get() = _charges.toList()

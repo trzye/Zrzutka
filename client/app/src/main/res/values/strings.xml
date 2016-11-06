@@ -28,6 +28,7 @@
 
     <!-- Contributors fragment -->
     <string name="contributor_deleted">Usunięto uczestnika</string>
+    <string name="purchase_deleted">Usunięto zakup</string>
 
 
 </resources>

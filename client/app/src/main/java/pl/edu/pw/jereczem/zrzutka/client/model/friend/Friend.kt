@@ -1,5 +1,6 @@
 package pl.edu.pw.jereczem.zrzutka.client.model.friend
 
+import pl.edu.pw.jereczem.zrzutka.client.controller.randColor
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -12,7 +13,7 @@ data class Friend private constructor(
         @Column var nickname: String = "",
         @Column var firstName: String = "",
         @Column var lastName: String = "",
-        @Column val colorId: Int = Random().nextInt(16)+1
+        @Column val colorId: Int = randColor()
 
         //        val paymentDetails: List<PaymentInformation> = emptyList(),
         //        val contactDetails: List<ContactInformation> = emptyList()

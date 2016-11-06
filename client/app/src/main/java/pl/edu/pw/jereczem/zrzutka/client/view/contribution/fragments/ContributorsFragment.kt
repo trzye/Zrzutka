@@ -8,10 +8,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import de.hdodenhof.circleimageview.CircleImageView
 import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
+import pl.edu.pw.jereczem.zrzutka.client.controller.setColor
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contributor
 import pl.edu.pw.jereczem.zrzutka.client.model.friend.Friend
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableFragment
@@ -19,7 +19,7 @@ import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableF
 class ContributorsFragment : ContributionEditableFragment() {
     override val layoutId = R.layout.contributors_fragment
     override val labelId = R.string.tab_contributors
-    lateinit var adapter: ContributorsAdapter
+    lateinit private var adapter: ContributorsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
@@ -30,14 +30,14 @@ class ContributorsFragment : ContributionEditableFragment() {
         val layoutManager = LinearLayoutManager(activity)
         contributorsRecyclerView.layoutManager = layoutManager
 
-        adapter = ContributorsAdapter(ActualManagedContribution.contribution.contributors.toMutableList(), contributorsRecyclerView)
+        adapter = ContributorsAdapter(ActualManagedContribution.contribution.contributors.reversed().toMutableList(), contributorsRecyclerView)
         contributorsRecyclerView.adapter = adapter
 
         val fab = view.findViewById(R.id.fab) as FloatingActionButton?
 
         fab!!.setOnClickListener {
             val friend = Friend("Test")
-            val contributor = Contributor(friend = friend, contribution = ActualManagedContribution.contribution)
+            val contributor = Contributor(friend = friend)
             adapter.addContributor(contributor)
             contributorsRecyclerView.scrollToPosition(0)
         }
@@ -58,7 +58,7 @@ class ContributorsFragment : ContributionEditableFragment() {
 
 }
 
-class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyclerView: RecyclerView) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
+private class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyclerView: RecyclerView) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
 
     init {
         contributors.add(null)
@@ -83,28 +83,6 @@ class ContributorsAdapter(val contributors: MutableList<Contributor?>, val recyc
     }
 
     override fun getItemCount() = contributors.size
-
-    private fun setColor(id: Int): Int {
-        return when (id) {
-            1 -> R.color.color1
-            2 -> R.color.color2
-            3 -> R.color.color3
-            4 -> R.color.color4
-            5 -> R.color.color5
-            6 -> R.color.color6
-            7 -> R.color.color7
-            8 -> R.color.color8
-            9 -> R.color.color9
-            10 -> R.color.color10
-            11 -> R.color.color11
-            12 -> R.color.color12
-            13 -> R.color.color13
-            14 -> R.color.color14
-            15 -> R.color.color15
-            16 -> R.color.color16
-            else -> R.color.color1
-        }
-    }
 
     private fun String.getInitials(): String {
         val splitted = split(" ")
