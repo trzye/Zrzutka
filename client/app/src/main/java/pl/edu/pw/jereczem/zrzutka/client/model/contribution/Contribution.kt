@@ -49,7 +49,7 @@ data class Contribution private constructor(
     }
 
     fun removePurchase(purchase: Purchase) {
-        _purchases.remove(purchase)
+        _purchases.remove(purchase.apply { clearCharges() })
         purchase.contribution = null
     }
 

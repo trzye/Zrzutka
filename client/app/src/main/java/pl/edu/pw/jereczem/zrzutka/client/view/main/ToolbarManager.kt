@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import pl.edu.pw.jereczem.zrzutka.client.R
+import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import pl.edu.pw.jereczem.zrzutka.client.view.common.AlertDialogs
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs.createContributionEditDialog
@@ -27,17 +28,17 @@ class ToolbarManager(val activity: Activity){
         toolbar.isClickable = false
     }
 
-    fun setupForContribution(contribution: Contribution, editable: Boolean = true){
-        toolbar.title = contribution.title
-        toolbar.subtitle = createSubtitle(contribution)
+    fun setupForContribution(editable: Boolean = true){
+        toolbar.title = ActualManagedContribution.contribution.title
+        toolbar.subtitle = createSubtitle(ActualManagedContribution.contribution)
         if(editable){
             toolbar.setOnClickListener {
                 createContributionEditDialog(
                         activity,
-                        contribution,
+                        ActualManagedContribution.contribution,
                         {
-                            toolbar.title = contribution.title
-                            toolbar.subtitle =  createSubtitle(contribution)
+                            toolbar.title = ActualManagedContribution.contribution.title
+                            toolbar.subtitle =  createSubtitle(ActualManagedContribution.contribution)
                         }
                 ).show()
             }

@@ -32,4 +32,8 @@ data class Purchase private constructor(
         }
     }
 
+    fun clearCharges() {
+        _charges.forEach { removeCharge(it) }
+    }
+
 }

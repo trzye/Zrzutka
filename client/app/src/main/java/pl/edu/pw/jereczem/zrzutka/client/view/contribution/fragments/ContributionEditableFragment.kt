@@ -14,4 +14,11 @@ abstract class ContributionEditableFragment : Fragment(){
         val view = inflater.inflate(layoutId, null)
         return view
     }
+
+    abstract fun refresh()
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        refresh()
+    }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.edu.pw.jereczem.zrzutka.client.R
+import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.dialogs.createContributionEditDialog
 
@@ -22,7 +23,9 @@ class MainFragment : Fragment(){
                     this.context,
                     initContribution,
                     {
-                        (activity as MainActivity).fragmentChanger.changeToContributionFragment(initContribution)
+                        ActualManagedContribution.position = 0
+                        ActualManagedContribution.contribution = initContribution
+                        (activity as MainActivity).fragmentChanger.changeToContributionFragment()
                     }
             ).show()
         }

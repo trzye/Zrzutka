@@ -1,11 +1,13 @@
 package pl.edu.pw.jereczem.zrzutka.client.view.main
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBar
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -20,22 +22,26 @@ import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DATABASE_FILENAME
 import pl.edu.pw.jereczem.zrzutka.client.modelaccess.DatabaseService
 import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
 
+const val ACTUAL_FRAGMENT_KEY = "ACTUAL_FRAGMENT_KEY"
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit private var dbService: DatabaseService
     lateinit var fragmentChanger: FragmentChanger
+    lateinit var actionBar: ActionBar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById(R.id.appBarMainToolbar) as Toolbar?
+        val toolbar = findViewById(R.id.appBarMainToolbar) as Toolbar
         setSupportActionBar(toolbar)
+        actionBar = supportActionBar!!
 
         deleteDatabase(DATABASE_FILENAME)
         dbService = DatabaseService(this)
         fragmentChanger = FragmentChanger(supportFragmentManager, findViewById(R.id.nav_view) as NavigationView, this)
-        fragmentChanger.changeToContributionFragment(ActualManagedContribution.contribution)
+        fragmentChanger.actualState = STATE.values()[savedInstanceState?.getInt(ACTUAL_FRAGMENT_KEY) ?: 0]
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
         val toggle = ActionBarDrawerToggle(
@@ -45,6 +51,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView?
         navigationView!!.setNavigationItemSelectedListener(this)
+
+    }
+
+    override fun onResume() {
+        when(fragmentChanger.actualState){
+            STATE.MainFragment -> fragmentChanger.changeToMainFragment()
+            STATE.ContributionFragment -> fragmentChanger.changeToContributionFragment()
+        }
+        super.onResume()
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putInt(ACTUAL_FRAGMENT_KEY, fragmentChanger.actualState.ordinal)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onBackPressed() {
@@ -86,17 +107,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         class FragmentChanger(val fragmentManager: FragmentManager, val navigationView: NavigationView, activity: AppCompatActivity){
 
             val toolbarManager = ToolbarManager(activity)
+            var actualState = STATE.MainFragment
 
             private fun changeFragment(fragment: Fragment) {
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
             }
 
             fun changeToMainFragment() {
+                actualState = STATE.MainFragment
                 toolbarManager.setupForMainFragment()
                 changeFragment(MainFragment())
             }
-            fun changeToContributionFragment(contribution: Contribution) {
-                toolbarManager.setupForContribution(contribution)
+            fun changeToContributionFragment() {
+                actualState = STATE.ContributionFragment
+                toolbarManager.setupForContribution()
                 changeFragment(ContributionMainFragment())
                 uncheckMenuItems()
             }
@@ -109,7 +133,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
     }
+
+    enum class STATE {
+        MainFragment,
+        ContributionFragment
+    }
 }
+
+
 
 
 
