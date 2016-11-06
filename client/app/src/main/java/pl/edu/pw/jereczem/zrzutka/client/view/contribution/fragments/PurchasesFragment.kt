@@ -1,28 +1,26 @@
 package pl.edu.pw.jereczem.zrzutka.client
 
+import android.animation.LayoutTransition
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListAdapter
-import android.widget.ListView
+import android.widget.LinearLayout
 import android.widget.TextView
-import pl.edu.pw.jereczem.zrzutka.client.controller.ActualManagedContribution
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Charge
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contribution
-import pl.edu.pw.jereczem.zrzutka.client.view.common.setColor
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Contributor
 import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Purchase
 import pl.edu.pw.jereczem.zrzutka.client.model.friend.Friend
 import pl.edu.pw.jereczem.zrzutka.client.view.common.extensions.toReadablePriceString
+import pl.edu.pw.jereczem.zrzutka.client.view.common.setColor
 import pl.edu.pw.jereczem.zrzutka.client.view.contribution.ContributionEditableFragment
 
 class PurchasesFragment : ContributionEditableFragment() {
@@ -84,11 +82,18 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
             holder.purchaseTitle.text = purchase.name
             holder.purchaseSubtitle.text = purchase.price.toReadablePriceString()
             holder.mainContent.background = getDrawableColor(holder, purchase)
-            holder.purchasesListItems.adapter = PurchaseContributorAdapter(holder.view.context, purchase.charges)
+            setChargesListAdapater(holder, purchase)
             expandHandling(holder, purchase)
         } else {
             holder.layout.visibility = View.INVISIBLE
         }
+    }
+
+    private fun setChargesListAdapater(holder: ViewHolder, purchase: Purchase) {
+        val layoutManager = LinearLayoutManager(holder.view.context)
+        holder.purchasesListItems.layoutManager = layoutManager
+        holder.purchasesListItems.adapter = ChargeAdapter(purchase.charges)
+        holder.purchasesListItems.setHasFixedSize(true)
     }
 
     private fun getDrawableColor(holder: ViewHolder, purchase: Purchase)
@@ -98,12 +103,21 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
         holder.setClickListener(openedPurchases, purchase)
         if (openedPurchases.contains(purchase)) {
             holder.purchaseContent.visibility = View.VISIBLE
-        } else
+            holder.expandableLayoutOfPurchase.layoutTransition = null
+        } else {
             holder.purchaseContent.visibility = View.GONE
+            holder.expandableLayoutOfPurchase.layoutTransition = LayoutTransition()
+        }
     }
 
     override fun getItemCount(): Int {
         return purchases.size
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        holder.purchaseContent.clearAnimation()
+        holder.layout.clearAnimation()
+
     }
 
     class ViewHolder(val view: View,val purchasesAdapter: PurchasesAdapter) : RecyclerView.ViewHolder(view), View.OnClickListener{
@@ -115,8 +129,8 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
         val purchaseRemove: View = view.findViewById(R.id.actionDeletePurchase)
         val purchaseTitle = view.findViewById(R.id.purchaseTitle) as TextView
         val purchaseSubtitle = view.findViewById(R.id.purchaseSubtitle) as TextView
-        val purchasesListItems = view.findViewById(R.id.purchasesListItems) as ListView
-
+        val purchasesListItems = view.findViewById(R.id.purchasesListItems) as RecyclerView
+        val expandableLayoutOfPurchase = view.findViewById(R.id.expandableView) as ViewGroup
 
         init {
             purchaseRemove.setOnClickListener(this)
@@ -126,10 +140,12 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
             if(openedPurchases.contains(purchase)) {
                 openedPurchases.remove(purchase)
                 purchaseContent.visibility = View.GONE
+                expandableLayoutOfPurchase.layoutTransition = LayoutTransition()
             }
             else {
                 openedPurchases.add(purchase)
                 purchaseContent.visibility = View.VISIBLE
+                expandableLayoutOfPurchase.layoutTransition = null
             }
         }
 
@@ -173,24 +189,27 @@ class PurchasesAdapter(val purchases: MutableList<Purchase?>,val recyclerView: R
 
 }
 
-private class PurchaseContributorAdapter(context: Context, charges: List<Charge>) : ArrayAdapter<Charge>(context, 0, charges) {
+class ChargeAdapter(val charges: List<Charge>) : RecyclerView.Adapter<ChargeAdapter.ViewHolder>() {
+    override fun getItemCount(): Int {
+        return charges.size
+    }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val charge = getItem(position)
-        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.charge_list_item, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.charge_list_item, parent, false)
+        return ChargeAdapter.ViewHolder(view)
+    }
 
-        (view.findViewById(R.id.chargeContributor) as TextView).apply {
-            text = charge.charged?.friend?.getShowingName()
-        }
-        (view.findViewById(R.id.chargeContributorPaid) as TextView).apply {
-            text = charge.amountPaid.toReadablePriceString()
-        }
-        (view.findViewById(R.id.chargeContributorToPay) as TextView).apply {
-            text = charge.amountToPay.toReadablePriceString()
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val charge = charges[position]
+        holder.chargeContributor.text = charge.charged?.friend?.getShowingName()
+        holder.chargeContributorPaid.text = charge.amountPaid.toReadablePriceString()
+        holder.chargeContributorToPay.text = charge.amountToPay.toReadablePriceString()
+    }
 
-        return view
-
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        val chargeContributor = view.findViewById(R.id.chargeContributor) as TextView
+        val chargeContributorPaid = view.findViewById(R.id.chargeContributorPaid) as TextView
+        val chargeContributorToPay = view.findViewById(R.id.chargeContributorToPay) as TextView
     }
 
 }

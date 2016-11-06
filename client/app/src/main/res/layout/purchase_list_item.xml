@@ -7,20 +7,23 @@
     android:layout_marginEnd="@dimen/fab_margin"
     android:layout_marginStart="@dimen/fab_margin"
     android:layout_marginTop="@dimen/half_fab_margin"
-    android:orientation="vertical"
-    >
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        android:id="@+id/expandableView"
+        >
 
         <LinearLayout
             android:id="@+id/mainPurchaseContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/colorSecondary">
+            android:background="@color/colorSecondary"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/purchaseTitle"
@@ -41,12 +44,14 @@
                 android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Koszt: "
                     android:textColor="@color/colorTextOnPrimary"
                     android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/purchaseSubtitle"
                     android:layout_width="wrap_content"
@@ -54,6 +59,7 @@
                     android:text="100"
                     android:textColor="@color/colorTextOnPrimary"
                     android:textSize="14sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,7 +67,6 @@
                     android:textColor="@color/colorTextOnPrimary"
                     android:textSize="14sp" />
             </LinearLayout>
-
 
 
         </LinearLayout>
@@ -72,45 +77,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:paddingLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="8dp">
 
                 <TextView
-                android:padding="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="@string/contributor"
-                android:textSize="12sp"
-                android:alpha="0.54" />
-
-
-                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:alpha="0.54"
                     android:padding="8dp"
+                    android:text="@string/contributor"
+                    android:textSize="12sp" />
+
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
+                    android:alpha="0.54"
+                    android:padding="8dp"
                     android:text="@string/contributor_toPay"
-                    android:textSize="12sp"
                     android:textAlignment="textEnd"
-                    android:alpha="0.54" />
+                    android:textSize="12sp" />
 
 
                 <TextView
-                    android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
+                    android:alpha="0.54"
+                    android:padding="8dp"
                     android:text="@string/contributor_paid"
-                    android:textSize="12sp"
                     android:textAlignment="textEnd"
-                    android:alpha="0.54" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -118,15 +123,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:alpha="0.12"
-                android:background="@color/colorBlack"
-                />
+                android:background="@color/colorBlack" />
 
-            <android.support.v7.widget.RecyclerVieww
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:id="@+id/purchasesListItems"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:scrollbars="none"
+                >
+            </android.support.v7.widget.RecyclerView>
 
-            </android.support.v7.widget.RecyclerVieww>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -154,8 +160,8 @@
                     android:theme="@style/AppTheme" />
 
                 <ImageButton
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:id="@+id/hidePurchaseContentButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
