@@ -13,6 +13,12 @@ class ContributionEditController(val view: IContributionEditView) : IContributio
 
     init {
         view.bindData(contribution)
+        view.setActionOnStartDateClicked {
+            view.showDatePicker(contribution.startDate, {d -> changeStartDate(d)}, null)
+        }
+        view.setActionOnEndDateClicked {
+            view.showDatePicker(contribution.endDate, {d -> changeEndDate(d)}, contribution.startDate)
+        }
     }
 
     override fun changeTitle(title: String) {
@@ -24,6 +30,8 @@ class ContributionEditController(val view: IContributionEditView) : IContributio
 
     override fun changeStartDate(date: Date) {
         contribution.startDate = date
+        if(contribution.startDate > contribution.endDate)
+            contribution.endDate = Date(contribution.startDate.time)
     }
 
     override fun changeEndDate(date: Date) {

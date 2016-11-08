@@ -1,6 +1,7 @@
 package trzye.zrzutka.model.entity
 
 import android.databinding.BaseObservable
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -16,9 +17,11 @@ class Contribution : BaseObservable() {
         set(value) {title = value; notifyChange()}
 
     @Column(columnDefinition = "DATE") var startDate: Date = Date()
-        set(value) {startDate = value; notifyChange()}
+        set(value) {field = value; notifyChange()}
 
     @Column(columnDefinition = "DATE") var endDate: Date = Date()
-        set(value) {endDate = value; notifyChange()}
+        set(value) {field = value; notifyChange()}
 
+    fun getReadableEndDate() : String = SimpleDateFormat("dd.MM.yyyy").format(endDate)
+    fun getReadableStartDate() : String = SimpleDateFormat("dd.MM.yyyy").format(startDate)
 }
