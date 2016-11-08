@@ -44,7 +44,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="textAutoCorrect"
                 android:lines="1"
-                android:text="@{contribution.title}"
+                android:text="@={contribution.title}"
                 android:textSize="18sp" />
 
             <RelativeLayout
@@ -120,11 +120,12 @@
             </RelativeLayout>
 
             <Button
+                android:id="@+id/okButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:theme="@style/AppTheme"
-                android:text="OK"
+                android:text="@string/dialog_ok"
                 android:textColor="@color/colorAccent"
                 android:layout_gravity="end"/>
 

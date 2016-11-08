@@ -16,6 +16,15 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, "Datab
     override fun getContribution(contributionId: Long?): Contribution =
             if (contributionId == null) Contribution() else contributionDao.queryForId(contributionId)
 
+    override fun save(contribution: Contribution): Long {
+        if(contribution.id == null){
+            contributionDao.create(contribution)
+        } else {
+            contributionDao.createOrUpdate(contribution)
+        }
+        return contribution.id ?: throw IllegalArgumentException("Database saving problem. Can't extract id after saving.")
+    }
+
     override fun onCreate(database: SQLiteDatabase?, connectionSource: ConnectionSource?) {
         TableUtils.createTable(connectionSource, Contribution::class.java)
     }

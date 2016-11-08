@@ -8,40 +8,38 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
-import android.view.Window
 import android.widget.DatePicker
+import android.widget.TextView
 import trzye.zrzutka.R
-import trzye.zrzutka.controller.ContributionEditController
 import trzye.zrzutka.databinding.DialogContributionEditBinding
 import trzye.zrzutka.model.entity.Contribution
 import java.util.*
 import java.util.Calendar.*
 
-class ContributionEditDialog(context: Context, contributionId: Long? = null) : Dialog(context), IContributionEditView{
+class ContributionEditDialog(context: Context) : Dialog(context), IContributionEditView{
 
-    val _contributionId = contributionId
     lateinit var view: View
     lateinit var binding: DialogContributionEditBinding
-    lateinit var controller: ContributionEditController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.dialog_contribution_edit, null, false)
         view = binding.root
         setContentView(view)
-        controller = ContributionEditController(this)
     }
 
-    override fun getContributionId(): Long? = _contributionId
+    override fun showView() = show()
+
+    override fun dismissView() = dismiss()
+
+    override fun bindData(observable: Contribution) {
+        binding.contribution = observable
+    }
 
     override fun showEmptyTitleError() {
         Snackbar.make(view, R.string.empty_title_warning, Snackbar.LENGTH_SHORT).apply {
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorError))
         }.show()
-    }
-
-    override fun bindData(observable: Contribution) {
-        binding.contribution = observable
     }
 
     override fun showDatePicker(selectedDate: Date, action: (pickedDate: Date) -> Unit, minDateToChoose: Date? ) {
@@ -67,5 +65,11 @@ class ContributionEditDialog(context: Context, contributionId: Long? = null) : D
     override fun setActionOnEndDateClicked(action: () -> Unit) {
         view.findViewById(R.id.contributionEndDate).setOnClickListener{action()}
     }
+
+    override fun setActionOnOkClicked(action: () -> Unit) {
+        view.findViewById(R.id.okButton).setOnClickListener{action()}
+    }
+
+    override fun getContributionTitle() = (findViewById(R.id.contributionTitleEditText) as TextView).text.toString()
 
 }

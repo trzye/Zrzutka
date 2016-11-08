@@ -9,12 +9,12 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class Contribution : BaseObservable() {
+class Contribution private constructor(@Id @GeneratedValue val id: Long? = null) : BaseObservable(), Cloneable {
 
-    @Id @GeneratedValue val id: Long? = null
+    constructor() : this(null)
 
     @Column var title: String =""
-        set(value) {title = value; notifyChange()}
+        set(value) {field = value; notifyChange()}
 
     @Column(columnDefinition = "DATE") var startDate: Date = Date()
         set(value) {field = value; notifyChange()}
@@ -23,5 +23,16 @@ class Contribution : BaseObservable() {
         set(value) {field = value; notifyChange()}
 
     fun getReadableEndDate() : String = SimpleDateFormat("dd.MM.yyyy").format(endDate)
+
     fun getReadableStartDate() : String = SimpleDateFormat("dd.MM.yyyy").format(startDate)
+
+    override public fun clone(): Contribution {
+        val clone = Contribution(id)
+        clone.title = title
+        clone.endDate = Date(endDate.time)
+        clone.startDate = Date(startDate.time)
+        return clone
+    }
+
 }
+
