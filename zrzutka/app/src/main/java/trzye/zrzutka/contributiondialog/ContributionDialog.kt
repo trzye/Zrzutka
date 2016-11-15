@@ -1,8 +1,8 @@
-package trzye.zrzutka.view
+package trzye.zrzutka.contributiondialog
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
-import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -16,19 +16,32 @@ import trzye.zrzutka.model.entity.Contribution
 import java.util.*
 import java.util.Calendar.*
 
-class ContributionEditDialog(context: Context) : Dialog(context), IContributionEditView{
+class ContributionDialog(activity: Activity) : Dialog(activity), ContributionDialogContract.View {
+
+    override var presenterId: Long = 0
+
+    override val presenter: ContributionDialogContract.Presenter = ContributionDialogPresenter(activity)
 
     lateinit var view: View
     lateinit var binding: DialogContributionEditBinding
+
+    override fun showCreateNewContributionView() {
+        show()
+        presenter.createNewContribution()
+    }
+
+    override fun showEditContributionView(contribution: Contribution) {
+        show()
+        presenter.editBaseContributionData(contribution)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.dialog_contribution_edit, null, false)
         view = binding.root
         setContentView(view)
+        presenter.attachView(this)
     }
-
-    override fun showView() = show()
 
     override fun dismissView() = dismiss()
 
@@ -43,7 +56,7 @@ class ContributionEditDialog(context: Context) : Dialog(context), IContributionE
     }
 
     override fun showDatePicker(selectedDate: Date, action: (pickedDate: Date) -> Unit, minDateToChoose: Date? ) {
-        val calendar = Calendar.getInstance().apply { time = Date(selectedDate.time) }
+        val calendar = getInstance().apply { time = Date(selectedDate.time) }
         DatePickerDialog(
                   context
                 , { dp: DatePicker, y: Int, m: Int, d: Int ->

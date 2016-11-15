@@ -1,33 +1,49 @@
-package trzye.zrzutka
+package trzye.zrzutka.mainactivity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import trzye.zrzutka.model.entity.Contribution
-import trzye.zrzutka.presenter.ContributionDialogPresenter
-import trzye.zrzutka.presenter.IContributionDialogPresenter
+import android.widget.Toast
+import trzye.zrzutka.R
+import trzye.zrzutka.contributiondialog.ContributionDialog
+import trzye.zrzutka.contributiondialog.ContributionDialogContract
+import trzye.zrzutka.mainactivity.MainActivityContract.Presenter
+import trzye.zrzutka.mainactivity.MainActivityContract.View
+import trzye.zrzutka.mvp.AbstractActivity
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AbstractActivity<Presenter, View>(MainActivityWaitingRoom), View, OnNavigationItemSelectedListener {
 
-    lateinit var contributionDialogPresenter: IContributionDialogPresenter
+    override fun showContributionAddedMessage() {
+        Toast.makeText(this, "Contribution Added", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun getContributionDialogView(): ContributionDialogContract.View {
+        return ContributionDialog(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Toast.makeText(this, "Id: $presenterId Count: ${presenter.getCreateNewContributionCount()}", Toast.LENGTH_SHORT).show()
+
         setContentView(R.layout.activity_main)
         val toolbar = findViewById(R.id.toolbar) as Toolbar?
         setSupportActionBar(toolbar)
 
         val fab = findViewById(R.id.fab) as FloatingActionButton?
-        contributionDialogPresenter = ContributionDialogPresenter(this)
         fab!!.setOnClickListener { view ->
-            contributionDialogPresenter.editBaseContributionData(Contribution())
+            if(presenterId == 1L)
+                presenter.createNewContribution()
+            else
+                dismissView()
         }
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
@@ -41,12 +57,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
-        if (drawer!!.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
+//        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
+//        if (drawer!!.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START)
+//        } else {
+//            super.onBackPressed()
+//        }
+        val i = Intent(this, MainActivity::class.java)
+        startActivity(i)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

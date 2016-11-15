@@ -1,4 +1,4 @@
-package trzye.zrzutka.presenter
+package trzye.zrzutka.contributiondialog
 
 import android.app.Activity
 import trzye.zrzutka.model.DatabaseService
@@ -8,14 +8,15 @@ import trzye.zrzutka.model.extensions.changeEndDate
 import trzye.zrzutka.model.extensions.changeStartDate
 import trzye.zrzutka.model.extensions.changeTitle
 import trzye.zrzutka.model.extensions.copyBaseData
-import trzye.zrzutka.view.ContributionEditDialog
-import trzye.zrzutka.view.IContributionEditView
 
-class ContributionDialogPresenter(activity: Activity) : IContributionDialogPresenter {
+class ContributionDialogPresenter(activity: Activity) : ContributionDialogContract.Presenter {
 
-    val view: IContributionEditView = ContributionEditDialog(activity)
+    lateinit var view: ContributionDialogContract.View
     val databaseService: IDatabaseService = DatabaseService(activity)
-    val contributionPresenter: IContributionPresenter = ContributionPresenter(activity)
+
+    override fun attachView(view: ContributionDialogContract.View) {
+        this.view = view
+    }
 
     override fun createNewContribution() {
         val contribution: Contribution = Contribution()
@@ -40,7 +41,6 @@ class ContributionDialogPresenter(activity: Activity) : IContributionDialogPrese
     }
 
     private fun init(contribution: Contribution) {
-        view.showView()
         view.bindData(contribution)
         view.setActionOnStartDateClicked {
             view.showDatePicker(contribution.startDate, { d -> contribution.changeStartDate(d) }, null)
@@ -53,7 +53,7 @@ class ContributionDialogPresenter(activity: Activity) : IContributionDialogPrese
     private fun createNewContribution(contribution: Contribution){
         view.dismissView()
         val contributionId = databaseService.save(contribution)
-        contributionPresenter.showEditableContribution(contributionId)
+        // TODO
     }
 
     private fun editContribution(target: Contribution, source: Contribution) {

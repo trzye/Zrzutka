@@ -22,7 +22,7 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, "Datab
         } else {
             contributionDao.createOrUpdate(contribution)
         }
-        return contribution.id ?: throw IllegalArgumentException("Database saving problem. Can't extract id after saving.")
+        return contribution.id ?: throw IllegalArgumentException("Database saving problem. Can't extract presenterId after saving.")
     }
 
     override fun onCreate(database: SQLiteDatabase?, connectionSource: ConnectionSource?) {
