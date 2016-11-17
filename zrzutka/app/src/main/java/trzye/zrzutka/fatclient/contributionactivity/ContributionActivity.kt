@@ -19,46 +19,18 @@ import trzye.zrzutka.mvp.AbstractMenuActivity
 
 class ContributionActivity(private val parentActivity: Activity) : AbstractMenuActivity<View, Presenter>(ContributionActivityWaitingRoom), ContributionActivityContract.View{
 
-    override fun getMainActivityView(): MainActivityContract.View {
-        return MainActivity(this)
-    }
+    constructor() : this(AppCompatActivity())
 
-    private inner class InstanceStateData(var isEditable: Boolean, val contributionId: Long){
-        constructor(savedInstanceState: Bundle) : this(
-                savedInstanceState.getBoolean("IS_EDITABLE"),
-                savedInstanceState.getLong("CONTRIBUTION_ID")
-        )
-
-        fun toBundle() : Bundle {
-            return Bundle().apply {
-                putBoolean("IS_EDITABLE", true)
-                putLong("CONTRIBUTION_ID", contributionId)
-            }
-        }
-    }
-
-    private lateinit var instanceStateData: InstanceStateData
     private lateinit var binding: ActivityContributionBinding
     lateinit var drawer: DrawerLayout
     lateinit var toggle: ActionBarDrawerToggle
     lateinit var navigation: NavigationView
 
 
-    constructor() : this(AppCompatActivity())
-
-    override fun startAsEditableContributionActivity(contributionId : Long) {
-        val intent = Intent(parentActivity, this.javaClass)
-        intent.putExtras(InstanceStateData(isEditable = true, contributionId = contributionId).toBundle())
-        parentActivity.startActivity(intent)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_contribution)
-        instanceStateData = InstanceStateData(savedInstanceState ?: intent.extras)
-
-        presenter.editContribution(instanceStateData.contributionId)
 
         drawer = findViewById(R.id.activity_contribution) as DrawerLayout
         toggle = ActionBarDrawerToggle(this, drawer, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -72,6 +44,16 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
     override fun onStart() {
         super.onStart()
         presenter.bindData()
+    }
+
+    override fun startAsEditableContributionActivity(contributionId : Long) {
+        val intent = Intent(parentActivity, this.javaClass)
+        waitingRoom.addJobForNextPresenter({Presenter::editContribution.invoke(it, contributionId)})
+        parentActivity.startActivity(intent)
+    }
+
+    override fun getMainActivityView(): MainActivityContract.View {
+        return MainActivity(this)
     }
 
     override fun bindData(contribution: Contribution) {

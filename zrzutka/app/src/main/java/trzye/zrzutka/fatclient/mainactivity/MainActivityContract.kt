@@ -7,10 +7,12 @@ interface MainActivityContract : IMenuContract {
 
     interface View : IMenuContract.IMenuView<Presenter> {
         fun showContributionsFragmentView()
-        fun startAsContributionsMainActivity()
+        fun startAsContributionsMainActivity(dismissOtherViews: Boolean)
         fun hideMenu()
     }
 
-    interface Presenter : IMenuContract.IMenuPresenter<View>
+    interface Presenter : IMenuContract.IMenuPresenter<View> {
+        fun dismissView()
+    }
 
 }

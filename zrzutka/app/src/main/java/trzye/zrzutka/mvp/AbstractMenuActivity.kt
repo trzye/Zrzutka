@@ -2,11 +2,9 @@ package trzye.zrzutka.mvp
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import trzye.zrzutka.R
 import trzye.zrzutka.fatclient.contributiondialog.ContributionDialog
-import trzye.zrzutka.fatclient.mainactivity.MainActivityContract
 
 
 abstract class AbstractMenuActivity<V : IMenuContract.IMenuView<P>, P : IMenuContract.IMenuPresenter<V>>(waitingRoom: PresentersWaitingRoom<P>)

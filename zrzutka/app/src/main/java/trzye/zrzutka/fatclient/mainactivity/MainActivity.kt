@@ -23,9 +23,10 @@ class MainActivity(private val parentActivity: AppCompatActivity) : AbstractMenu
 
     constructor() : this(AppCompatActivity())
 
-    override fun startAsContributionsMainActivity() {
+    override fun startAsContributionsMainActivity(dismissOtherViews: Boolean) {
         val intent = Intent(parentActivity, this.javaClass)
-        MainActivityWaitingRoom.addJobForNextPresenter(Presenter::showContributions)
+        if(dismissOtherViews) waitingRoom.presenters.values.forEach { it.dismissView() }
+        waitingRoom.addJobForNextPresenter(Presenter::showContributions)
         parentActivity.startActivity(intent)
     }
 

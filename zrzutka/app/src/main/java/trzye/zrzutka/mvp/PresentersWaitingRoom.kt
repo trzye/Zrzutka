@@ -1,14 +1,14 @@
 package trzye.zrzutka.mvp
 
-import trzye.zrzutka.fatclient.mainactivity.MainActivityWaitingRoom
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class PresentersWaitingRoom<P : IContract.IPresenter<*>> protected constructor(){
 
     abstract fun initPresenter(): P
 
-    val presenters: HashMap<Long, P> = hashMapOf()
-    val jobs: Stack< (P) -> Unit > = Stack()
+    val presenters: ConcurrentHashMap<Long, P> = ConcurrentHashMap()
+    val jobs: Stack< (P) -> Any > = Stack()
 
     fun getPresenter(id : Long) : P {
         return presenters[id] ?: addPresenter(id)
@@ -20,7 +20,7 @@ abstract class PresentersWaitingRoom<P : IContract.IPresenter<*>> protected cons
         return presenter
     }
 
-    fun addJobForNextPresenter(job: (P) -> Unit){
+    fun addJobForNextPresenter(job: (P) -> Any ){
         jobs.add(job)
     }
 

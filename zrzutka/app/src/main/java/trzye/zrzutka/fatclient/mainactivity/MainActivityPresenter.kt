@@ -11,13 +11,13 @@ class MainActivityPresenter : Presenter {
         view.hideMenu()
     }
 
-
     override fun attachView(view: View) {
         this.view = view
     }
 
-
-
+    override fun dismissView() {
+        view.dismissView()
+    }
 
     lateinit var view: View
 

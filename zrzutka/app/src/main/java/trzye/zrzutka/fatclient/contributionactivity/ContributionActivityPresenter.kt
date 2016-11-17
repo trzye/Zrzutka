@@ -1,6 +1,5 @@
 package trzye.zrzutka.fatclient.contributionactivity
 
-import trzye.zrzutka.fatclient.mainactivity.MainActivityWaitingRoom
 import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.Contribution
 
@@ -27,7 +26,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
     }
 
     override fun showContributions() {
-        view.getMainActivityView().startAsContributionsMainActivity()
+        view.getMainActivityView().startAsContributionsMainActivity(true)
         view.dismissView()
     }
 
