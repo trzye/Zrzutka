@@ -26,6 +26,14 @@ class Contribution private constructor(@Id @GeneratedValue val id: Long? = null)
 
     fun getReadableStartDate() : String = SimpleDateFormat("dd.MM.yyyy").format(startDate)
 
+    fun getReadableDateRanges() : String {
+        if(getReadableEndDate() == getReadableStartDate()){
+            return getReadableStartDate()
+        } else {
+            return "${getReadableStartDate()} - ${getReadableEndDate()}"
+        }
+    }
+
     override public fun clone(): Contribution {
         val clone = Contribution(id)
         clone.title = title

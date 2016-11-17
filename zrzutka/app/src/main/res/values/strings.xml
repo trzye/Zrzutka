@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">Zrzutka</string>
 
-    <!-- Auto generated string values -->
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Drawer -->
+    <string name="navigation_drawer_open">Otwórz nawigację</string>
+    <string name="navigation_drawer_close">Zamknij nawigację</string>
+
+    <!-- Manu -->
+    <string name="menu_contribution_list">Zrzutki</string>
+    <string name="menu_friends_list">Znajomi</string>
+    <string name="menu_others">Inne</string>
+    <string name="menu_about">O aplikacji</string>
 
     <!-- Dialog common buttons -->
     <string name="dialog_yes">Tak</string>

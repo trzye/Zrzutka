@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
 
-abstract class AbstractActivity<P : IContract.IPresenter<V>, V : IContract.IView<P>>(val waitingRoom: PresentersWaitingRoom<P>): AppCompatActivity(), IContract.IView<P>{
+abstract class AbstractActivity<V : IContract.IView<P>, P : IContract.IPresenter<V>>(val waitingRoom: PresentersWaitingRoom<P>): AppCompatActivity(), IContract.IView<P>{
 
     private val PRESENTER_ID = "PRESENTER_ID"
 
@@ -18,6 +18,11 @@ abstract class AbstractActivity<P : IContract.IPresenter<V>, V : IContract.IView
         super.onCreate(savedInstanceState)
         presenterId = savedInstanceState?.getLong(PRESENTER_ID) ?: presenterId
         presenter.attachView(this as V)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        waitingRoom.runAllJobs(presenter)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
