@@ -5,6 +5,10 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +16,7 @@ import trzye.zrzutka.R
 import trzye.zrzutka.databinding.ActivityContributionBinding
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.Presenter
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.View
+import trzye.zrzutka.fatclient.contributionsfragment.ContributionsFragment
 import trzye.zrzutka.fatclient.mainactivity.MainActivity
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract
 import trzye.zrzutka.model.entity.Contribution
@@ -25,6 +30,8 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
     lateinit var drawer: DrawerLayout
     lateinit var toggle: ActionBarDrawerToggle
     lateinit var navigation: NavigationView
+    lateinit var tabLayout: TabLayout
+    lateinit var viewPager: ViewPager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +46,27 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
 
         navigation = findViewById(R.id.view_navigation) as NavigationView
         navigation.setNavigationItemSelectedListener(this)
+
+        tabLayout = findViewById(R.id.tabLayout) as TabLayout
+        viewPager = findViewById(R.id.viewPager) as ViewPager
+
+        val fragments = listOf(ContributionsFragment(), ContributionsFragment(), ContributionsFragment())
+
+        viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager){
+            override fun getCount(): Int = fragments.size
+            override fun getItem(position: Int) = fragments[position]
+        }
+        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+
+        tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) { viewPager.currentItem = tab.position }
+            override fun onTabUnselected(tab: TabLayout.Tab) { }
+            override fun onTabSelected(tab: TabLayout.Tab) { }
+        })
+
+        tabLayout.setupWithViewPager(viewPager)
+        fragments.forEachIndexed { i, f  -> tabLayout.getTabAt(i)?.text = f.javaClass.simpleName }
+
     }
 
     override fun onStart() {
