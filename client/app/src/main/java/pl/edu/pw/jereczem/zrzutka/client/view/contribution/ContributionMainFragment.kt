@@ -17,7 +17,7 @@ class ContributionMainFragment : Fragment(){
     lateinit var tabLayout: TabLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.content_contribution, null)
+        val view = inflater.inflate(R.layout.content_contribution, container)
             val fragments = listOf(ContributorsFragment(), PurchasesFragment(), SummaryFragment())
             val viewPager = viewPagerSetup(fragments, view)
             tabLayout = tabLayoutSetup(fragments, view, viewPager)

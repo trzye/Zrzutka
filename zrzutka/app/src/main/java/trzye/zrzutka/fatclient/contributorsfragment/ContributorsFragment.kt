@@ -30,6 +30,7 @@ class ContributorsFragment(private val contribution: Contribution?) : AbstractFr
         actionButton = view.findViewById(R.id.actionButton) as FloatingActionButton
         actionButton.setOnClickListener { presenter.addNewContributor() }
         contributorsRecyclerView= view.findViewById(R.id.contributorsRecyclerView) as RecyclerView
+        contributorsRecyclerView.layoutManager = LinearLayoutManager(activity)
 
         if(contribution != null)
             presenter.init(contribution)
@@ -39,16 +40,15 @@ class ContributorsFragment(private val contribution: Contribution?) : AbstractFr
     }
 
     override fun bindData(contribution: Contribution) {
-        contributorsRecyclerView.layoutManager = LinearLayoutManager(activity)
         contributorsRecyclerView.adapter = ContributorsAdapter(contribution)
     }
 
-    override fun notifyContributorAdded(listSize:Int) {
+    override fun notifyContributorAdded(position: Int, listSize:Int) {
         contributorsRecyclerView.adapter.apply {
             notifyItemInserted(listSize)
-            notifyItemRangeChanged(listSize-1, listSize)
+            notifyItemRangeChanged(position, listSize)
         }
-        contributorsRecyclerView.scrollToPosition(listSize-1)
+        contributorsRecyclerView.scrollToPosition(position)
     }
 
     override fun notifyContributorRemoved(position: Int, listSize:Int) {
@@ -82,7 +82,14 @@ class ContributorsFragment(private val contribution: Contribution?) : AbstractFr
         }.show()
     }
 
-    inner private class ContributorsAdapter(val contribution: Contribution, var hideDeleteIcons:Boolean = true) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
+    override fun changeDataSet(contribution: Contribution) {
+        (contributorsRecyclerView.adapter as ContributorsAdapter).apply {
+            this.contribution = contribution
+            notifyDataSetChanged()
+        }
+    }
+
+    inner private class ContributorsAdapter(var contribution: Contribution, var hideDeleteIcons:Boolean = true) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding: ItemContributorBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_contributor, parent, false)
@@ -91,16 +98,21 @@ class ContributorsFragment(private val contribution: Contribution?) : AbstractFr
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val binding = holder.binding
-            binding.friend = contribution.contributors[position].friend
-            if(hideDeleteIcons)
-                binding.contributorsRemove.visibility = View.INVISIBLE
-            else {
-                binding.contributorsRemove.visibility = View.VISIBLE
-                binding.contributorsRemove.setOnClickListener { presenter.removeContributor(holder.adapterPosition) }
+            if(position != contribution.contributors.size){
+                binding.friend = contribution.contributors[position].friend
+                binding.itemContributorId.visibility = View.VISIBLE
+                if(hideDeleteIcons)
+                    binding.contributorsRemove.visibility = View.INVISIBLE
+                else {
+                    binding.contributorsRemove.visibility = View.VISIBLE
+                    binding.contributorsRemove.setOnClickListener { presenter.removeContributor(holder.adapterPosition) }
+                }
+            } else {
+                binding.itemContributorId.visibility = View.INVISIBLE
             }
         }
 
-        override fun getItemCount(): Int = contribution.contributors.size
+        override fun getItemCount(): Int = contribution.contributors.size + 1
 
         inner class ViewHolder(val binding: ItemContributorBinding) : RecyclerView.ViewHolder(binding.root)
     }

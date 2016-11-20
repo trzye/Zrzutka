@@ -26,7 +26,7 @@ class ContributorsFragmentPresenter(private var isEditable: Boolean = false) : P
 
     override fun addNewContributor() {
         contribution.addContributor(Contributor(Friend("TEST"))) //TODO
-        view.notifyContributorAdded(contribution.contributors.size)
+        view.notifyContributorAdded(contribution.contributors.size-1, contribution.contributors.size)
     }
 
     override fun removeContributor(position: Int) {
@@ -43,7 +43,7 @@ class ContributorsFragmentPresenter(private var isEditable: Boolean = false) : P
 
     override fun undoLastContributorRemove() {
         contribution = lastState
-        view.bindData(contribution)
+        view.changeDataSet(lastState)
         if(isEditable) setEditMode() else setReadMode()
     }
 

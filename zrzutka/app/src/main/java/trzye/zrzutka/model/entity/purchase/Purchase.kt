@@ -1,5 +1,6 @@
-package pl.edu.pw.jereczem.zrzutka.client.model.contribution
+package trzye.zrzutka.model.entity.purchase
 
+import trzye.zrzutka.common.extensions.Cloneable
 import trzye.zrzutka.model.entity.randColor
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
@@ -12,7 +13,7 @@ data class Purchase private constructor(
         @Column var price: Double = 0.0,
         @OneToOne var contribution: Contribution? = null,
         @Column val colorId: Int = randColor()
-        ){
+) : Cloneable<Purchase> {
 
     private constructor() : this(null)
     constructor(name: String, price: Double = 0.0, contribution: Contribution) : this(null, name, price, contribution)
@@ -20,5 +21,9 @@ data class Purchase private constructor(
 
     @ManyToOne private val _charges: MutableCollection<Charge> = mutableListOf()
     val charges: List<Charge> get() = _charges.toList()
+
+    override fun clone(): Purchase {
+        return copy()
+    }
 
 }

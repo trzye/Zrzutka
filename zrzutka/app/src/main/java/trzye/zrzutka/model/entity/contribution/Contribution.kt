@@ -1,7 +1,9 @@
 package trzye.zrzutka.model.entity.contribution
 
 import android.databinding.BaseObservable
-import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Purchase
+import trzye.zrzutka.model.entity.purchase.Purchase
+import trzye.zrzutka.common.extensions.Cloneable
+import trzye.zrzutka.common.extensions.clone
 import trzye.zrzutka.model.entity.contributor.Contributor
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,7 +14,7 @@ class Contribution private constructor(
         @Id @GeneratedValue val id: Long? = null,
         @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
         @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
-) : BaseObservable(), Cloneable {
+) : BaseObservable(), Cloneable<Contribution> {
 
     constructor() : this(null)
 
@@ -43,13 +45,15 @@ class Contribution private constructor(
         }
     }
 
-    override public fun clone(): Contribution {
-        val clone = Contribution(id, _contributors, _purchases)
+    override fun clone(): Contribution {
+        val clone = Contribution(id, _contributors.clone(), _purchases.clone())
         clone.title = title
         clone.endDate = Date(endDate.time)
         clone.startDate = Date(startDate.time)
         return clone
     }
 
+
 }
+
 

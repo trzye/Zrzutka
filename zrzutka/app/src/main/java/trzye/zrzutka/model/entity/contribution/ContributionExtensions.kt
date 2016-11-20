@@ -1,6 +1,5 @@
 package trzye.zrzutka.model.entity.contribution
 
-import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contributor.Contributor
 import java.util.*
 

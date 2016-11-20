@@ -26,9 +26,5 @@ class ContributionTest {
 
         Assert.assertTrue(clone.contributors.size == 2)
         Assert.assertTrue(contribution.contributors.size == 1)
-
-
-
-
     }
 }

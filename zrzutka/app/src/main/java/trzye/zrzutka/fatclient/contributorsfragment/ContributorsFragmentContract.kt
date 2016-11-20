@@ -7,7 +7,8 @@ interface ContributorsFragmentContract : IContract {
 
     interface View : IContract.IView<Presenter>{
         fun bindData(contribution: Contribution)
-        fun notifyContributorAdded(listSize: Int)
+        fun changeDataSet(contribution: Contribution)
+        fun notifyContributorAdded(position: Int, listSize: Int)
         fun notifyContributorRemoved(position: Int, listSize: Int)
         fun hideDeleteIcons()
         fun showDeleteIcons()

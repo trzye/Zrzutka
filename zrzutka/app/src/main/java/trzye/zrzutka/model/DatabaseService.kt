@@ -6,7 +6,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.support.ConnectionSource
 import com.j256.ormlite.table.TableUtils
-import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Purchase
+import trzye.zrzutka.model.entity.purchase.Purchase
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contributor.Contributor

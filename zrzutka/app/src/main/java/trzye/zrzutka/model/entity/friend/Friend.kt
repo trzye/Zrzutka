@@ -1,6 +1,7 @@
 package trzye.zrzutka.model.entity.friend
 
 import android.databinding.BaseObservable
+import trzye.zrzutka.common.extensions.Cloneable
 import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.randColor
 import javax.persistence.Column
@@ -9,7 +10,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class Friend private constructor(@Id @GeneratedValue val id: Long? = null, nickname: String = "", firstName: String = "", lastName: String = "") : BaseObservable(){
+class Friend private constructor(@Id @GeneratedValue val id: Long? = null, nickname: String = "", firstName: String = "", lastName: String = "") : BaseObservable(), Cloneable<Friend>{
 
     constructor() : this(null)
     constructor(nickname: String = "", firstName: String = "", lastName: String = "") : this(null, nickname, firstName, lastName)
@@ -41,6 +42,10 @@ class Friend private constructor(@Id @GeneratedValue val id: Long? = null, nickn
     }
 
     fun getColor() = getColor(colorId)
+
+    override fun clone(): Friend {
+        return Friend(id, nickname, firstName, lastName)
+    }
 
 }
 
