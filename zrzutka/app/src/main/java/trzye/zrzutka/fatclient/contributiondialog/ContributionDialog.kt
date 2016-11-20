@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.view.MotionEvent
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TextView
@@ -15,18 +16,26 @@ import trzye.zrzutka.fatclient.contributionactivity.ContributionActivity
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract
 import trzye.zrzutka.databinding.DialogContributionBinding
 import trzye.zrzutka.model.DatabaseService
-import trzye.zrzutka.model.entity.Contribution
+import trzye.zrzutka.model.entity.contribution.Contribution
 import java.util.*
 import java.util.Calendar.*
 
+//TODO: Not exactly MVP
 class ContributionDialog(private val activity: Activity) : Dialog(activity), ContributionDialogContract.View {
 
     override var presenterId: Long = 0
 
-    override val presenter: ContributionDialogContract.Presenter = ContributionDialogPresenter(DatabaseService(activity))
+    override var presenter: ContributionDialogContract.Presenter = ContributionDialogPresenter(DatabaseService(activity))
 
     lateinit var view: View
     lateinit var binding: DialogContributionBinding
+
+    override fun start(presenter: ContributionDialogContract.Presenter) {
+        show()
+        this.presenter = presenter
+        this.presenter.attachView(this)
+        this.presenter.show()
+    }
 
     override fun startAsCreateNewContributionDialog() {
         show()
@@ -90,6 +99,16 @@ class ContributionDialog(private val activity: Activity) : Dialog(activity), Con
 
     override fun getContributionActivityView(): ContributionActivityContract.View {
         return ContributionActivity(activity)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        presenter.setThatJobIsDone()
+    }
+
+    override fun show() {
+        super.show()
+        setCanceledOnTouchOutside(false)
     }
 
 }

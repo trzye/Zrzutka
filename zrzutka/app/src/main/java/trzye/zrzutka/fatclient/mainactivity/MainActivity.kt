@@ -12,7 +12,7 @@ import trzye.zrzutka.R
 import trzye.zrzutka.fatclient.contributionsfragment.ContributionsFragment
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract.Presenter
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract.View
-import trzye.zrzutka.mvp.AbstractMenuActivity
+import trzye.zrzutka.fatclient.menuactivity.AbstractMenuActivity
 
 class MainActivity(private val parentActivity: AppCompatActivity) : AbstractMenuActivity<View, Presenter>(MainActivityWaitingRoom), View{
 

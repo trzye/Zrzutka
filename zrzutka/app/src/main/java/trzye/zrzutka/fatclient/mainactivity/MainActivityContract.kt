@@ -1,6 +1,6 @@
 package trzye.zrzutka.fatclient.mainactivity
 
-import trzye.zrzutka.mvp.IMenuContract
+import trzye.zrzutka.fatclient.menuactivity.IMenuContract
 
 
 interface MainActivityContract : IMenuContract {

@@ -8,7 +8,6 @@ interface IContract{
         val presenter: P
 
         fun dismissView()
-
     }
 
     interface IPresenter<V : IView<IPresenter<V>>> {

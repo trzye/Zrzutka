@@ -1,14 +1,16 @@
-package trzye.zrzutka.mvp
+package trzye.zrzutka.fatclient.menuactivity
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.view.MenuItem
 import trzye.zrzutka.R
 import trzye.zrzutka.fatclient.contributiondialog.ContributionDialog
+import trzye.zrzutka.androidmvp.AbstractActivity
+import trzye.zrzutka.androidmvp.PresentersWaitingRoom
 
 
 abstract class AbstractMenuActivity<V : IMenuContract.IMenuView<P>, P : IMenuContract.IMenuPresenter<V>>(waitingRoom: PresentersWaitingRoom<P>)
-    : AbstractActivity<V,P>(waitingRoom),
+    : AbstractActivity<V, P>(waitingRoom),
         IMenuContract.IMenuView<P>,
         NavigationView.OnNavigationItemSelectedListener
 {

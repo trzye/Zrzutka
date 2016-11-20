@@ -17,10 +17,13 @@ import trzye.zrzutka.databinding.ActivityContributionBinding
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.Presenter
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.View
 import trzye.zrzutka.fatclient.contributionsfragment.ContributionsFragment
+import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragment
+import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract
+import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentWaitingRoom
 import trzye.zrzutka.fatclient.mainactivity.MainActivity
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract
-import trzye.zrzutka.model.entity.Contribution
-import trzye.zrzutka.mvp.AbstractMenuActivity
+import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.fatclient.menuactivity.AbstractMenuActivity
 
 class ContributionActivity(private val parentActivity: Activity) : AbstractMenuActivity<View, Presenter>(ContributionActivityWaitingRoom), ContributionActivityContract.View{
 
@@ -50,23 +53,6 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         tabLayout = findViewById(R.id.tabLayout) as TabLayout
         viewPager = findViewById(R.id.viewPager) as ViewPager
 
-        val fragments = listOf(ContributionsFragment(), ContributionsFragment(), ContributionsFragment())
-
-        viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager){
-            override fun getCount(): Int = fragments.size
-            override fun getItem(position: Int) = fragments[position]
-        }
-        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
-
-        tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) { viewPager.currentItem = tab.position }
-            override fun onTabUnselected(tab: TabLayout.Tab) { }
-            override fun onTabSelected(tab: TabLayout.Tab) { }
-        })
-
-        tabLayout.setupWithViewPager(viewPager)
-        fragments.forEachIndexed { i, f  -> tabLayout.getTabAt(i)?.text = f.javaClass.simpleName }
-
     }
 
     override fun onStart() {
@@ -84,9 +70,46 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         return MainActivity(this)
     }
 
+    var mode = true
+
     override fun bindData(contribution: Contribution) {
         binding.contribution = contribution
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+
+        val contributorsFragment = ContributorsFragment(contribution)
+
+        val fragments = listOf(
+                contributorsFragment,
+                ContributionsFragment(),
+                ContributionsFragment()
+        )
+
+        val presenter = contributorsFragment.presenter
+
+        binding.toolbar.setOnClickListener {
+            if(mode){
+                ContributorsFragmentWaitingRoom.presenters.values.first().setReadMode()
+                mode = !mode
+            } else{
+                ContributorsFragmentWaitingRoom.presenters.values.first().setEditMode()
+                mode = !mode
+            }
+        }
+
+        viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager){
+            override fun getCount(): Int = fragments.size
+            override fun getItem(position: Int) = fragments[position]
+        }
+        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+
+        tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) { viewPager.currentItem = tab.position }
+            override fun onTabUnselected(tab: TabLayout.Tab) { }
+            override fun onTabSelected(tab: TabLayout.Tab) { }
+        })
+
+        tabLayout.setupWithViewPager(viewPager)
+        fragments.forEachIndexed { i, f  -> tabLayout.getTabAt(i)?.text = f.javaClass.simpleName }
     }
 
     override fun getContributorsFragmentView(): ContributorsFragmentContract.View {

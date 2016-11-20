@@ -1,15 +1,18 @@
-package trzye.zrzutka.model.entity
+package trzye.zrzutka.model.entity.contribution
 
 import android.databinding.BaseObservable
+import pl.edu.pw.jereczem.zrzutka.client.model.contribution.Purchase
+import trzye.zrzutka.model.entity.contributor.Contributor
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
-class Contribution private constructor(@Id @GeneratedValue val id: Long? = null) : BaseObservable(), Cloneable {
+class Contribution private constructor(
+        @Id @GeneratedValue val id: Long? = null,
+        @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
+        @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
+) : BaseObservable(), Cloneable {
 
     constructor() : this(null)
 
@@ -21,6 +24,12 @@ class Contribution private constructor(@Id @GeneratedValue val id: Long? = null)
 
     @Column(columnDefinition = "DATE") var endDate: Date = Date()
         set(value) {field = value; notifyChange()}
+
+    val contributors: MutableList<Contributor>
+        get() = _contributors.toMutableList()
+
+    val purchases: MutableList<Purchase>
+        get() = _purchases.toMutableList()
 
     fun getReadableEndDate() : String = SimpleDateFormat("dd.MM.yyyy").format(endDate)
 
@@ -35,7 +44,7 @@ class Contribution private constructor(@Id @GeneratedValue val id: Long? = null)
     }
 
     override public fun clone(): Contribution {
-        val clone = Contribution(id)
+        val clone = Contribution(id, _contributors, _purchases)
         clone.title = title
         clone.endDate = Date(endDate.time)
         clone.startDate = Date(startDate.time)

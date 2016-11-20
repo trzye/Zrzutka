@@ -4,7 +4,7 @@
 
         <variable
             name="contribution"
-            type="trzye.zrzutka.model.entity.Contribution" />
+            type="trzye.zrzutka.model.entity.contribution.Contribution" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

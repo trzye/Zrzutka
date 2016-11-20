@@ -1,40 +1,34 @@
 package trzye.zrzutka.fatclient.contributiondialog
 
 import trzye.zrzutka.model.IDatabaseService
-import trzye.zrzutka.model.entity.Contribution
-import trzye.zrzutka.model.extensions.changeEndDate
-import trzye.zrzutka.model.extensions.changeStartDate
-import trzye.zrzutka.model.extensions.changeTitle
-import trzye.zrzutka.model.extensions.copyBaseData
+import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.model.entity.contribution.changeEndDate
+import trzye.zrzutka.model.entity.contribution.changeStartDate
+import trzye.zrzutka.model.entity.contribution.changeTitle
+import trzye.zrzutka.model.entity.contribution.copyBaseData
 
 class ContributionDialogPresenter(val databaseService: IDatabaseService) : ContributionDialogContract.Presenter {
 
+    private var isDone = false
+
     lateinit var view: ContributionDialogContract.View
+    lateinit var contribution: Contribution
+    lateinit var onSuccess: () -> Unit
 
     override fun attachView(view: ContributionDialogContract.View) {
         this.view = view
     }
 
     override fun createNewContribution() {
-        val contribution: Contribution = Contribution()
+        contribution = Contribution()
+        onSuccess = {createNewContribution(contribution)}
         init(contribution)
-        view.setActionOnOkClicked{
-            contribution.changeTitle(
-                    title = view.getContributionTitle(),
-                    onSuccess = { createNewContribution(contribution) },
-                    onFailure = { view.showEmptyTitleError() }
-            )
-        }
     }
 
     override fun editBaseContributionData(contribution: Contribution) {
-        val editableContribution = contribution.clone()
-        init(editableContribution)
-        view.setActionOnOkClicked{ editableContribution.changeTitle(
-                title = view.getContributionTitle(),
-                onSuccess = { editContribution(contribution, editableContribution) },
-                onFailure = { view.showEmptyTitleError()}
-        ) }
+        this.contribution = contribution.clone()
+        onSuccess = {editContribution(contribution, this.contribution) }
+        init(this.contribution)
     }
 
     private fun init(contribution: Contribution) {
@@ -45,17 +39,36 @@ class ContributionDialogPresenter(val databaseService: IDatabaseService) : Contr
         view.setActionOnEndDateClicked {
             view.showDatePicker(contribution.endDate, { d -> contribution.changeEndDate(d) }, contribution.startDate)
         }
+        view.setActionOnOkClicked{ contribution.changeTitle(
+                title = view.getContributionTitle(),
+                onSuccess = onSuccess,
+                onFailure = { view.showEmptyTitleError()}
+        ) }
     }
 
     private fun createNewContribution(contribution: Contribution){
         view.dismissView()
         val contributionId = databaseService.save(contribution)
         view.getContributionActivityView().startAsEditableContributionActivity(contributionId)
+        isDone = true
     }
 
     private fun editContribution(target: Contribution, source: Contribution) {
         target.copyBaseData(source)
         view.dismissView()
+        isDone = true
+    }
+
+    override fun show() {
+        init(contribution)
+    }
+
+    override fun isDone(): Boolean {
+        return isDone
+    }
+
+    override fun setThatJobIsDone() {
+        isDone = true
     }
 
 }

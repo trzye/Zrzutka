@@ -1,6 +1,7 @@
-package trzye.zrzutka.model.extensions
+package trzye.zrzutka.model.entity.contribution
 
-import trzye.zrzutka.model.entity.Contribution
+import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.model.entity.contributor.Contributor
 import java.util.*
 
 fun Contribution.changeTitle(title: String, onSuccess: () -> Unit, onFailure: () -> Unit ) {
@@ -26,4 +27,12 @@ fun Contribution.copyBaseData(source: Contribution) {
     title = source.title
     endDate = Date(source.endDate.time)
     startDate = Date(source.startDate.time)
+}
+
+fun Contribution.addContributor(contributor: Contributor) {
+    _contributors.add(contributor)
+}
+
+fun Contribution.removeContributor(contributor: Contributor) {
+    _contributors.remove(contributor)
 }

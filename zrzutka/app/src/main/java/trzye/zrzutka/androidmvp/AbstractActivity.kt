@@ -1,10 +1,11 @@
-package trzye.zrzutka.mvp
+package trzye.zrzutka.androidmvp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import trzye.zrzutka.mvp.IContract
 
 
-abstract class AbstractActivity<V : IContract.IView<P>, P : IContract.IPresenter<V>>(val waitingRoom: PresentersWaitingRoom<P>): AppCompatActivity(), IContract.IView<P>{
+abstract class AbstractActivity<V : IContract.IView<P>, P : IContract.IPresenter<V>>(val waitingRoom: PresentersWaitingRoom<P>): AppCompatActivity(), IContract.IView<P> {
 
     private val PRESENTER_ID = "PRESENTER_ID"
 

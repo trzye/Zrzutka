@@ -1,5 +1,6 @@
-package trzye.zrzutka.mvp
+package trzye.zrzutka.androidmvp
 
+import trzye.zrzutka.mvp.IContract
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -8,7 +9,7 @@ abstract class PresentersWaitingRoom<P : IContract.IPresenter<*>> protected cons
     abstract fun initPresenter(): P
 
     val presenters: ConcurrentHashMap<Long, P> = ConcurrentHashMap()
-    val jobs: Stack< (P) -> Any > = Stack()
+    val jobs: Stack<(P) -> Any> = Stack()
 
     fun getPresenter(id : Long) : P {
         return presenters[id] ?: addPresenter(id)

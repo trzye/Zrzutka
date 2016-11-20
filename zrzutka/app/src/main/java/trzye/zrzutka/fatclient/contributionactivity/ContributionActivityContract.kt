@@ -1,7 +1,8 @@
 package trzye.zrzutka.fatclient.contributionactivity
 
-import trzye.zrzutka.model.entity.Contribution
-import trzye.zrzutka.mvp.IMenuContract
+import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract
+import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.fatclient.menuactivity.IMenuContract
 
 interface ContributionActivityContract : IMenuContract {
 
