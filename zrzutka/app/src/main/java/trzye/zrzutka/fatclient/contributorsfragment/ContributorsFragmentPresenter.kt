@@ -43,7 +43,7 @@ class ContributorsFragmentPresenter(private var isEditable: Boolean = false) : P
 
     override fun undoLastContributorRemove() {
         contribution = lastState
-        view.changeDataSet(lastState)
+        view.changeDataSet(contribution)
         if(isEditable) setEditMode() else setReadMode()
     }
 
