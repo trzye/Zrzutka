@@ -2,6 +2,7 @@ package trzye.zrzutka.fatclient.purchasesfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
+import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.purchase.Purchase
 
@@ -22,7 +23,9 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter {
     }
 
     override fun addNewPurchase() {
-        dataHolder.contribution.addPurchase(Purchase("TEST")) //TODO
+        dataHolder.contribution.addPurchase(Purchase("TEST").apply {
+            this._charges.addAll(dataHolder.contribution.contributors.flatMap { listOf(Charge(it, this)) })
+        }) //TODO
         view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
     }
 

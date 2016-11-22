@@ -91,13 +91,15 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
 
     inner private class ContributorsAdapter(var contribution: Contribution, var hideDeleteIcons:Boolean = true) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
 
-//        init {
-//            setHasStableIds(true)
-//        }
-//
-//        override fun getItemId(position: Int): Long {
-//            return position + 1.toLong()
-//        }
+        init {
+            setHasStableIds(true)
+        }
+
+        override fun getItemId(position: Int): Long {
+            if(position != contribution.contributors.size){
+              return contribution.contributors[position].hashCode().toLong()
+            } else return 0
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding: ItemContributorBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_contributor, parent, false)
@@ -120,7 +122,7 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
             }
         }
 
-        override fun getItemCount(): Int = contribution.contributors.size
+        override fun getItemCount(): Int = contribution.contributors.size + 1
 
         inner class ViewHolder(val binding: ItemContributorBinding) : RecyclerView.ViewHolder(binding.root)
     }

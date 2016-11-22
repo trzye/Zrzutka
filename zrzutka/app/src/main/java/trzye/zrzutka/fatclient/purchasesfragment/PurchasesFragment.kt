@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import trzye.zrzutka.R
+import trzye.zrzutka.databinding.ItemChargeBinding
 import trzye.zrzutka.databinding.ItemContributorBinding
 import trzye.zrzutka.databinding.ItemPurchaseBinding
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
@@ -18,6 +19,7 @@ import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentWaitingRoom
 import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.model.entity.purchase.Purchase
 
 class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContributionFragment<PurchasesFragmentContract.View, PurchasesFragmentContract.Presenter>(PurchasesFragmentWaitingRoom, dataHolder), PurchasesFragmentContract.View {
 
@@ -98,13 +100,15 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
 
     inner private class PurchasesAdapter(var contribution: Contribution, var hideDeleteIcons:Boolean = true) : RecyclerView.Adapter<PurchasesAdapter.ViewHolder>() {
 
-//        init {
-//            setHasStableIds(true)
-//        }
-//
-//        override fun getItemId(position: Int): Long {
-//            return position + 1.toLong()
-//        }
+        init {
+            setHasStableIds(true)
+        }
+
+        override fun getItemId(position: Int): Long {
+            if(position != contribution.purchases.size){
+                return contribution.purchases[position].hashCode().toLong()
+            } else return 0
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding: ItemPurchaseBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_purchase, parent, false)
@@ -116,14 +120,47 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
             if(position != contribution.purchases.size){
                 binding.purchase = contribution.purchases[position]
                 binding.itemPurchaseId.visibility = View.VISIBLE
+                val layoutManager = LinearLayoutManager(context)
+                binding.chargesListItem.layoutManager = layoutManager
+                binding.chargesListItem.adapter = ChargesAdapter(contribution.purchases[position])
+                binding.chargesListItem.setHasFixedSize(true)
+                if(binding.chargesListItem.itemAnimator is SimpleItemAnimator){
+                    (binding.chargesListItem.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+                }
             } else {
                 binding.itemPurchaseId.visibility = View.INVISIBLE
             }
         }
 
         override fun getItemCount(): Int = contribution.purchases.size + 1
-//
+
         inner class ViewHolder(val binding: ItemPurchaseBinding) : RecyclerView.ViewHolder(binding.root)
+    }
+
+    inner private class ChargesAdapter(var purchase: Purchase) : RecyclerView.Adapter<ChargesAdapter.ViewHolder>() {
+
+//        init {
+//            setHasStableIds(true)
+//        }
+//
+//        override fun getItemId(position: Int): Long {
+//            return purchase.charges[position].hashCode().toLong()
+//        }
+
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val binding: ItemChargeBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_charge, parent, false)
+            return ViewHolder(binding)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val binding = holder.binding
+            binding.charge = purchase.charges[position]
+        }
+
+        override fun getItemCount(): Int = purchase.charges.size
+
+        inner class ViewHolder(val binding: ItemChargeBinding) : RecyclerView.ViewHolder(binding.root)
     }
 
 }

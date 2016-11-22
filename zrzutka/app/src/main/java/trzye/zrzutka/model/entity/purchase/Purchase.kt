@@ -21,7 +21,7 @@ data class Purchase private constructor(
     constructor(name: String, price: Double = 0.0, contribution: Contribution) : this(null, name, price, contribution)
     constructor(name: String, price: Double = 0.0) : this(null, name, price, null)
 
-    @ManyToOne private val _charges: MutableCollection<Charge> = mutableListOf()
+    @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
     val charges: List<Charge> get() = _charges.toList()
 
     override fun clone(): Purchase {
