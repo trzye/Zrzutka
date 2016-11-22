@@ -1,11 +1,11 @@
 package trzye.zrzutka.fatclient.contributorsfragment
 
+import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
 import trzye.zrzutka.model.entity.contribution.Contribution
-import trzye.zrzutka.mvp.IContract
 
-interface ContributorsFragmentContract : IContract {
+interface ContributorsFragmentContract : IContributionContract {
 
-    interface View : IContract.IView<Presenter>{
+    interface View : IContributionContract.IContributionView<Presenter>{
         fun bindData(contribution: Contribution)
         fun changeDataSet(contribution: Contribution)
         fun notifyContributorAdded(position: Int, listSize: Int)
@@ -17,14 +17,11 @@ interface ContributorsFragmentContract : IContract {
         fun showContributorRemovedInfoWithUndoOption()
     }
 
-    interface Presenter : IContract.IPresenter<View> {
+    interface Presenter : IContributionContract.IContributionPresenter<View> {
         fun addNewContributor()
         fun removeContributor(position: Int)
         fun undoLastContributorRemove()
         fun showFriendData(position: Int)
-        fun setEditMode()
-        fun setReadMode()
-        fun init(contribution: Contribution)
     }
 }
 

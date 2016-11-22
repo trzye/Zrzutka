@@ -6,35 +6,35 @@ import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import trzye.zrzutka.R
-import trzye.zrzutka.androidmvp.AbstractFragment
 import trzye.zrzutka.databinding.ItemContributorBinding
+import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
+import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.model.entity.contribution.Contribution
 
-class ContributorsFragment(private val contribution: Contribution?) : AbstractFragment<ContributorsFragmentContract.View, ContributorsFragmentContract.Presenter>(ContributorsFragmentWaitingRoom), ContributorsFragmentContract.View {
+class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContributionFragment<ContributorsFragmentContract.View, ContributorsFragmentContract.Presenter>(ContributorsFragmentWaitingRoom, dataHolder), ContributorsFragmentContract.View {
 
     constructor() : this(null)
 
+    override val labelId: Int = R.string.tab_contributors
     private lateinit var fragmentView: View
     private lateinit var actionButton: FloatingActionButton
     private lateinit var contributorsRecyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
         val view = inflater.inflate(R.layout.fragment_contributors, null)
-
         fragmentView = view
         actionButton = view.findViewById(R.id.actionButton) as FloatingActionButton
         actionButton.setOnClickListener { presenter.addNewContributor() }
         contributorsRecyclerView= view.findViewById(R.id.contributorsRecyclerView) as RecyclerView
         contributorsRecyclerView.layoutManager = LinearLayoutManager(activity)
-
-        if(contribution != null)
-            presenter.init(contribution)
-
+        if(contributorsRecyclerView.itemAnimator is SimpleItemAnimator){
+            (contributorsRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
         super.onCreateView(inflater,container, savedInstanceState)
         return view
     }
@@ -91,6 +91,14 @@ class ContributorsFragment(private val contribution: Contribution?) : AbstractFr
 
     inner private class ContributorsAdapter(var contribution: Contribution, var hideDeleteIcons:Boolean = true) : RecyclerView.Adapter<ContributorsAdapter.ViewHolder>() {
 
+//        init {
+//            setHasStableIds(true)
+//        }
+//
+//        override fun getItemId(position: Int): Long {
+//            return position + 1.toLong()
+//        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding: ItemContributorBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_contributor, parent, false)
             return ViewHolder(binding)
@@ -112,7 +120,7 @@ class ContributorsFragment(private val contribution: Contribution?) : AbstractFr
             }
         }
 
-        override fun getItemCount(): Int = contribution.contributors.size + 1
+        override fun getItemCount(): Int = contribution.contributors.size
 
         inner class ViewHolder(val binding: ItemContributorBinding) : RecyclerView.ViewHolder(binding.root)
     }

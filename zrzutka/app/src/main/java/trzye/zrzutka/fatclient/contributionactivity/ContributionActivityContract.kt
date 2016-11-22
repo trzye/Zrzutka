@@ -1,22 +1,21 @@
 package trzye.zrzutka.fatclient.contributionactivity
 
-import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract
-import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
+import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
 import trzye.zrzutka.fatclient.menuactivity.IMenuContract
 
 interface ContributionActivityContract : IMenuContract {
 
     interface View : IMenuContract.IMenuView<Presenter>{
-        fun getContributorsFragmentView() : ContributorsFragmentContract.View
-        fun getPurchasesFragmentView() : PurchasesFragmentContract.View
-        fun getSummaryFragmentView() : SummaryFragmentContract.View
         fun startAsEditableContributionActivity(contributionId : Long)
-        fun bindData(contribution: Contribution)
+        fun bindData(dataHolder: ContributionDataHolder)
     }
 
     interface Presenter : IMenuContract.IMenuPresenter<View>{
-        fun editContribution(contributionId: Long)
         fun bindData()
+        fun setEditMode()
+        fun setReadMode()
+        fun editContribution(contributionId: Long, isEditable: Boolean)
     }
 
 

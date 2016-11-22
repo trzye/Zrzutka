@@ -1,11 +1,13 @@
 package trzye.zrzutka.model.entity.purchase
 
 import trzye.zrzutka.common.extensions.Cloneable
+import trzye.zrzutka.common.extensions.toReadablePriceString
 import trzye.zrzutka.model.entity.randColor
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
 import javax.persistence.*
 
+//TODO notify
 @Entity
 data class Purchase private constructor(
         @Id @GeneratedValue val id: Long? = null,
@@ -25,5 +27,8 @@ data class Purchase private constructor(
     override fun clone(): Purchase {
         return copy()
     }
+
+    fun getReadablePrice() = price.toReadablePriceString()
+
 
 }
