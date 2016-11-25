@@ -1,7 +1,6 @@
 package trzye.zrzutka.fatclient.contributionactivity
 
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
-import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
 import trzye.zrzutka.fatclient.menuactivity.IMenuContract
 
 interface ContributionActivityContract : IMenuContract {
@@ -11,11 +10,11 @@ interface ContributionActivityContract : IMenuContract {
         fun bindData(dataHolder: ContributionDataHolder)
     }
 
-    interface Presenter : IMenuContract.IMenuPresenter<View>{
-        fun bindData()
-        fun setEditMode()
-        fun setReadMode()
-        fun editContribution(contributionId: Long, isEditable: Boolean)
+    abstract class Presenter : IMenuContract.IMenuPresenter<View>(){
+        abstract fun bindData()
+        abstract fun setEditMode()
+        abstract fun setReadMode()
+        abstract fun editContribution(contributionId: Long, isEditable: Boolean)
     }
 
 

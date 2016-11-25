@@ -21,11 +21,11 @@ interface ContributionDialogContract : IContract{
         fun getContributionActivityView() : ContributionActivityContract.View
     }
 
-    interface Presenter : IContract.IPresenter<View>{
-        fun createNewContribution()
-        fun editBaseContributionData(contribution: Contribution)
-        fun show()
-        fun setThatJobIsDone()
-        fun isDone(): Boolean
+    abstract class Presenter : IContract.IPresenter<View>(){
+        abstract fun createNewContribution()
+        abstract fun editBaseContributionData(contribution: Contribution)
+        abstract fun show()
+        abstract fun setThatJobIsDone()
+        abstract fun isDone(): Boolean
     }
 }

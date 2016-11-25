@@ -36,6 +36,7 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
             (contributorsRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
         super.onCreateView(inflater,container, savedInstanceState)
+        presenter.bindData()
         return view
     }
 

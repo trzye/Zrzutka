@@ -7,17 +7,12 @@ import trzye.zrzutka.model.entity.contribution.changeStartDate
 import trzye.zrzutka.model.entity.contribution.changeTitle
 import trzye.zrzutka.model.entity.contribution.copyBaseData
 
-class ContributionDialogPresenter(val databaseService: IDatabaseService) : ContributionDialogContract.Presenter {
+class ContributionDialogPresenter(val databaseService: IDatabaseService) : ContributionDialogContract.Presenter() {
 
     private var isDone = false
-
-    lateinit var view: ContributionDialogContract.View
     lateinit var contribution: Contribution
     lateinit var onSuccess: () -> Unit
 
-    override fun attachView(view: ContributionDialogContract.View) {
-        this.view = view
-    }
 
     override fun createNewContribution() {
         contribution = Contribution()

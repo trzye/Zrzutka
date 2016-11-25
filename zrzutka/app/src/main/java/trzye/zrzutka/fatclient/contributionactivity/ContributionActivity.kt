@@ -60,11 +60,12 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         viewPager = findViewById(R.id.viewPager) as ViewPager
 
         fragments = mutableListOf()
+
+        presenter.bindData()
     }
 
     override fun onStart() {
         super.onStart()
-        presenter.bindData()
     }
 
     override fun startAsEditableContributionActivity(contributionId: Long) {

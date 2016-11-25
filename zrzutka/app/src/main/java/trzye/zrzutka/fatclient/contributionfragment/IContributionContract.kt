@@ -5,11 +5,11 @@ import trzye.zrzutka.mvp.IContract
 interface IContributionContract : IContract {
     interface IContributionView<out P : IContributionPresenter<*>> : IContract.IView<P>
 
-    interface IContributionPresenter<V : IContributionView<IContributionPresenter<V>>> : IContract.IPresenter<V> {
-        fun setEditMode()
-        fun setReadMode()
-        fun init(dataHolder: ContributionDataHolder)
-        fun updateView(view: V)
+    abstract class IContributionPresenter<V : IContributionView<IContributionPresenter<V>>> : IContract.IPresenter<V>() {
+        abstract fun setEditMode()
+        abstract fun setReadMode()
+        abstract fun init(dataHolder: ContributionDataHolder)
+        abstract fun updateView(view: V)
     }
 }
 

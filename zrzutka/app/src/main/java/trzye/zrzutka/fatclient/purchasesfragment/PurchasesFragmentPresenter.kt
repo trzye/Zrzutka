@@ -6,9 +6,8 @@ import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.purchase.Purchase
 
-class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter {
+class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
 
-    private lateinit var view: PurchasesFragmentContract.View
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder
 
@@ -16,7 +15,7 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter {
         this.dataHolder = dataHolder
     }
 
-    override fun attachView(view: PurchasesFragmentContract.View) {
+    override fun bindData() {
         this.view = view
         view.bindData(dataHolder.contribution)
         if(dataHolder.isEditable) setEditMode() else setReadMode()

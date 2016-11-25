@@ -18,6 +18,7 @@ class ContributionsFragment() : AbstractFragment<ContributionsFragmentContract.V
         val view = inflater.inflate(R.layout.fragment_contributions, null)
         val actionButton = view.findViewById(R.id.actionButton) as FloatingActionButton
         actionButton.setOnClickListener { presenter.createNewContribution() }
+        presenter.startDialogIfExists()
         return view
     }
 

@@ -10,8 +10,9 @@ interface IContract{
         fun dismissView()
     }
 
-    interface IPresenter<V : IView<IPresenter<V>>> {
-        fun attachView(view: V)
+    abstract class IPresenter<V : IView<IPresenter<V>>> {
+        protected lateinit var view: V
+        fun attachView(view: V) {this.view = view}
     }
 
 }

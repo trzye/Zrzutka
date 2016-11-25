@@ -17,11 +17,12 @@ interface ContributorsFragmentContract : IContributionContract {
         fun showContributorRemovedInfoWithUndoOption()
     }
 
-    interface Presenter : IContributionContract.IContributionPresenter<View> {
-        fun addNewContributor()
-        fun removeContributor(position: Int)
-        fun undoLastContributorRemove()
-        fun showFriendData(position: Int)
+    abstract class Presenter : IContributionContract.IContributionPresenter<View>() {
+        abstract fun addNewContributor()
+        abstract fun removeContributor(position: Int)
+        abstract fun undoLastContributorRemove()
+        abstract fun showFriendData(position: Int)
+        abstract fun bindData()
     }
 }
 

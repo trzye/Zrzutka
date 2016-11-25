@@ -3,9 +3,8 @@ package trzye.zrzutka.fatclient.contributionactivity
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.model.IDatabaseService
 
-class ContributionActivityPresenter(val databaseService: IDatabaseService) : ContributionActivityContract.Presenter{
+class ContributionActivityPresenter(val databaseService: IDatabaseService) : ContributionActivityContract.Presenter(){
 
-    private lateinit var view: ContributionActivityContract.View
     private lateinit var dataHolder: ContributionDataHolder
     private var isContributionReceived = false
 
@@ -14,11 +13,6 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
             dataHolder = ContributionDataHolder(databaseService.getContribution(contributionId), isEditable)
             isContributionReceived = true
         }
-    }
-
-
-    override fun attachView(view: ContributionActivityContract.View) {
-        this.view = view
     }
 
     override fun bindData() {

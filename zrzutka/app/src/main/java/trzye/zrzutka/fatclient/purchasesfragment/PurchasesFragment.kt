@@ -17,7 +17,7 @@ import trzye.zrzutka.databinding.ItemPurchaseBinding
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
-import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentWaitingRoom
+import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragmentWaitingRoom
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.purchase.Purchase
 
@@ -41,6 +41,7 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
             (purchasesRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
         super.onCreateView(inflater,container, savedInstanceState)
+        presenter.bindData()
         return view
     }
 

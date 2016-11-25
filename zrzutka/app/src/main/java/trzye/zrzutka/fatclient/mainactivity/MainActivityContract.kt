@@ -11,8 +11,8 @@ interface MainActivityContract : IMenuContract {
         fun hideMenu()
     }
 
-    interface Presenter : IMenuContract.IMenuPresenter<View> {
-        fun dismissView()
+    abstract class Presenter : IMenuContract.IMenuPresenter<View>() {
+        abstract fun dismissView()
     }
 
 }

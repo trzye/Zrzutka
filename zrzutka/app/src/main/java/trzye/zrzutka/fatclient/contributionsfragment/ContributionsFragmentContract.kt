@@ -7,8 +7,9 @@ interface ContributionsFragmentContract : IContract{
     interface View : IContract.IView<Presenter>{
         fun getContributionDialogView() : ContributionDialogContract.View
     }
-    interface Presenter : IContract.IPresenter<View>{
-        fun createNewContribution()
+    abstract class Presenter : IContract.IPresenter<View>(){
+        abstract fun createNewContribution()
+        abstract fun startDialogIfExists()
     }
 }
 

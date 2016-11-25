@@ -18,11 +18,12 @@ interface PurchasesFragmentContract : IContributionContract {
         fun showPurchase(position: Int)
     }
 
-    interface Presenter : IContributionContract.IContributionPresenter<View> {
-        fun addNewPurchase()
-        fun removePurchase(position: Int)
-        fun undoLastPurchaseRemove()
-        fun showPurchaseData(position: Int)
+    abstract class Presenter : IContributionContract.IContributionPresenter<View>() {
+        abstract fun addNewPurchase()
+        abstract fun removePurchase(position: Int)
+        abstract fun undoLastPurchaseRemove()
+        abstract fun showPurchaseData(position: Int)
+        abstract fun bindData()
     }
 }
 

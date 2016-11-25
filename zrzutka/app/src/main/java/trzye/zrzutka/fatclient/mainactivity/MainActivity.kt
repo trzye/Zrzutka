@@ -44,7 +44,6 @@ class MainActivity(private val parentActivity: AppCompatActivity) : AbstractMenu
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         toolbar = findViewById(R.id.toolbar) as Toolbar
@@ -57,6 +56,8 @@ class MainActivity(private val parentActivity: AppCompatActivity) : AbstractMenu
 
         navigation = findViewById(R.id.view_navigation) as NavigationView
         navigation.setNavigationItemSelectedListener(this)
+        super.onCreate(savedInstanceState)
+
     }
 
     override fun onBackPressed() {

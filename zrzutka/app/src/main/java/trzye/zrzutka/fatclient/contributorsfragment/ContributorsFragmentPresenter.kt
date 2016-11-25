@@ -9,9 +9,8 @@ import trzye.zrzutka.model.entity.contribution.removeContributor
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.friend.Friend
 
-class ContributorsFragmentPresenter() : Presenter {
+class ContributorsFragmentPresenter() : Presenter() {
 
-    private lateinit var view: View
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder
 
@@ -19,8 +18,7 @@ class ContributorsFragmentPresenter() : Presenter {
         this.dataHolder = dataHolder
     }
 
-    override fun attachView(view: View) {
-        this.view = view
+    override fun bindData(){
         view.bindData(dataHolder.contribution)
         if(dataHolder.isEditable) setEditMode() else setReadMode()
     }

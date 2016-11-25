@@ -23,12 +23,8 @@ abstract class AbstractFragment<V : IContract.IView<P>, P : IContract.IPresenter
         val view = super.onCreateView(inflater, container, savedInstanceState)
         presenterId = savedInstanceState?.getLong(PRESENTER_ID) ?: presenterId
         presenter.attachView(this as V)
-        return view
-    }
-
-    override fun onStart() {
-        super.onStart()
         waitingRoom.runAllJobs(presenter)
+        return view
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

@@ -1,9 +1,7 @@
-package trzye.zrzutka.fatclient.contributorsfragment
+package trzye.zrzutka.fatclient.purchasesfragment
 
 import trzye.zrzutka.androidmvp.PresentersWaitingRoom
-import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract
-import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentPresenter
-import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragmentPresenter
+import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
 
 object PurchasesFragmentWaitingRoom : PresentersWaitingRoom<PurchasesFragmentContract.Presenter>() {
 

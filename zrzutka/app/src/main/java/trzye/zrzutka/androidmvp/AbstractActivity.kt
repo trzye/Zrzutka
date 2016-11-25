@@ -19,10 +19,6 @@ abstract class AbstractActivity<V : IContract.IView<P>, P : IContract.IPresenter
         super.onCreate(savedInstanceState)
         presenterId = savedInstanceState?.getLong(PRESENTER_ID) ?: presenterId
         presenter.attachView(this as V)
-    }
-
-    override fun onStart() {
-        super.onStart()
         waitingRoom.runAllJobs(presenter)
     }
 
