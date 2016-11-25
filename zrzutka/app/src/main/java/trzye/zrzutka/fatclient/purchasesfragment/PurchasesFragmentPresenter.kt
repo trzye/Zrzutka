@@ -23,7 +23,7 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     }
 
     override fun addNewPurchase() {
-        dataHolder.contribution.addPurchase(Purchase("TEST", 100.0, dataHolder.contribution)) //TODO
+        dataHolder.contribution.addPurchase(Purchase("TEST", 100.0)) //TODO
         view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
     }
 

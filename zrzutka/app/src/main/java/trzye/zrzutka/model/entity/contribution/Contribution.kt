@@ -50,7 +50,29 @@ class Contribution private constructor(
     }
 
     override fun doCopy(): Contribution {
-        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), _contributors.doCopy(), _purchases.doCopy())
+        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy())
+
+        //prawdziwy do kopii
+        val originToNewContributor : Map<Contributor, Contributor> = contributors.associate {
+            Pair(it, it.doCopy().apply { clone._contributors.add(this); contribution = clone })
+        }
+
+        purchases.forEach {
+            val clonedCharges  = it.charges.doCopy()
+            val clonedPurchase = it.doCopy()
+
+            clone._purchases.add(clonedPurchase)
+            clonedPurchase.contribution = clone
+
+            clonedCharges.forEach {
+                clonedCharge ->
+                clonedPurchase._charges.add(clonedCharge)
+                clonedCharge.purchase = clonedPurchase
+
+                originToNewContributor[clonedCharge.charged]?._charges?.add(clonedCharge)
+                clonedCharge.charged = originToNewContributor[clonedCharge.charged]
+            }
+        }
         return clone
     }
 

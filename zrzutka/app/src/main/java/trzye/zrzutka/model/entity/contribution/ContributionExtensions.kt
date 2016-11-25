@@ -1,5 +1,6 @@
 package trzye.zrzutka.model.entity.contribution
 
+import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.purchase.Purchase
 import java.util.*
@@ -30,17 +31,56 @@ fun Contribution.copyBaseData(source: Contribution) {
 }
 
 fun Contribution.addContributor(contributor: Contributor) {
+    contributor.contribution = this
     _contributors.add(contributor)
+    _purchases.forEach {
+        purchase ->
+        val newCharge = Charge(0.0, 0.0)
+        link(contributor, newCharge, purchase)
+    }
 }
 
 fun Contribution.removeContributor(contributor: Contributor) {
+    contributor.contribution = null
     _contributors.remove(contributor)
+    contributor._charges.forEach {
+        charge ->
+        charge.charged = null
+
+        charge.purchase?.let {
+            it._charges.remove(charge)
+            val n = it.charges.size
+            it._charges.forEach {
+                it.amountPaid = it.amountPaid + charge.amountPaid / n
+                it.amountToPay = it.amountToPay + charge.amountToPay / n
+            }
+        }
+
+        charge.purchase = null
+    }
+    contributor._charges.clear()
 }
 
 fun Contribution.removePurchase(purchase: Purchase) {
-    this._purchases.remove(purchase)
+    _purchases.remove(purchase)
+    purchase.contribution = null
 }
 
 fun Contribution.addPurchase(purchase: Purchase) {
-    this._purchases.add(purchase)
+    if(!_contributors.isEmpty()) {
+        purchase.contribution = this
+        _purchases.add(purchase)
+        _contributors.forEach {
+            contributor ->
+            val newCharge = Charge(purchase.price / contributors.size, purchase.price / contributors.size)
+            link(contributor, newCharge, purchase)
+        }
+    }
+}
+
+private fun link(contributor: Contributor, newCharge: Charge, purchase: Purchase) {
+    purchase._charges.add(newCharge)
+    contributor._charges.add(newCharge)
+    newCharge.purchase = purchase
+    newCharge.charged = contributor
 }

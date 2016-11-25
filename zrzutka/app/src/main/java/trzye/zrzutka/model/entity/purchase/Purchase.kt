@@ -2,7 +2,6 @@ package trzye.zrzutka.model.entity.purchase
 
 import android.databinding.BaseObservable
 import trzye.zrzutka.common.extensions.Copyable
-import trzye.zrzutka.common.extensions.doCopy
 import trzye.zrzutka.common.extensions.toReadablePriceString
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
@@ -14,13 +13,13 @@ class Purchase private constructor(
         @Id @GeneratedValue val id: Long? = null,
         name: String,
         price: Double,
-        @OneToOne val contribution: Contribution,
+        @OneToOne var contribution: Contribution?,
         @Column val colorId: Int = randColor(),
         @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
 ) : BaseObservable(), Copyable<Purchase> {
 
-    private constructor() : this("", 0.0, Contribution(""))
-    constructor(name: String, price: Double, contribution: Contribution) : this(null, name, price, contribution)
+    private constructor() : this("", 0.0)
+    constructor(name: String, price: Double) : this(null, name, price, null)
 
     @Column var name: String = name
         set(value) {field = value; notifyChange()}
@@ -34,7 +33,8 @@ class Purchase private constructor(
     fun getReadablePrice() = price.toReadablePriceString()
 
     override fun doCopy(): Purchase {
-        return Purchase(id, name, price, contribution, colorId, _charges.doCopy())
+        val copy =  Purchase(id, name, price, null, colorId)
+        return copy
     }
 
 }
