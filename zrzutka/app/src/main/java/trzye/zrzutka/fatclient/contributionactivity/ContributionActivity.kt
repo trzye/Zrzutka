@@ -61,6 +61,8 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
 
         fragments = mutableListOf()
 
+        binding.toolbar.setNavigationOnClickListener { presenter.showContributions() }
+
         presenter.bindData()
     }
 
@@ -106,6 +108,10 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         fragments.forEachIndexed { i, f ->
             tabLayout.getTabAt(i)?.text = resources.getString(f.labelId)
         }
+    }
+
+    override fun onBackPressed() {
+        presenter.showContributions()
     }
 
 }
