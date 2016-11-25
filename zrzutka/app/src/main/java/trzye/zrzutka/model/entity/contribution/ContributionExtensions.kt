@@ -5,8 +5,8 @@ import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.purchase.Purchase
 import java.util.*
 
-fun Contribution.changeTitle(title: String, onSuccess: () -> Unit, onFailure: () -> Unit ) {
-    if(title.trim().isEmpty())
+fun Contribution.changeTitle(title: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
+    if (title.trim().isEmpty())
         onFailure()
     else {
         this.title = title
@@ -16,7 +16,7 @@ fun Contribution.changeTitle(title: String, onSuccess: () -> Unit, onFailure: ()
 
 fun Contribution.changeStartDate(date: Date) {
     startDate = date
-    if(startDate > endDate)
+    if (startDate > endDate)
         endDate = Date(startDate.time)
 }
 
@@ -35,7 +35,7 @@ fun Contribution.addContributor(contributor: Contributor) {
     _contributors.add(contributor)
     _purchases.forEach {
         purchase ->
-        val newCharge = Charge(0.0, 0.0)
+        val newCharge = if (purchase._charges.isEmpty()) Charge(purchase.price, purchase.price) else Charge(0.0, 0.0)
         link(contributor, newCharge, purchase)
     }
 }
@@ -67,14 +67,12 @@ fun Contribution.removePurchase(purchase: Purchase) {
 }
 
 fun Contribution.addPurchase(purchase: Purchase) {
-    if(!_contributors.isEmpty()) {
-        purchase.contribution = this
-        _purchases.add(purchase)
-        _contributors.forEach {
-            contributor ->
-            val newCharge = Charge(purchase.price / contributors.size, purchase.price / contributors.size)
-            link(contributor, newCharge, purchase)
-        }
+    purchase.contribution = this
+    _purchases.add(purchase)
+    _contributors.forEach {
+        contributor ->
+        val newCharge = Charge(purchase.price / contributors.size, purchase.price / contributors.size)
+        link(contributor, newCharge, purchase)
     }
 }
 
