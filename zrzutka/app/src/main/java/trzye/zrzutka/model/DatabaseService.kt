@@ -19,7 +19,7 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
     val contributionDao: Dao<Contribution, Long> = getDao(Contribution::class.java)
 
     override fun getContribution(contributionId: Long?): Contribution =
-            if (contributionId == null) Contribution() else contributionDao.queryForId(contributionId)
+            if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId)
 
     override fun save(contribution: Contribution): Long {
         if(contribution.id == null){

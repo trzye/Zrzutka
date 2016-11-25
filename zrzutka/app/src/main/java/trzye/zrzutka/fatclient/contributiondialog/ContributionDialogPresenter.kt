@@ -15,13 +15,13 @@ class ContributionDialogPresenter(val databaseService: IDatabaseService) : Contr
 
 
     override fun createNewContribution() {
-        contribution = Contribution()
+        contribution = Contribution("")
         onSuccess = {createNewContribution(contribution)}
         init(contribution)
     }
 
     override fun editBaseContributionData(contribution: Contribution) {
-        this.contribution = contribution.clone()
+        this.contribution = contribution.doCopy()
         onSuccess = {editContribution(contribution, this.contribution) }
         init(this.contribution)
     }

@@ -15,6 +15,7 @@ interface ContributorsFragmentContract : IContributionContract {
         fun hideAddButton()
         fun showAddButton()
         fun showContributorRemovedInfoWithUndoOption()
+        fun hideContributorRemovedInfoWithUndoOption()
     }
 
     abstract class Presenter : IContributionContract.IContributionPresenter<View>() {

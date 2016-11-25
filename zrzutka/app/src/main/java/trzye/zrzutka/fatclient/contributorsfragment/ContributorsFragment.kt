@@ -24,6 +24,7 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
     private lateinit var fragmentView: View
     private lateinit var actionButton: FloatingActionButton
     private lateinit var contributorsRecyclerView: RecyclerView
+    private lateinit var snackbar: Snackbar
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_contributors, null)
@@ -32,6 +33,7 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
         actionButton.setOnClickListener { presenter.addNewContributor() }
         contributorsRecyclerView= view.findViewById(R.id.contributorsRecyclerView) as RecyclerView
         contributorsRecyclerView.layoutManager = LinearLayoutManager(activity)
+        snackbar = makeContributionRemoveInfoSnackBar()
         if(contributorsRecyclerView.itemAnimator is SimpleItemAnimator){
             (contributorsRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
@@ -78,9 +80,18 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
     }
 
     override fun showContributorRemovedInfoWithUndoOption() {
-        Snackbar.make(fragmentView, R.string.contributor_deleted, Snackbar.LENGTH_SHORT).apply {
+        snackbar = makeContributionRemoveInfoSnackBar()
+        snackbar.show()
+    }
+
+    private fun makeContributionRemoveInfoSnackBar() : Snackbar {
+        return Snackbar.make(fragmentView, R.string.contributor_deleted, Snackbar.LENGTH_SHORT).apply {
             setAction(R.string.undo, { presenter.undoLastContributorRemove() })
-        }.show()
+        }
+    }
+
+    override fun hideContributorRemovedInfoWithUndoOption() {
+        snackbar.dismiss()
     }
 
     override fun changeDataSet(contribution: Contribution) {

@@ -157,6 +157,7 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val binding = holder.binding
             binding.charge = purchase.charges[position]
+            binding.friendInCharge = purchase.charges[position].charged?.friend
         }
 
         override fun getItemCount(): Int = purchase.charges.size

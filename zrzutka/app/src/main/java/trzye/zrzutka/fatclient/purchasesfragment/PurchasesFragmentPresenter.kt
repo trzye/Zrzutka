@@ -2,8 +2,9 @@ package trzye.zrzutka.fatclient.purchasesfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
-import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.model.entity.contribution.addPurchase
+import trzye.zrzutka.model.entity.contribution.removePurchase
 import trzye.zrzutka.model.entity.purchase.Purchase
 
 class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
@@ -22,15 +23,13 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     }
 
     override fun addNewPurchase() {
-        dataHolder.contribution.addPurchase(Purchase("TEST").apply {
-            this._charges.addAll(dataHolder.contribution.contributors.flatMap { listOf(Charge(it, this)) })
-        }) //TODO
+        dataHolder.contribution.addPurchase(Purchase("TEST", 100.0, dataHolder.contribution)) //TODO
         view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
     }
 
     override fun removePurchase(position: Int) {
         if(dataHolder.isEditable){
-            lastState = dataHolder.contribution.clone()
+            lastState = dataHolder.contribution.doCopy()
             val purchase = dataHolder.contribution.purchases.getOrNull(position)
             if(purchase != null){
                 dataHolder.contribution.removePurchase(purchase)
@@ -69,13 +68,5 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     }
 }
 
-//TODO
-private fun Contribution.removePurchase(purchase: Purchase) {
-    this._purchases.remove(purchase)
-}
 
-//TODO
-private fun Contribution.addPurchase(purchase: Purchase) {
-    this._purchases.add(purchase)
-}
 

@@ -1,6 +1,7 @@
 package trzye.zrzutka.model.entity.contribution
 
 import trzye.zrzutka.model.entity.contributor.Contributor
+import trzye.zrzutka.model.entity.purchase.Purchase
 import java.util.*
 
 fun Contribution.changeTitle(title: String, onSuccess: () -> Unit, onFailure: () -> Unit ) {
@@ -34,4 +35,12 @@ fun Contribution.addContributor(contributor: Contributor) {
 
 fun Contribution.removeContributor(contributor: Contributor) {
     _contributors.remove(contributor)
+}
+
+fun Contribution.removePurchase(purchase: Purchase) {
+    this._purchases.remove(purchase)
+}
+
+fun Contribution.addPurchase(purchase: Purchase) {
+    this._purchases.add(purchase)
 }

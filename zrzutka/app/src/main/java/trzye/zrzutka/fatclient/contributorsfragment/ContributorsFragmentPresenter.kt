@@ -24,13 +24,14 @@ class ContributorsFragmentPresenter() : Presenter() {
     }
 
     override fun addNewContributor() {
-        dataHolder.contribution.addContributor(Contributor(Friend("TEST"))) //TODO
+        view.hideContributorRemovedInfoWithUndoOption()
+        dataHolder.contribution.addContributor(Contributor(Friend("TEST"), dataHolder.contribution)) ///TODO
         view.notifyContributorAdded(dataHolder.contribution.contributors.size-1, dataHolder.contribution.contributors.size)
     }
 
     override fun removeContributor(position: Int) {
         if(dataHolder.isEditable){
-            lastState = dataHolder.contribution.clone()
+            lastState = dataHolder.contribution.doCopy()
             val contributor = dataHolder.contribution.contributors.getOrNull(position)
             if(contributor != null){
                 dataHolder.contribution.removeContributor(contributor)

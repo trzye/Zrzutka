@@ -8,3 +8,8 @@ fun Date.addYears(years : Int){
     calendar.add(Calendar.YEAR, years)
     time = calendar.time.time
 }
+
+
+fun Date.doCopy() : Date{
+    return Date(this.time)
+}

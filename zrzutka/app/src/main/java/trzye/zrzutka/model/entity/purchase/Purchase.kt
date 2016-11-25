@@ -1,34 +1,40 @@
 package trzye.zrzutka.model.entity.purchase
 
-import trzye.zrzutka.common.extensions.Cloneable
+import android.databinding.BaseObservable
+import trzye.zrzutka.common.extensions.Copyable
+import trzye.zrzutka.common.extensions.doCopy
 import trzye.zrzutka.common.extensions.toReadablePriceString
-import trzye.zrzutka.model.entity.randColor
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.model.entity.randColor
 import javax.persistence.*
 
-//TODO notify
 @Entity
-data class Purchase private constructor(
+class Purchase private constructor(
         @Id @GeneratedValue val id: Long? = null,
-        @Column var name: String = "",
-        @Column var price: Double = 0.0,
-        @OneToOne var contribution: Contribution? = null,
-        @Column val colorId: Int = randColor()
-) : Cloneable<Purchase> {
+        name: String,
+        price: Double,
+        @OneToOne val contribution: Contribution,
+        @Column val colorId: Int = randColor(),
+        @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
+) : BaseObservable(), Copyable<Purchase> {
 
-    private constructor() : this(null)
-    constructor(name: String, price: Double = 0.0, contribution: Contribution) : this(null, name, price, contribution)
-    constructor(name: String, price: Double = 0.0) : this(null, name, price, null)
+    private constructor() : this("", 0.0, Contribution(""))
+    constructor(name: String, price: Double, contribution: Contribution) : this(null, name, price, contribution)
 
-    @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
-    val charges: List<Charge> get() = _charges.toList()
+    @Column var name: String = name
+        set(value) {field = value; notifyChange()}
 
-    override fun clone(): Purchase {
-        return copy()
-    }
+    @Column var price: Double = price
+        set(value) {field = value; notifyChange()}
+
+    val charges: List<Charge>
+        get() = _charges.toList()
 
     fun getReadablePrice() = price.toReadablePriceString()
 
+    override fun doCopy(): Purchase {
+        return Purchase(id, name, price, contribution, colorId, _charges.doCopy())
+    }
 
 }
