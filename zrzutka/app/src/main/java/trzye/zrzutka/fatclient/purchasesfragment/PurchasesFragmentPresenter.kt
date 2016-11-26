@@ -17,7 +17,6 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     }
 
     override fun bindData() {
-        this.view = view
         view.bindData(dataHolder.contribution)
         if(dataHolder.isEditable) setEditMode() else setReadMode()
     }

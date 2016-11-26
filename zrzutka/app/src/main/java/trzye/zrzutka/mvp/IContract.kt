@@ -11,7 +11,7 @@ interface IContract{
     }
 
     abstract class IPresenter<V : IView<IPresenter<V>>> {
-        protected lateinit var view: V
+        lateinit var view: V
         fun attachView(view: V) {this.view = view}
     }
 

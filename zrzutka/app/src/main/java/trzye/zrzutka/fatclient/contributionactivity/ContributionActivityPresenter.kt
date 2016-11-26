@@ -13,12 +13,12 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
 
     override fun editContribution(contributionId: Long) {
         init(contributionId)
-        setEditMode()
+        dataHolder.isEditable = true
     }
 
     override fun readContribution(contributionId: Long) {
         init(contributionId)
-        setReadMode()
+        dataHolder.isEditable = false
     }
 
     private fun init(contributionId: Long) {
@@ -30,6 +30,13 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
 
     override fun bindData() {
         view.bindData(dataHolder)
+        if(dataHolder.isEditable) {
+            view.setReadIcon()
+            view.setToolbarClickable()
+        } else {
+            view.setEditIcon()
+            view.setToolbarUnclickable()
+        }
     }
 
     override fun showContributions() {
@@ -41,12 +48,18 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
         dataHolder.isEditable = true
         view.setReadIcon()
         view.setToolbarClickable()
+        view.getContributionFragmentPresenters().forEach {
+            it.setEditMode()
+        }
     }
 
     override fun setReadMode() {
         dataHolder.isEditable = false
         view.setEditIcon()
         view.setToolbarUnclickable()
+        view.getContributionFragmentPresenters().forEach {
+            it.setReadMode()
+        }
     }
 
     override fun editBaseContributionData() {

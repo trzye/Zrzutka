@@ -11,7 +11,7 @@ interface ContributionActivityContract : IMenuContract {
         fun startAsEditableContributionActivity(contributionId : Long)
         fun startAsReadOnlyContributionActivity(contributionId : Long)
         fun bindData(dataHolder: ContributionDataHolder)
-        fun getContributionFragmentViews() : List<IContributionContract.IContributionView<*>>
+        fun getContributionFragmentPresenters() : List<IContributionContract.IContributionPresenter<*>>
         fun setReadIcon()
         fun setEditIcon()
         fun setToolbarClickable()

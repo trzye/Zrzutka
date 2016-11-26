@@ -6,16 +6,12 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.DragEvent
 import android.view.MenuItem
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_contribution.*
 import trzye.zrzutka.R
 import trzye.zrzutka.databinding.ActivityContributionBinding
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.Presenter
@@ -25,16 +21,11 @@ import trzye.zrzutka.fatclient.contributiondialog.ContributionDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
-import trzye.zrzutka.fatclient.contributionsfragment.ContributionsFragment
-import trzye.zrzutka.fatclient.contributionsfragment.ContributionsFragmentContract
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragment
-import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract
-import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentWaitingRoom
-import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragment
 import trzye.zrzutka.fatclient.mainactivity.MainActivity
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract
-import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.fatclient.menuactivity.AbstractMenuActivity
+import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragment
 
 class ContributionActivity(private val parentActivity: Activity) : AbstractMenuActivity<View, Presenter>(ContributionActivityWaitingRoom), ContributionActivityContract.View {
 
@@ -48,13 +39,12 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
     lateinit var viewPager: ViewPager
     lateinit var fragments: MutableList<AbstractContributionFragment<*, *>>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_contribution)
         binding.toolbar.inflateMenu(R.menu.activity_contribution_menu)
 
-
         super.onCreate(savedInstanceState)
-
 
         drawer = findViewById(R.id.activity_contribution) as DrawerLayout
         toggle = ActionBarDrawerToggle(this, drawer, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -69,11 +59,12 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
 
         fragments = mutableListOf()
 
-        binding.toolbar.setNavigationOnClickListener { presenter.showContributions() }
-        binding.toolbar.setOnClickListener { presenter.editBaseContributionData() }
-
         presenter.bindData()
         presenter.startDialogIfExists()
+
+        binding.toolbar.setOnMenuItemClickListener { i -> onMenuOptionsItemSelected(i) }
+        binding.toolbar.setNavigationOnClickListener { presenter.showContributions() }
+        binding.toolbar.setOnClickListener { presenter.editBaseContributionData() }
     }
 
     override fun onStart() {
@@ -96,8 +87,8 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         return MainActivity(this)
     }
 
-    override fun getContributionFragmentViews(): List<IContributionContract.IContributionView<*>> {
-        return fragments
+    override fun getContributionFragmentPresenters(): List<IContributionContract.IContributionPresenter<*>> {
+        return fragments.flatMap { listOf(it.presenter) }
     }
 
     override fun setToolbarClickable() {
@@ -113,15 +104,19 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
     }
 
     override fun setEditIcon() {
+        binding.toolbar.menu.findItem(R.id.menu_read).isVisible = false
+        binding.toolbar.menu.findItem(R.id.menu_edit).isVisible = true
     }
 
     override fun setReadIcon() {
+        binding.toolbar.menu.findItem(R.id.menu_read).isVisible = true
+        binding.toolbar.menu.findItem(R.id.menu_edit).isVisible = false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    fun onMenuOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.menu_edit -> {presenter.setEditMode(); Toast.makeText(this,"EDIT", Toast.LENGTH_SHORT).show() }
-            R.id.menu_read -> {presenter.setReadMode(); Toast.makeText(this,"READ", Toast.LENGTH_SHORT).show() }
+            R.id.menu_edit -> presenter.setEditMode()
+            R.id.menu_read -> presenter.setReadMode()
         }
         return true
     }
@@ -130,12 +125,12 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         binding.contribution = dataHolder.contribution
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
 
-        if(dataHolder.isEditable) {
+        if(dataHolder.views.isEmpty()) {
             fragments.add(ContributorsFragment(dataHolder))
             fragments.add(PurchasesFragment(dataHolder))
+            dataHolder.views.addAll(fragments)
         } else {
-            fragments.add(PurchasesFragment(dataHolder))
-            fragments.add(ContributorsFragment(dataHolder))
+            fragments.addAll(dataHolder.views as MutableList<AbstractContributionFragment<*, *>>)
         }
 
         viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager) {

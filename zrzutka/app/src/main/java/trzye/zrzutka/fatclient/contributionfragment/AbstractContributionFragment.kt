@@ -15,7 +15,8 @@ abstract class AbstractContributionFragment<V : IContributionContract.IContribut
         if(dataHolder != null){
             presenter.init(dataHolder)
         }
-        return super.onCreateView(inflater, container, savedInstanceState)
+        val v = super.onCreateView(inflater, container, savedInstanceState)
+        return v
     }
 
     var isStarted = false
