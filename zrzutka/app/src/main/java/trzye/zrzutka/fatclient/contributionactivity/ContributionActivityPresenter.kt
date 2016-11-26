@@ -1,5 +1,6 @@
 package trzye.zrzutka.fatclient.contributionactivity
 
+import trzye.zrzutka.fatclient.contributiondialog.ContributionDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.model.IDatabaseService
 
@@ -7,10 +8,22 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
 
     private lateinit var dataHolder: ContributionDataHolder
     private var isContributionReceived = false
+    private var editContributionDialogPresenter: ContributionDialogContract.Presenter? = null
 
-    override fun editContribution(contributionId: Long, isEditable: Boolean) {
-        if(isContributionReceived == false) {
-            dataHolder = ContributionDataHolder(databaseService.getContribution(contributionId), isEditable)
+
+    override fun editContribution(contributionId: Long) {
+        init(contributionId)
+        setEditMode()
+    }
+
+    override fun readContribution(contributionId: Long) {
+        init(contributionId)
+        setReadMode()
+    }
+
+    private fun init(contributionId: Long) {
+        if (isContributionReceived == false) {
+            dataHolder = ContributionDataHolder(databaseService.getContribution(contributionId))
             isContributionReceived = true
         }
     }
@@ -25,11 +38,28 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
     }
 
     override fun setEditMode() {
-        throw UnsupportedOperationException("not implemented")
+        dataHolder.isEditable = true
+        view.setReadIcon()
+        view.setToolbarClickable()
     }
 
     override fun setReadMode() {
-        throw UnsupportedOperationException("not implemented")
+        dataHolder.isEditable = false
+        view.setEditIcon()
+        view.setToolbarUnclickable()
+    }
+
+    override fun editBaseContributionData() {
+        editContributionDialogPresenter = view.getContributionEditDialogView().apply {
+            startAsEditExistingContributionDialog(dataHolder.contribution)
+        }.presenter
+    }
+
+    override fun startDialogIfExists() {
+        val presenter = editContributionDialogPresenter
+        if ((presenter != null) && (presenter.isDone() == false)) {
+            view.getContributionEditDialogView().start(presenter)
+        }
     }
 
 }

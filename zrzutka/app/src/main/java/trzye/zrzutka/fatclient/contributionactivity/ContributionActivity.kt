@@ -13,10 +13,15 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.DragEvent
+import android.view.MenuItem
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_contribution.*
 import trzye.zrzutka.R
 import trzye.zrzutka.databinding.ActivityContributionBinding
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.Presenter
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract.View
+import trzye.zrzutka.fatclient.contributiondialog.ContributionDialog
+import trzye.zrzutka.fatclient.contributiondialog.ContributionDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
@@ -44,9 +49,12 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
     lateinit var fragments: MutableList<AbstractContributionFragment<*, *>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_contribution)
+        binding.toolbar.inflateMenu(R.menu.activity_contribution_menu)
+
+
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_contribution)
 
         drawer = findViewById(R.id.activity_contribution) as DrawerLayout
         toggle = ActionBarDrawerToggle(this, drawer, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -62,8 +70,10 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         fragments = mutableListOf()
 
         binding.toolbar.setNavigationOnClickListener { presenter.showContributions() }
+        binding.toolbar.setOnClickListener { presenter.editBaseContributionData() }
 
         presenter.bindData()
+        presenter.startDialogIfExists()
     }
 
     override fun onStart() {
@@ -72,7 +82,13 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
 
     override fun startAsEditableContributionActivity(contributionId: Long) {
         val intent = Intent(parentActivity, this.javaClass)
-        waitingRoom.addJobForNextPresenter({ Presenter::editContribution.invoke(it, contributionId, true) })
+        waitingRoom.addJobForNextPresenter({ Presenter::editContribution.invoke(it, contributionId) })
+        parentActivity.startActivity(intent)
+    }
+
+    override fun startAsReadOnlyContributionActivity(contributionId: Long) {
+        val intent = Intent(parentActivity, this.javaClass)
+        waitingRoom.addJobForNextPresenter({ Presenter::readContribution.invoke(it, contributionId) })
         parentActivity.startActivity(intent)
     }
 
@@ -80,12 +96,47 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         return MainActivity(this)
     }
 
+    override fun getContributionFragmentViews(): List<IContributionContract.IContributionView<*>> {
+        return fragments
+    }
+
+    override fun setToolbarClickable() {
+        binding.toolbar.isClickable = true
+    }
+
+    override fun setToolbarUnclickable() {
+        binding.toolbar.isClickable = false
+    }
+
+    override fun getContributionEditDialogView(): ContributionDialogContract.View {
+        return ContributionDialog(this)
+    }
+
+    override fun setEditIcon() {
+    }
+
+    override fun setReadIcon() {
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_edit -> {presenter.setEditMode(); Toast.makeText(this,"EDIT", Toast.LENGTH_SHORT).show() }
+            R.id.menu_read -> {presenter.setReadMode(); Toast.makeText(this,"READ", Toast.LENGTH_SHORT).show() }
+        }
+        return true
+    }
+
     override fun bindData(dataHolder: ContributionDataHolder) {
         binding.contribution = dataHolder.contribution
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
 
-        fragments.add(ContributorsFragment(dataHolder))
-        fragments.add(PurchasesFragment(dataHolder))
+        if(dataHolder.isEditable) {
+            fragments.add(ContributorsFragment(dataHolder))
+            fragments.add(PurchasesFragment(dataHolder))
+        } else {
+            fragments.add(PurchasesFragment(dataHolder))
+            fragments.add(ContributorsFragment(dataHolder))
+        }
 
         viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
             override fun getCount(): Int = fragments.size

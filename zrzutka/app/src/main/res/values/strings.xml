@@ -11,6 +11,10 @@
     <string name="menu_others">Inne</string>
     <string name="menu_about">O aplikacji</string>
 
+    <!-- Contribution Activity Menu -->
+    <string name="menu_edit">Edytuj</string>
+    <string name="menu_read">Wyjdź z edycji</string>
+
     <!-- Dialog common buttons -->
     <string name="dialog_yes">Tak</string>
     <string name="dialog_no">Nie</string>

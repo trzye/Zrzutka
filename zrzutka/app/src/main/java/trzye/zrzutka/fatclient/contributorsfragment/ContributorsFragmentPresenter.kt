@@ -9,6 +9,8 @@ import trzye.zrzutka.model.entity.contribution.removeContributor
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.friend.Friend
 
+var friendNo = 0
+
 class ContributorsFragmentPresenter() : Presenter() {
 
     private lateinit var lastState: Contribution
@@ -25,7 +27,7 @@ class ContributorsFragmentPresenter() : Presenter() {
 
     override fun addNewContributor() {
         view.hideContributorRemovedInfoWithUndoOption()
-        dataHolder.contribution.addContributor(Contributor(Friend("TEST"))) ///TODO
+        dataHolder.contribution.addContributor(Contributor(Friend("TEST ${friendNo++}"))) ///TODO
         view.notifyContributorAdded(dataHolder.contribution.contributors.size-1, dataHolder.contribution.contributors.size)
     }
 
