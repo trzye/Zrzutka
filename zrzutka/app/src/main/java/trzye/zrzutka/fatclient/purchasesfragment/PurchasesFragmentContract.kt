@@ -15,15 +15,19 @@ interface PurchasesFragmentContract : IContributionContract {
         fun hideAddButton()
         fun showAddButton()
         fun showPurchaseRemovedInfoWithUndoOption()
-        fun showPurchase(position: Int)
+        fun hidePurchaseRemovedInfoWithUndoOption()
+        fun showPurchaseData(position: Int)
+        fun hidePurchaseData(position: Int)
+        fun showPurchaseEditDialog(position: Int)
     }
 
     abstract class Presenter : IContributionContract.IContributionPresenter<View>() {
         abstract fun addNewPurchase()
         abstract fun removePurchase(position: Int)
         abstract fun undoLastPurchaseRemove()
-        abstract fun showPurchaseData(position: Int)
+        abstract fun editPurchaseData(position: Int)
         abstract fun bindData()
+        abstract fun collapsePurchaseData(position: Int)
     }
 }
 

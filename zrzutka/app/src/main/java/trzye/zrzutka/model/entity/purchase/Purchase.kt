@@ -5,6 +5,7 @@ import trzye.zrzutka.common.extensions.Copyable
 import trzye.zrzutka.common.extensions.toReadablePriceString
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
+import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.randColor
 import javax.persistence.*
 
@@ -31,6 +32,8 @@ class Purchase private constructor(
         get() = _charges.toList()
 
     fun getReadablePrice() = price.toReadablePriceString()
+
+    fun getColor() = getColor(colorId)
 
     override fun doCopy(): Purchase {
         val copy =  Purchase(id, name, price, null, colorId)

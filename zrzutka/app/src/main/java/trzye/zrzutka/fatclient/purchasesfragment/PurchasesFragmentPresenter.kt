@@ -11,6 +11,7 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
 
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder
+    private val openedPurchases: MutableList<Purchase> = mutableListOf()
 
     override fun init(dataHolder: ContributionDataHolder) {
         this.dataHolder = dataHolder
@@ -19,11 +20,17 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     override fun bindData() {
         view.bindData(dataHolder.contribution)
         if(dataHolder.isEditable) setEditMode() else setReadMode()
+        dataHolder.contribution.purchases.forEachIndexed { i, purchase ->
+            if(openedPurchases.contains(purchase)){
+                view.showPurchaseData(i)
+            }
+        }
     }
 
     override fun addNewPurchase() {
         dataHolder.contribution.addPurchase(Purchase("TEST", 100.0)) //TODO
         view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
+        view.hidePurchaseRemovedInfoWithUndoOption()
     }
 
     override fun removePurchase(position: Int) {
@@ -44,8 +51,20 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
         if(dataHolder.isEditable) setEditMode() else setReadMode()
     }
 
-    override fun showPurchaseData(position: Int) {
-        view.showPurchase(position)
+    override fun editPurchaseData(position: Int) {
+        view.showPurchaseEditDialog(position)
+    }
+
+
+    override fun collapsePurchaseData(position: Int) {
+        val purchase = dataHolder.contribution.purchases[position]
+        if(openedPurchases.contains(purchase)){
+            view.hidePurchaseData(position)
+            openedPurchases.remove(purchase)
+        } else {
+            view.showPurchaseData(position)
+            openedPurchases.add(purchase)
+        }
     }
 
     override fun setEditMode() {

@@ -30,7 +30,7 @@
                 android:id="@+id/mainPurchaseContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorSecondary"
+                android:background="@{purchase.color}"
                 android:orientation="vertical">
 
                 <TextView
@@ -85,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -101,7 +101,8 @@
                         android:alpha="0.54"
                         android:padding="8dp"
                         android:text="@string/contributor"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:id="@+id/textView" />
 
 
                     <TextView
@@ -157,7 +158,7 @@
                         android:theme="@style/AppTheme" />
 
                     <Button
-                        android:id="@+id/button"
+                        android:id="@+id/actionEditPurchase"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
