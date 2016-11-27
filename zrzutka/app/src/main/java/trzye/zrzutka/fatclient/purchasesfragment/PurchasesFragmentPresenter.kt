@@ -70,7 +70,19 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     }
 
     override fun editPurchaseData(position: Int) {
-        view.showPurchaseEditDialog(position)
+
+        val toEdit = dataHolder.contribution.doCopy()
+
+        val actionOnOKClicked = { purchase: Purchase ->
+            dataHolder.contribution = toEdit
+            view.changeDataSet(dataHolder.contribution)
+        }
+
+        val actionOnDismiss = {}
+
+        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
+            startAsEditExistingPurchaseDialog(toEdit.purchases[position], actionOnOKClicked, actionOnDismiss)
+        }.presenter
     }
 
 

@@ -63,6 +63,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
     }
 
     override fun editBaseContributionData() {
+        bindData()
         editContributionDialogPresenter = view.getContributionEditDialogView().apply {
             startAsEditExistingContributionDialog(dataHolder.contribution)
         }.presenter

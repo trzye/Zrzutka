@@ -21,7 +21,7 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
     }
 
     override fun editPurchaseData(purchase: Purchase, actionOnSuccess: (Purchase) -> Unit, actionOnDismiss: () -> Unit) {
-        this.dataHolder = PurchaseDialogDataHolder(Purchase("", 0.0), purchase.price.toReadablePriceString())
+        this.dataHolder = PurchaseDialogDataHolder(purchase, purchase.price.toReadablePriceString())
         this.actionOnSuccess = actionOnSuccess
         this.actionOnDismiss = actionOnDismiss
         init()
@@ -30,10 +30,6 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
     private fun init() {
         view.bindData(dataHolder)
     }
-
-//    override fun saveInputState() {
-//        priceString = view.getPriceStringFromInput()
-//    }
 
     override fun okClicked(){
         try {

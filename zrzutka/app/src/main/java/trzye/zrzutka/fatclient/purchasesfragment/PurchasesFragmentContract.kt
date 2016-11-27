@@ -19,7 +19,7 @@ interface PurchasesFragmentContract : IContributionContract {
         fun hidePurchaseRemovedInfoWithUndoOption()
         fun showPurchaseData(position: Int)
         fun hidePurchaseData(position: Int)
-        fun showPurchaseEditDialog(position: Int)
+//        fun showPurchaseEditDialog(position: Int)
         fun getPurchaseDialogView() : PurchaseDialogContract.View
     }
 

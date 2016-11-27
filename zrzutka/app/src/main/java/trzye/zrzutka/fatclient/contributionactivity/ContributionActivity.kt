@@ -130,6 +130,7 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
             fragments.add(PurchasesFragment(dataHolder))
             dataHolder.views.addAll(fragments)
         } else {
+            fragments.clear()
             fragments.addAll(dataHolder.views as MutableList<AbstractContributionFragment<*, *>>)
         }
 

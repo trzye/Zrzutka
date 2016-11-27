@@ -56,9 +56,9 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
         purchasesRecyclerView.adapter = PurchasesAdapter(contribution)
     }
 
-    override fun showPurchaseEditDialog(position: Int) {
-        //TODO
-    }
+//    override fun showPurchaseEditDialog(position: Int) {
+//        //TODO
+//    }
 
     override fun showPurchaseData(position: Int) {
         (purchasesRecyclerView.adapter as PurchasesAdapter).setVisible(position)
