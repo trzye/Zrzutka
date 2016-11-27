@@ -9,9 +9,9 @@ import trzye.zrzutka.model.entity.contribution.removeContributor
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.friend.Friend
 
-var friendNo = 0
-
 class ContributorsFragmentPresenter() : Presenter() {
+
+    private var friendNo = 0
 
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder

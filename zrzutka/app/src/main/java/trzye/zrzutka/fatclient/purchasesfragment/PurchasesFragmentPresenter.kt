@@ -2,6 +2,7 @@ package trzye.zrzutka.fatclient.purchasesfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
+import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contribution.addPurchase
 import trzye.zrzutka.model.entity.contribution.removePurchase
@@ -9,6 +10,7 @@ import trzye.zrzutka.model.entity.purchase.Purchase
 
 class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
 
+    private var newPurchaseDialogPresenter: PurchaseDialogContract.Presenter? = null
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder
     private val openedPurchases: MutableList<Purchase> = mutableListOf()
@@ -28,9 +30,25 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
     }
 
     override fun addNewPurchase() {
-        dataHolder.contribution.addPurchase(Purchase("TEST", 100.0)) //TODO
-        view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
-        view.hidePurchaseRemovedInfoWithUndoOption()
+
+        val actionOnOKClicked = { purchase: Purchase ->
+            dataHolder.contribution.addPurchase(purchase)
+            view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
+            view.hidePurchaseRemovedInfoWithUndoOption()
+        }
+
+        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
+            startAsCreateNewPurchaseDialog(actionOnOKClicked)
+        }.presenter
+
+
+    }
+
+    override fun startDialogIfExists() {
+        val presenter = newPurchaseDialogPresenter
+        if ((presenter != null) && (presenter.isDone() == false)) {
+            view.getPurchaseDialogView().start(presenter)
+        }
     }
 
     override fun removePurchase(position: Int) {

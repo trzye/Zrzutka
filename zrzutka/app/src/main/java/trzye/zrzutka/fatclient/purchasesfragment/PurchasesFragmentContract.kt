@@ -1,6 +1,7 @@
 package trzye.zrzutka.fatclient.contributorsfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
+import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
 import trzye.zrzutka.model.entity.contribution.Contribution
 
 interface PurchasesFragmentContract : IContributionContract {
@@ -19,6 +20,7 @@ interface PurchasesFragmentContract : IContributionContract {
         fun showPurchaseData(position: Int)
         fun hidePurchaseData(position: Int)
         fun showPurchaseEditDialog(position: Int)
+        fun getPurchaseDialogView() : PurchaseDialogContract.View
     }
 
     abstract class Presenter : IContributionContract.IContributionPresenter<View>() {
@@ -28,6 +30,7 @@ interface PurchasesFragmentContract : IContributionContract {
         abstract fun editPurchaseData(position: Int)
         abstract fun bindData()
         abstract fun collapsePurchaseData(position: Int)
+        abstract fun startDialogIfExists()
     }
 }
 

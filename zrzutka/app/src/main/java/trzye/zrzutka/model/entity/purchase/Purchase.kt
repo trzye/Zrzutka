@@ -1,6 +1,7 @@
 package trzye.zrzutka.model.entity.purchase
 
 import android.databinding.BaseObservable
+import android.view.View
 import trzye.zrzutka.common.extensions.Copyable
 import trzye.zrzutka.common.extensions.toReadablePriceString
 import trzye.zrzutka.model.entity.charge.Charge

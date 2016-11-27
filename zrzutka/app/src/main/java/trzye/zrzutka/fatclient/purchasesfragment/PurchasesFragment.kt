@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
@@ -17,8 +16,9 @@ import trzye.zrzutka.databinding.ItemPurchaseBinding
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
+import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialog
+import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
 import trzye.zrzutka.model.entity.contribution.Contribution
-import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.purchase.Purchase
 
 class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContributionFragment<PurchasesFragmentContract.View, PurchasesFragmentContract.Presenter>(PurchasesFragmentWaitingRoom, dataHolder), PurchasesFragmentContract.View {
@@ -44,7 +44,12 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
         }
         super.onCreateView(inflater,container, savedInstanceState)
         presenter.bindData()
+        presenter.startDialogIfExists()
         return view
+    }
+
+    override fun getPurchaseDialogView(): PurchaseDialogContract.View {
+        return PurchaseDialog(activity)
     }
 
     override fun bindData(contribution: Contribution) {

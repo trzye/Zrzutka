@@ -1,0 +1,181 @@
+<layout>
+
+    <data>
+
+        <variable
+            name="dataHolder"
+            type="trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogDataHolder" />
+    </data>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_purchase_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/half_fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/half_fab_margin"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="@dimen/dialog_width"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:animateLayoutChanges="true"
+            android:id="@+id/expandableView"
+            >
+
+            <LinearLayout
+                android:id="@+id/mainPurchaseContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@{dataHolder.purchase.color}"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/purchaseTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="24dp"
+                    android:text="@={dataHolder.purchase.name}"
+                    android:hint="Wpisz tytuł zakupu"
+                    android:textColor="@color/colorTextOnPrimary"
+                    android:textColorHint="@color/colorHintOnPrimary"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Koszt: "
+                        android:textColor="@color/colorTextOnPrimary"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/purchaseSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@={dataHolder.priceString}"
+                        android:hint="kwota"
+                        android:textColorHint="@color/colorHintOnPrimary"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/colorTextOnPrimary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" zł"
+                        android:textColor="@color/colorTextOnPrimary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/purchaseContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:alpha="0.54"
+                        android:padding="8dp"
+                        android:text="@string/contributor"
+                        android:textSize="12sp"
+                        android:id="@+id/textView" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:alpha="0.54"
+                        android:padding="8dp"
+                        android:text="@string/contributor_toPay"
+                        android:textAlignment="textEnd"
+                        android:textSize="12sp" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:alpha="0.54"
+                        android:padding="8dp"
+                        android:text="@string/contributor_paid"
+                        android:textAlignment="textEnd"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.12"
+                    android:background="@color/colorBlack" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/chargesListItem"
+                    android:scrollbars="none"
+                    >
+                </android.support.v7.widget.RecyclerView>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <Button
+                        android:id="@+id/actionSplitCosts"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="podziel koszt"
+                        android:textColor="@color/colorPrimary"
+                        android:theme="@style/AppTheme" />
+
+                    <Button
+                        android:id="@+id/actionSavePurchase"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:text="ZAPISZ"
+                        android:textColor="@color/colorAccent"
+                        android:theme="@style/AppTheme"
+                        android:layout_alignParentEnd="true" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+</layout>
