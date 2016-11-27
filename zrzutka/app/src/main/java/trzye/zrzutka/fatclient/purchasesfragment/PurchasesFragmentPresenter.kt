@@ -31,16 +31,30 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
 
     override fun addNewPurchase() {
 
+//        val actionOnOKClicked = { purchase: Purchase ->
+//            dataHolder.contribution.addPurchase(purchase)
+//            view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
+//            view.hidePurchaseRemovedInfoWithUndoOption()
+//        }
+//
+//        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
+//            startAsCreateNewPurchaseDialog(actionOnOKClicked)
+//        }.presenter
+
+        val toEdit = dataHolder.contribution.doCopy()
+        val purchaseToEdit = Purchase("", 0.0)
+        toEdit.addPurchase(purchaseToEdit)
+
         val actionOnOKClicked = { purchase: Purchase ->
-            dataHolder.contribution.addPurchase(purchase)
-            view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
-            view.hidePurchaseRemovedInfoWithUndoOption()
+            dataHolder.contribution = toEdit
+            view.changeDataSet(dataHolder.contribution)
         }
 
-        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
-            startAsCreateNewPurchaseDialog(actionOnOKClicked)
-        }.presenter
+        val actionOnDismiss = {}
 
+        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
+            startAsEditExistingPurchaseDialog(purchaseToEdit, actionOnOKClicked, actionOnDismiss)
+        }.presenter
 
     }
 

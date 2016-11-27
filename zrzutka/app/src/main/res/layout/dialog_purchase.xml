@@ -43,6 +43,8 @@
                     android:layout_marginTop="24dp"
                     android:text="@={dataHolder.purchase.name}"
                     android:hint="Wpisz tytuł zakupu"
+                    android:inputType="textAutoCorrect"
+                    android:background="@null"
                     android:textColor="@color/colorTextOnPrimary"
                     android:textColorHint="@color/colorHintOnPrimary"
                     android:textSize="24sp" />
@@ -55,30 +57,31 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Koszt: "
-                        android:textColor="@color/colorTextOnPrimary"
-                        android:textSize="14sp" />
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Koszt: "-->
+                        <!--android:textColor="@color/colorTextOnPrimary"-->
+                        <!--android:textSize="14sp" />-->
 
                     <EditText
                         android:id="@+id/purchaseSubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@={dataHolder.priceString}"
-                        android:hint="kwota"
+                        android:hint="Podaj kwotę"
+                        android:background="@null"
                         android:textColorHint="@color/colorHintOnPrimary"
                         android:inputType="numberDecimal"
                         android:textColor="@color/colorTextOnPrimary"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" zł"
-                        android:textColor="@color/colorTextOnPrimary"
-                        android:textSize="14sp" />
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text=" zł"-->
+                        <!--android:textColor="@color/colorTextOnPrimary"-->
+                        <!--android:textSize="14sp" />-->
                 </LinearLayout>
 
 

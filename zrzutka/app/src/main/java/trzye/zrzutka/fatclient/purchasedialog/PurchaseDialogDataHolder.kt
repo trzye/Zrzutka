@@ -8,4 +8,10 @@ class PurchaseDialogDataHolder(purchase: Purchase, priceString: String) : BaseOb
         set(value) {field = value; notifyChange()}
     var priceString = priceString
         set(value) {field = value; notifyChange()}
+    val charges: List<PurchaseDialogDataHolderCharges> = purchase.charges.flatMap {
+        listOf(
+                PurchaseDialogDataHolderCharges(it, it.getReadableAmountToPay(), it.getReadableAmountPaid())
+        )
+    }
+
 }
