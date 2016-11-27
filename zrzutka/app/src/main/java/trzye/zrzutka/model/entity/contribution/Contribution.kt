@@ -5,6 +5,8 @@ import trzye.zrzutka.common.extensions.Copyable
 import trzye.zrzutka.common.extensions.doCopy
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.purchase.Purchase
+import trzye.zrzutka.model.entity.summary.SortedColumn.WHO_PAYS
+import trzye.zrzutka.model.entity.summary.Summary
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.persistence.*
@@ -15,12 +17,17 @@ class Contribution private constructor(
         title: String,
         startDate: Date,
         endDate: Date,
+        @OneToOne var summary: Summary,
         @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
         @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
 ) : BaseObservable(), Copyable<Contribution> {
 
     private constructor() : this("")
-    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate)
+    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate, Summary(false, false, WHO_PAYS))
+
+    init {
+        summary.contribution = this
+    }
 
     @Column var title: String = title
         set(value) {field = value; notifyChange()}
@@ -50,12 +57,14 @@ class Contribution private constructor(
     }
 
     override fun doCopy(): Contribution {
-        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy())
+        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), summary.doCopy())
 
         //prawdziwy do kopii
         val originToNewContributor : Map<Contributor, Contributor> = contributors.associate {
             Pair(it, it.doCopy().apply { clone._contributors.add(this); contribution = clone })
         }
+
+        summary.contribution = clone
 
         purchases.forEach {
             val clonedCharges  = it.charges.doCopy()

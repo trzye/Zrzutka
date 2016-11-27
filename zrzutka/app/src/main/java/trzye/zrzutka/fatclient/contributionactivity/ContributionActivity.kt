@@ -26,6 +26,7 @@ import trzye.zrzutka.fatclient.mainactivity.MainActivity
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract
 import trzye.zrzutka.fatclient.menuactivity.AbstractMenuActivity
 import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragment
+import trzye.zrzutka.fatclient.summaryfragment.SummaryFragment
 
 class ContributionActivity(private val parentActivity: Activity) : AbstractMenuActivity<View, Presenter>(ContributionActivityWaitingRoom), ContributionActivityContract.View {
 
@@ -128,6 +129,7 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         if(dataHolder.views.isEmpty()) {
             fragments.add(ContributorsFragment(dataHolder))
             fragments.add(PurchasesFragment(dataHolder))
+            fragments.add(SummaryFragment(dataHolder))
             dataHolder.views.addAll(fragments)
         } else {
             fragments.clear()

@@ -1,11 +1,17 @@
-package trzye.zrzutka.fatclient.contributionactivity
+package trzye.zrzutka.fatclient.summaryfragment
 
-import trzye.zrzutka.mvp.IContract
+import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
+import trzye.zrzutka.model.entity.contribution.Contribution
 
-interface SummaryFragmentContract : IContract{
+interface SummaryFragmentContract : IContributionContract {
 
-    abstract class Presenter : IContract.IPresenter<View>()
+    interface View : IContributionContract.IContributionView<Presenter> {
+        fun bindData(contribution: Contribution)
+        fun changeDataSet(contribution: Contribution)
+    }
 
-    interface View : IContract.IView<Presenter>
-
+    abstract class Presenter : IContributionContract.IContributionPresenter<View>() {
+        abstract fun bindData()
+    }
 }
+
