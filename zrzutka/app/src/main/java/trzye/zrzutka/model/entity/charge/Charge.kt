@@ -36,5 +36,12 @@ class Charge private constructor(
         return Charge(id, amountToPay, amountPaid, charged, purchase)
     }
 
+    fun setBy(charge: Charge) {
+        amountToPay = charge.amountToPay
+        amountPaid = charge.amountPaid
+        charged = charge.charged
+        purchase = charge.purchase
+    }
+
 }
 

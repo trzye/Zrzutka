@@ -3,12 +3,13 @@ package trzye.zrzutka.fatclient.purchasesfragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
 import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
+import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contribution.addPurchase
 import trzye.zrzutka.model.entity.contribution.removePurchase
 import trzye.zrzutka.model.entity.purchase.Purchase
 
-class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
+class PurchasesFragmentPresenter(private val databaseService: IDatabaseService) : PurchasesFragmentContract.Presenter() {
 
     private var newPurchaseDialogPresenter: PurchaseDialogContract.Presenter? = null
     private lateinit var lastState: Contribution
@@ -47,6 +48,7 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
 
         val actionOnOKClicked = { purchase: Purchase ->
             dataHolder.contribution = toEdit
+            databaseService.save(dataHolder.contribution)
             view.changeDataSet(dataHolder.contribution)
         }
 
@@ -89,6 +91,7 @@ class PurchasesFragmentPresenter() : PurchasesFragmentContract.Presenter() {
 
         val actionOnOKClicked = { purchase: Purchase ->
             dataHolder.contribution = toEdit
+            databaseService.save(dataHolder.contribution)
             view.changeDataSet(dataHolder.contribution)
         }
 

@@ -4,7 +4,7 @@ import trzye.zrzutka.fatclient.contributiondialog.ContributionDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.model.IDatabaseService
 
-class ContributionActivityPresenter(val databaseService: IDatabaseService) : ContributionActivityContract.Presenter(){
+class ContributionActivityPresenter(private val databaseService: IDatabaseService) : ContributionActivityContract.Presenter(){
 
     private lateinit var dataHolder: ContributionDataHolder
     private var isContributionReceived = false

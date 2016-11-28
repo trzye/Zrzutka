@@ -29,15 +29,27 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
     override fun getContribution(contributionId: Long?): Contribution =
             if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId).apply {
                 summary.setBy(summaryDao.queryForId(summary.id))
-                contributors.forEach { it.friend.setBy(friendDao.queryForId(it.friend.id)) }
+                _contributors.forEach { contributor ->
+                    contributor.friend.setBy(friendDao.queryForId(contributor.friend.id))
+                }
+                _purchases.forEach {
+                    it._charges.forEach { charge ->
+                        charge.charged = this.contributors.find { it._charges.find { it.id == charge.id } != null }
+                    }
+                }
             }
 
     override fun getAllContributions(): List<Contribution> {
         return contributionDao.queryForAll().apply {
-            forEach {
-                it.summary.setBy(summaryDao.queryForId(it.summary.id))
-                it.contributors.forEach {
-                    it.friend.setBy(friendDao.queryForId(it.friend.id))
+            forEach { contribution ->
+                contribution.summary.setBy(summaryDao.queryForId(contribution.summary.id))
+                contribution._contributors.forEach { contributor ->
+                    contributor.friend.setBy(friendDao.queryForId(contributor.friend.id))
+                }
+                contribution._purchases.forEach {
+                    it._charges.forEach { charge ->
+                        charge.charged = contribution.contributors.find { it._charges.find { it.id == charge.id } != null }
+                    }
                 }
             }
         }.sortedBy { -it.chargeUniqueNumberForSorting }
@@ -62,8 +74,8 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
         if(contribution.id != null){
             removeContribution(contribution.id)
         }
-        saveContribution(contribution)
         saveSummary(contribution.summary)
+        saveContribution(contribution)
         contribution.contributors.forEach {
             saveFriend(it.friend)
             saveContributor(it)
@@ -72,16 +84,16 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
             savePurchase(it)
             it.charges.forEach { saveCharge(it) }
         }
-        contribution.purchases.forEach {
-            it.charges.forEach { saveCharge(it) }
-            savePurchase(it)
-        }
-        contribution.contributors.forEach {
-            saveContributor(it)
-            saveFriend(it.friend)
-        }
-        saveSummary(contribution.summary)
-        saveContribution(contribution)
+//        contribution.purchases.forEach {
+//            it.charges.forEach { saveCharge(it) }
+//            savePurchase(it)
+//        }
+//        contribution.contributors.forEach {
+//            saveContributor(it)
+//            saveFriend(it.friend)
+//        }
+//        saveSummary(contribution.summary)
+//        saveContribution(contribution)
         return contribution.id ?: throw IllegalArgumentException("Database saving problem. Can't extract presenterId after saving.")
     }
 

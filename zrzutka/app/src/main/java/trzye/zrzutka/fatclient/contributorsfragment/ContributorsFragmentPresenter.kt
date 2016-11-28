@@ -3,13 +3,14 @@ package trzye.zrzutka.fatclient.contributorsfragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract.Presenter
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract.View
+import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contribution.addContributor
 import trzye.zrzutka.model.entity.contribution.removeContributor
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.friend.Friend
 
-class ContributorsFragmentPresenter() : Presenter() {
+class ContributorsFragmentPresenter(private val databaseService: IDatabaseService) : Presenter() {
 
     private var friendNo = 0
 
@@ -32,6 +33,7 @@ class ContributorsFragmentPresenter() : Presenter() {
 //        friend._contributors?.add(contributor)//TODO
         dataHolder.contribution.addContributor(contributor) ///TODO
         view.notifyContributorAdded(dataHolder.contribution.contributors.size-1, dataHolder.contribution.contributors.size)
+        databaseService.save(dataHolder.contribution)
     }
 
     override fun removeContributor(position: Int) {

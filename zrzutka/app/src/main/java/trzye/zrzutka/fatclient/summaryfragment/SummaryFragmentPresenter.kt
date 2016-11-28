@@ -2,9 +2,10 @@ package trzye.zrzutka.fatclient.summaryfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.summaryfragment.SummaryFragmentContract.View
+import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.summary.SortedColumn
 
-class SummaryFragmentPresenter() : SummaryFragmentContract.Presenter() {
+class SummaryFragmentPresenter(private val databaseService: IDatabaseService) : SummaryFragmentContract.Presenter() {
 
     private lateinit var dataHolder: ContributionDataHolder
 
@@ -37,6 +38,7 @@ class SummaryFragmentPresenter() : SummaryFragmentContract.Presenter() {
         val summary = dataHolder.contribution.summary
         summary.preciseCalculation = !summary.preciseCalculation
         view.changeDataSet(dataHolder.contribution)
+        databaseService.save(dataHolder.contribution)
     }
 
     override fun generateSummaryUrl() {
@@ -62,6 +64,7 @@ class SummaryFragmentPresenter() : SummaryFragmentContract.Presenter() {
             dataHolder.contribution.summary.sortedColumn = sortedSummary
         }
         view.changeDataSet(dataHolder.contribution)
+        databaseService.save(dataHolder.contribution)
     }
 
 }
