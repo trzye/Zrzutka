@@ -2,9 +2,11 @@ package trzye.zrzutka.model.entity.contribution
 
 import android.databinding.BaseObservable
 import trzye.zrzutka.common.extensions.Copyable
+import trzye.zrzutka.common.extensions.createShort
 import trzye.zrzutka.common.extensions.doCopy
 import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.purchase.Purchase
+import trzye.zrzutka.model.entity.randColor
 import trzye.zrzutka.model.entity.summary.SortedColumn.WHO_PAYS
 import trzye.zrzutka.model.entity.summary.Summary
 import java.text.SimpleDateFormat
@@ -12,17 +14,18 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-class Contribution private constructor(
+open class Contribution private constructor(
         @Id @GeneratedValue val id: Long?,
         title: String,
         startDate: Date,
         endDate: Date,
         @OneToOne var summary: Summary,
+        @Column val colorId: Int = randColor(),
         @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
         @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
 ) : BaseObservable(), Copyable<Contribution> {
 
-    private constructor() : this("")
+    protected constructor() : this("")
     constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate, Summary(false, false, WHO_PAYS))
 
     init {
@@ -48,6 +51,10 @@ class Contribution private constructor(
 
     fun getReadableStartDate() : String = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(startDate)
 
+    fun getShortTitle() : String = title.createShort()
+
+    fun getColor() = trzye.zrzutka.model.entity.getColor(colorId)
+
     fun getReadableDateRanges() : String {
         if(getReadableEndDate() == getReadableStartDate()){
             return getReadableStartDate()
@@ -57,7 +64,7 @@ class Contribution private constructor(
     }
 
     override fun doCopy(): Contribution {
-        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), summary.doCopy())
+        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), summary.doCopy(), colorId)
 
         //prawdziwy do kopii
         val originToNewContributor : Map<Contributor, Contributor> = contributors.associate {

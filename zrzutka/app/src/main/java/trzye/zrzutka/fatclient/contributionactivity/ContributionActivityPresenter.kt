@@ -49,7 +49,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
         view.setReadIcon()
         view.setToolbarClickable()
         view.getContributionFragmentPresenters().forEach {
-            it.setEditMode()
+            try{it.setEditMode()} catch (e: Exception) {}
         }
     }
 
@@ -58,7 +58,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
         view.setEditIcon()
         view.setToolbarUnclickable()
         view.getContributionFragmentPresenters().forEach {
-            it.setReadMode()
+            try{it.setReadMode()} catch (e: Exception) {}
         }
     }
 

@@ -15,6 +15,11 @@
     <string name="menu_edit">Edytuj</string>
     <string name="menu_read">Wyjdź z edycji</string>
 
+    <!-- Contributions Activity Menu -->
+    <string name="menu_delete">Usuń</string>
+    <string name="menu_merge">Połącz</string>
+
+
     <!-- Dialog common buttons -->
     <string name="dialog_yes">Tak</string>
     <string name="dialog_no">Nie</string>
@@ -36,6 +41,8 @@
 
     <!-- Contributors fragment -->
     <string name="contributor_deleted">Usunięto uczestnika</string>
+    <string name="contribution_deleted">Usunięto zrzutkę</string>
+    <string name="contributions_deleted">Usunięto zrzutki</string>
     <string name="purchase_deleted">Usunięto zakup</string>
 
     <!-- Purchases item  -->

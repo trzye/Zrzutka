@@ -1,0 +1,122 @@
+<layout>
+
+    <data>
+        <variable
+            name="contribution"
+            type="trzye.zrzutka.model.entity.contribution.Contribution" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/itemContributionId"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="71dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp">
+
+            <FrameLayout
+                android:gravity="center_vertical"
+                android:id="@+id/frameLayout"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/contributorCircle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@{contribution.color}" />
+
+                <TextView
+                    android:id="@+id/contributorInitials"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@{contribution.shortTitle}"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:gravity="center_vertical"
+                android:id="@+id/checked"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@color/colorPrimaryDark" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:src="@drawable/ic_check_white_24dp"
+                    android:textSize="18sp" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/titleAndSubTitleLayout"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_toEndOf="@+id/frameLayout"
+                android:layout_toStartOf="@+id/contributionEdit">
+
+                <TextView
+                    android:id="@+id/contributionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical"
+                    android:text="@{contribution.title}"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:textColor="@color/colorHint"
+                    android:id="@+id/contributionSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical"
+                    android:text="@{contribution.readableDateRanges}"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/contributionEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:alpha="0.4"
+                android:src="@drawable/ic_expand_less_black_24dp"
+                android:theme="@style/AppTheme" />
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginStart="72dp"
+            android:alpha="0.12"
+            android:background="@color/colorBlack" />
+
+    </LinearLayout>
+</layout>

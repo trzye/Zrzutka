@@ -24,6 +24,14 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
     override fun getContribution(contributionId: Long?): Contribution =
             if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId)
 
+    override fun getAllContributions(): List<Contribution> {
+        return contributionDao.queryForAll()
+    }
+
+    override fun removeContribution(contributionId: Long) {
+        contributionDao.deleteById(contributionId) // TODO
+    }
+
     override fun save(contribution: Contribution): Long {
         if(contribution.id == null){
             summaryDao.create(contribution.summary)

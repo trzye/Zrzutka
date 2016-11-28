@@ -2,6 +2,7 @@ package trzye.zrzutka.model.entity.friend
 
 import android.databinding.BaseObservable
 import trzye.zrzutka.common.extensions.Copyable
+import trzye.zrzutka.common.extensions.createShort
 import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.randColor
 import javax.persistence.Column
@@ -39,13 +40,7 @@ class Friend private constructor(
         return firstName
     }
 
-    fun getInitials(): String {
-        val split = getShowingName().split(" ")
-        var initials = split.first().toUpperCase().getOrElse(0, { ' ' }).toString()
-        if (split.size > 1)
-            initials += split[1].toUpperCase().first()
-        return initials
-    }
+    fun getInitials(): String = getShowingName().createShort()
 
     fun getColor() = getColor(colorId)
 
