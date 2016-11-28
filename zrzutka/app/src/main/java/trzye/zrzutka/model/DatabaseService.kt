@@ -27,10 +27,20 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
 
 
     override fun getContribution(contributionId: Long?): Contribution =
-            if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId)
+            if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId).apply {
+                summary.setBy(summaryDao.queryForId(summary.id))
+                contributors.forEach { it.friend.setBy(friendDao.queryForId(it.friend.id)) }
+            }
 
     override fun getAllContributions(): List<Contribution> {
-        return contributionDao.queryForAll()
+        return contributionDao.queryForAll().apply {
+            forEach {
+                it.summary.setBy(summaryDao.queryForId(it.summary.id))
+                it.contributors.forEach {
+                    it.friend.setBy(friendDao.queryForId(it.friend.id))
+                }
+            }
+        }.sortedBy { -it.chargeUniqueNumberForSorting }
     }
 
     override fun removeContribution(contributionId: Long) {

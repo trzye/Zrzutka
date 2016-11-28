@@ -14,7 +14,7 @@ class Friend private constructor(
         nickname: String,
         firstName: String,
         lastName: String,
-        @Column val colorId: Int = randColor()
+        @Column var colorId: Int = randColor()
 //        @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf()
 ) : BaseObservable(), Copyable<Friend>{
 
@@ -45,6 +45,13 @@ class Friend private constructor(
 
     override fun doCopy(): Friend {
         return Friend(id, nickname, firstName, lastName, colorId)
+    }
+
+    fun setBy(friend: Friend) {
+        nickname = friend.nickname
+        firstName = friend.firstName
+        lastName = friend.lastName
+        colorId = friend.colorId
     }
 
 }

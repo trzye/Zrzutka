@@ -56,6 +56,7 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
         var indexOfFirstChecked = contributionsDTO.checked.indexOfFirst { it == true }
         lastState = contributionsDTO.doCopy()
         while(indexOfFirstChecked != -1){
+            databaseService.removeContribution(contributionsDTO.contributions[indexOfFirstChecked].id ?: 0)
             contributionsDTO.contributions.removeAt(indexOfFirstChecked)
             contributionsDTO.checked.removeAt(indexOfFirstChecked)
             indexOfFirstChecked = contributionsDTO.checked.indexOfFirst { it == true }
