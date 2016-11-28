@@ -14,23 +14,27 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-open class Contribution private constructor(
+class Contribution private constructor(
         @Id @GeneratedValue val id: Long?,
         title: String,
         startDate: Date,
         endDate: Date,
-        @OneToOne var summary: Summary,
         @Column val colorId: Int = randColor(),
+        @ManyToOne val _summary: MutableCollection<Summary> = mutableListOf(Summary(false, false, WHO_PAYS)),
         @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
         @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
 ) : BaseObservable(), Copyable<Contribution> {
 
-    protected constructor() : this("")
-    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate, Summary(false, false, WHO_PAYS))
+    private constructor() : this("")
+    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate)
 
     init {
-        summary.contribution = this
+        _summary.forEach { it.contribution = this }
     }
+
+    var summary: Summary
+    get() = _summary.first()
+    set(value) {_summary.clear(); _summary.add(value); value.contribution = this}
 
     @Column var title: String = title
         set(value) {field = value; notifyChange()}
@@ -64,13 +68,14 @@ open class Contribution private constructor(
     }
 
     override fun doCopy(): Contribution {
-        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), summary.doCopy(), colorId)
+        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), colorId)
 
         //prawdziwy do kopii
         val originToNewContributor : Map<Contributor, Contributor> = contributors.associate {
             Pair(it, it.doCopy().apply { clone._contributors.add(this); contribution = clone })
         }
 
+        clone.summary = summary
         summary.contribution = clone
 
         purchases.forEach {

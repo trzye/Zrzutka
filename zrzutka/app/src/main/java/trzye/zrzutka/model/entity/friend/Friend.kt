@@ -3,12 +3,10 @@ package trzye.zrzutka.model.entity.friend
 import android.databinding.BaseObservable
 import trzye.zrzutka.common.extensions.Copyable
 import trzye.zrzutka.common.extensions.createShort
+import trzye.zrzutka.model.entity.contributor.Contributor
 import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.randColor
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 class Friend private constructor(
@@ -17,6 +15,7 @@ class Friend private constructor(
         firstName: String,
         lastName: String,
         @Column val colorId: Int = randColor()
+//        @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf()
 ) : BaseObservable(), Copyable<Friend>{
 
     private constructor() : this("")

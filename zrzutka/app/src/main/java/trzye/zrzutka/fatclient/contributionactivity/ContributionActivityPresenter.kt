@@ -40,6 +40,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
     }
 
     override fun showContributions() {
+        databaseService.save(dataHolder.contribution)
         view.getMainActivityView().startAsContributionsMainActivity(true)
         view.dismissView()
     }
@@ -51,6 +52,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
         view.getContributionFragmentPresenters().forEach {
             try{it.setEditMode()} catch (e: Exception) {}
         }
+        databaseService.save(dataHolder.contribution)
     }
 
     override fun setReadMode() {
@@ -60,6 +62,7 @@ class ContributionActivityPresenter(val databaseService: IDatabaseService) : Con
         view.getContributionFragmentPresenters().forEach {
             try{it.setReadMode()} catch (e: Exception) {}
         }
+        databaseService.save(dataHolder.contribution)
     }
 
     override fun editBaseContributionData() {

@@ -9,7 +9,7 @@ import javax.persistence.*
 @Entity
 class Contributor private constructor (
         @Id @GeneratedValue val id: Long? = null,
-        @JoinColumn val friend: Friend,
+        @OneToOne val friend: Friend,
         @OneToOne var contribution: Contribution?,
         @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
 ) : Copyable<Contributor>{

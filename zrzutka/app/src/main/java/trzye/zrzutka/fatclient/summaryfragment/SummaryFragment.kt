@@ -63,6 +63,7 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
 
     override fun bindData(contribution: Contribution) {
         summaryRecyclerView.adapter = SummaryAdapter(contribution.getDebtList())
+        switchPreciseMode.isChecked = contribution.summary.preciseCalculation
     }
 
     override fun changeDataSet(contribution: Contribution) {

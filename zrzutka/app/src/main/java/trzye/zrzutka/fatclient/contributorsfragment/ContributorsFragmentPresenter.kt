@@ -27,7 +27,10 @@ class ContributorsFragmentPresenter() : Presenter() {
 
     override fun addNewContributor() {
         view.hideContributorRemovedInfoWithUndoOption()
-        dataHolder.contribution.addContributor(Contributor(Friend("TEST ${friendNo++}"))) ///TODO
+        val friend = Friend("TEST ${friendNo++}") //TODO
+        val contributor = Contributor(friend)//TODO
+//        friend._contributors?.add(contributor)//TODO
+        dataHolder.contribution.addContributor(contributor) ///TODO
         view.notifyContributorAdded(dataHolder.contribution.contributors.size-1, dataHolder.contribution.contributors.size)
     }
 

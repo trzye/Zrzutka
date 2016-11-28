@@ -17,8 +17,13 @@ const val DATABASE_FILENAME = "Database.sqlite"
 
 class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABASE_FILENAME, null, 1), IDatabaseService {
 
-    val contributionDao: Dao<Contribution, Long> = getDao(Contribution::class.java)
+
     val summaryDao: Dao<Summary, Long> = getDao(Summary::class.java)
+    val contributionDao: Dao<Contribution, Long> = getDao(Contribution::class.java)
+    val friendDao: Dao<Friend, Long> = getDao(Friend::class.java)
+    val contributorDao: Dao<Contributor, Long> = getDao(Contributor::class.java)
+    val purchaseDao: Dao<Purchase, Long> = getDao(Purchase::class.java)
+    val chargeDao: Dao<Charge, Long> = getDao(Charge::class.java)
 
 
     override fun getContribution(contributionId: Long?): Contribution =
@@ -29,19 +34,95 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
     }
 
     override fun removeContribution(contributionId: Long) {
-        contributionDao.deleteById(contributionId) // TODO
+        val contribution = contributionDao.queryForId(contributionId)
+        if(contribution != null){
+            contribution.purchases.forEach {
+                it.charges.forEach { chargeDao.deleteById(it.id) }
+                purchaseDao.deleteById(it.id)
+            }
+            contribution.contributors.forEach {
+                contributorDao.deleteById(it.id)
+            }
+            summaryDao.deleteById(contribution.summary.id)
+            contributionDao.deleteById(contribution.id)
+        }
     }
 
     override fun save(contribution: Contribution): Long {
-        if(contribution.id == null){
-            summaryDao.create(contribution.summary)
-            contributionDao.create(contribution)
-        } else {
-            summaryDao.createOrUpdate(contribution.summary)
-            contributionDao.createOrUpdate(contribution)
+        if(contribution.id != null){
+            removeContribution(contribution.id)
         }
+        saveContribution(contribution)
+        saveSummary(contribution.summary)
+        contribution.contributors.forEach {
+            saveFriend(it.friend)
+            saveContributor(it)
+        }
+        contribution.purchases.forEach {
+            savePurchase(it)
+            it.charges.forEach { saveCharge(it) }
+        }
+        contribution.purchases.forEach {
+            it.charges.forEach { saveCharge(it) }
+            savePurchase(it)
+        }
+        contribution.contributors.forEach {
+            saveContributor(it)
+            saveFriend(it.friend)
+        }
+        saveSummary(contribution.summary)
+        saveContribution(contribution)
         return contribution.id ?: throw IllegalArgumentException("Database saving problem. Can't extract presenterId after saving.")
     }
+
+    private fun saveContribution(contribution: Contribution) {
+        if(contribution.id == null){
+            contributionDao.create(contribution)
+        } else {
+            contributionDao.createOrUpdate(contribution)
+        }
+    }
+
+    private fun saveSummary(summary: Summary) {
+        if(summary.id == null){
+            summaryDao.create(summary)
+        } else {
+            summaryDao.createOrUpdate(summary)
+        }
+    }
+
+    private fun saveFriend(friend: Friend) {
+        if(friend.id == null){
+            friendDao.create(friend)
+        } else {
+            friendDao.createOrUpdate(friend)
+        }
+    }
+
+    private fun saveCharge(charge: Charge) {
+        if(charge.id == null){
+            chargeDao.create(charge)
+        } else {
+            chargeDao.createOrUpdate(charge)
+        }
+    }
+
+    private fun savePurchase(purchase: Purchase) {
+        if(purchase.id == null){
+            purchaseDao.create(purchase)
+        } else {
+            purchaseDao.createOrUpdate(purchase)
+        }
+    }
+
+    private fun saveContributor(contributor: Contributor) {
+        if(contributor.id == null){
+            contributorDao.create(contributor)
+        } else {
+            contributorDao.createOrUpdate(contributor)
+        }
+    }
+
 
     override fun onCreate(database: SQLiteDatabase?, connectionSource: ConnectionSource?) {
         TableUtils.createTable(connectionSource, Contribution::class.java)
