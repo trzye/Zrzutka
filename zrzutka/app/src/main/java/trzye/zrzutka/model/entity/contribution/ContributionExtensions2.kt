@@ -2,25 +2,26 @@ package trzye.zrzutka.model.entity.contribution
 
 import trzye.zrzutka.model.dto.DebtDTO
 import trzye.zrzutka.model.entity.contributor.Contributor
+import trzye.zrzutka.model.entity.summary.SortedColumn
 import trzye.zrzutka.model.entity.summary.SortedColumn.*
 import java.util.*
 
 fun Contribution.getDebtList() : List<DebtDTO>{
     val calculator: SummaryCalculator = SimpleSummaryCalculator()
     val debtList = calculator.calculateDebtList(this)
-    return sortResult(debtList)
+    return sortResult(summary.sortedColumn, summary.isSortedDescending, debtList)
 }
 
-private fun Contribution.sortResult(debtList: List<DebtDTO>) =
-    if (summary.isSortedDescending) sortDescending(debtList) else sortAscending(debtList)
+private fun sortResult(sortedColumn: SortedColumn, isSortedDescending: Boolean, debtList: List<DebtDTO>) =
+    if (isSortedDescending) sortDescending(sortedColumn, debtList) else sortAscending(sortedColumn, debtList)
 
-private fun Contribution.sortAscending(debtList: List<DebtDTO>) = when (summary.sortedColumn) {
+private fun sortAscending(sortedColumn: SortedColumn, debtList: List<DebtDTO>) = when (sortedColumn) {
         WHO_PAYS -> debtList.sortedBy { it.whoPays.getShowingName() }
         TO_WHOM -> debtList.sortedBy { it.toWhom.getShowingName() }
         AMOUNT -> debtList.sortedBy { it.amount }
 }
 
-private fun Contribution.sortDescending(debtList: List<DebtDTO>) = when (summary.sortedColumn) {
+private fun sortDescending(sortedColumn: SortedColumn, debtList: List<DebtDTO>) = when (sortedColumn) {
     WHO_PAYS -> debtList.sortedByDescending { it.whoPays.getShowingName() }
     TO_WHOM -> debtList.sortedByDescending { it.toWhom.getShowingName() }
     AMOUNT -> debtList.sortedByDescending { it.amount }
