@@ -23,7 +23,14 @@ class ContributionActivityPresenter(private val databaseService: IDatabaseServic
 
     private fun init(contributionId: Long) {
         if (isContributionReceived == false) {
-            dataHolder = ContributionDataHolder(databaseService.getContribution(contributionId))
+            dataHolder = ContributionDataHolder(   databaseService.getContribution(contributionId).doCopy().apply {
+                this._contributors.forEachIndexed { i, contributor ->
+                    this._purchases.forEach { it._charges.forEachIndexed { j, charge ->
+                        if( i == j)
+                            charge.charged = contributor
+                    } }
+                }
+            })
             isContributionReceived = true
         }
     }

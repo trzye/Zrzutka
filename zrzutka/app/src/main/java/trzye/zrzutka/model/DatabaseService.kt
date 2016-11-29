@@ -6,6 +6,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.support.ConnectionSource
 import com.j256.ormlite.table.TableUtils
+import trzye.zrzutka.common.extensions.doCopy
 import trzye.zrzutka.model.entity.purchase.Purchase
 import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
@@ -32,26 +33,31 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
                 _contributors.forEach { contributor ->
                     contributor.friend.setBy(friendDao.queryForId(contributor.friend.id))
                 }
-                _purchases.forEach {
-                    it._charges.forEach { charge ->
-                        charge.charged = this.contributors.find { it._charges.find { it.id == charge.id } != null }
-                    }
+//                _purchases.forEach {
+//                    it._charges.forEach { charge ->
+//                        val id = charge.charged?.id
+//                        var contributor: Contributor? = null
+//                        this._contributors.forEach {
+//                            if(it.id == id) {
+//                                contributor = it
+//                            }
+//                        }
+//                        if(contributor != null){
+//                            charge.charged = contributor
+//                        }
+//                    }
+//                }
+            }.doCopy().apply {
+                this._contributors.forEachIndexed { i, contributor ->
+                    this._purchases.forEach { it._charges.forEachIndexed { j, charge ->
+                        if( i == j)
+                            charge.charged = contributor
+                    } }
                 }
             }
 
     override fun getAllContributions(): List<Contribution> {
-        return contributionDao.queryForAll().apply {
-            forEach { contribution ->
-                contribution.summary.setBy(summaryDao.queryForId(contribution.summary.id))
-                contribution._contributors.forEach { contributor ->
-                    contributor.friend.setBy(friendDao.queryForId(contributor.friend.id))
-                }
-                contribution._purchases.forEach {
-                    it._charges.forEach { charge ->
-                        charge.charged = contribution.contributors.find { it._charges.find { it.id == charge.id } != null }
-                    }
-                }
-            }
+        return contributionDao.queryForAll().flatMap { listOf(getContribution(it.id))
         }.sortedBy { -it.chargeUniqueNumberForSorting }
     }
 
