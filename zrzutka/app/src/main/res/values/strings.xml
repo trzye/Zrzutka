@@ -39,6 +39,10 @@
     <string name="wrong_sum_to_pay_warning">Suma należności nie zgadza się z kwotą</string>
     <string name="wrong_sum_paid_warning">Suma wpłat nie zgadza się z kwotą</string>
 
+    <!-- EditFriendDialog -->
+    <string name="empty_friend_name_warning">Nie podano nazwy znajomego</string>
+    <string name="used_friend_name_warning">Znajomy o takiej nazwie już istnieje</string>
+
     <!-- Alert dialogs strings -->
     <string name="alert_dialog_back_pressed_title">Czy jesteś pewny?</string>
 

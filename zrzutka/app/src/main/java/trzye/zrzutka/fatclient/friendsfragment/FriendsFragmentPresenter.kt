@@ -1,5 +1,6 @@
 package trzye.zrzutka.fatclient.friendsfragment
 
+import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogContract
 import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.friend.Friend
 
@@ -11,7 +12,14 @@ class FriendsFragmentPresenter(private val databaseService: IDatabaseService) : 
 
     override fun createNewFriend() {
         editFriendDialogPresenter = view.getEditFriendDialogView().apply {
-//            startAsCreateNewContributionDialog() TODO
+            startAsEditExistingEditFriendDialog(
+                    friend = Friend(""),
+                    actionOnSuccess = {
+                        newFriend -> databaseService.save(newFriend)
+                        friends = databaseService.getAllFriends()
+                        view.dataSetChanged(friends)
+                    },
+                    actionOnDismiss = {} )
         }.presenter
     }
 

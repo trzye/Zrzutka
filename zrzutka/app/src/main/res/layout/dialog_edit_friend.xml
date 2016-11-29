@@ -1,0 +1,122 @@
+<layout>
+
+    <data>
+
+        <variable
+            name="friendDataHolder"
+            type="trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogDataHolder" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="@dimen/dialog_width"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorAccent"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/contribution_edit_toolbar_title" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/dialog_width"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:paddingLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:textColor="@color/colorSecondary"
+                android:textStyle="bold"
+                android:text="Nazwa znajomego*"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/friendNameEditText"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Wpisz nazwę znajomego"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoCorrect"
+                android:lines="1"
+                android:text="@={friendDataHolder.nameString}"
+                android:textSize="18sp" />
+
+            <TextView
+                android:paddingLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:textColor="@color/colorSecondary"
+                android:textStyle="bold"
+                android:text="Informacja o sposobie płatności"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/friendPaymentInfoEditText"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Podaj sposób płatności"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoCorrect"
+                android:lines="2"
+                android:text="@={friendDataHolder.paymentString}"
+                android:textSize="15sp" />
+
+            <TextView
+                android:paddingLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:textColor="@color/colorSecondary"
+                android:textStyle="bold"
+                android:text="Informacja o kontaktcie"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/friendContactInfoEditText"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Podaj dane kontaktowe"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoCorrect"
+                android:lines="2"
+                android:text="@={friendDataHolder.contactString}"
+                android:textSize="16sp" />
+
+
+            <Button
+                android:id="@+id/okButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:theme="@style/AppTheme"
+                android:text="@string/dialog_ok"
+                android:textColor="@color/colorAccent"
+                android:layout_gravity="end"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

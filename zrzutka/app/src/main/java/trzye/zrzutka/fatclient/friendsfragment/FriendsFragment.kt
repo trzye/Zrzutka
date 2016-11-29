@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import trzye.zrzutka.R
 import trzye.zrzutka.androidmvp.AbstractFragment
 import trzye.zrzutka.databinding.ItemFriendBinding
+import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialog
+import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogContract
 import trzye.zrzutka.fatclient.friendsfragment.FriendsFragmentContract.Presenter
 import trzye.zrzutka.model.entity.friend.Friend
 
@@ -46,7 +48,7 @@ class FriendsFragment() : AbstractFragment<FriendsFragmentContract.View, Present
     }
 
     override fun getEditFriendDialogView(): EditFriendDialogContract.View {
-        throw UnsupportedOperationException("not implemented")
+        return EditFriendDialog(activity)
     }
 
     override fun dataSetChanged(friends: List<Friend>) {

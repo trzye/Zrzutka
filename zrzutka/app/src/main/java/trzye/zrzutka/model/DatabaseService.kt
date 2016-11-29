@@ -28,6 +28,10 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
 
     override fun getAllFriends(): List<Friend> = friendDao.queryForAll()
 
+    override fun save(friend: Friend) {
+        saveFriend(friend)
+    }
+
     override fun getContribution(contributionId: Long?): Contribution =
             if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId).apply {
                 summary.setBy(summaryDao.queryForId(summary.id))

@@ -1,5 +1,6 @@
 package trzye.zrzutka.fatclient.friendsfragment
 
+import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogContract
 import trzye.zrzutka.model.entity.friend.Friend
 import trzye.zrzutka.mvp.IContract
 
@@ -25,16 +26,6 @@ interface ReadFriendDialogContract : IContract{
         fun start(presenter: Presenter)
     }
     abstract class Presenter : IContract.IPresenter<View>(){
-        abstract fun isDone(): Boolean
-    }
-}
-
-interface EditFriendDialogContract : IContract{
-    interface View : IContract.IView<Presenter> {
-        fun start(presenter: Presenter)
-    }
-
-    abstract class Presenter : IContract.IPresenter<View>() {
         abstract fun isDone(): Boolean
     }
 }
