@@ -52,6 +52,12 @@ class ContributionActivityPresenter(private val databaseService: IDatabaseServic
         view.dismissView()
     }
 
+    override fun showFriends() {
+        databaseService.save(dataHolder.contribution)
+        view.getMainActivityView().startAsFriendsMainActivity(true)
+        view.dismissView()
+    }
+
     override fun setEditMode() {
         dataHolder.isEditable = true
         view.setReadIcon()

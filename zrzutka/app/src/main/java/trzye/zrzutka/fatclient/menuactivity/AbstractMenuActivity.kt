@@ -1,10 +1,9 @@
 package trzye.zrzutka.fatclient.menuactivity
 
-import android.os.Bundle
+import android.app.AlertDialog
 import android.support.design.widget.NavigationView
 import android.view.MenuItem
 import trzye.zrzutka.R
-import trzye.zrzutka.fatclient.contributiondialog.ContributionDialog
 import trzye.zrzutka.androidmvp.AbstractActivity
 import trzye.zrzutka.androidmvp.PresentersWaitingRoom
 
@@ -19,8 +18,8 @@ abstract class AbstractMenuActivity<V : IMenuContract.IMenuView<P>, P : IMenuCon
 
         when(item.itemId) {
             R.id.menu_contribution_list -> { presenter.showContributions() }
-            R.id.menu_about -> { }
-            R.id.menu_friends_list -> {}
+            R.id.menu_about -> { AlertDialog.Builder(this).setTitle("O Aplikacji").setMessage("Tutaj będzie coś więcej").create().show()}
+            R.id.menu_friends_list -> { presenter.showFriends() }
             else -> {}
         }
 

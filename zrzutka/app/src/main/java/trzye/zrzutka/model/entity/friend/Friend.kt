@@ -11,46 +11,39 @@ import javax.persistence.*
 @Entity
 class Friend private constructor(
         @Id @GeneratedValue val id: Long? = null,
-        nickname: String,
-        firstName: String,
-        lastName: String,
+        name: String,
+        paymentInformation: String,
+        contactInformation: String,
         @Column var colorId: Int = randColor()
-//        @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf()
 ) : BaseObservable(), Copyable<Friend>{
 
     private constructor() : this("")
-    constructor(nickname: String = "", firstName: String = "", lastName: String = "") : this(null, nickname, firstName, lastName)
+    constructor(nickname: String, firstName: String = "", lastName: String = "") : this(null, nickname, firstName, lastName)
 
-    @Column var nickname: String = nickname
+    @Column var nickname: String = name
         set(value) {field = value; notifyChange()}
 
-    @Column var firstName: String = firstName
+    @Column var paymentInformation: String = paymentInformation
         set(value) {field = value; notifyChange()}
 
-    @Column var lastName: String = lastName
+    @Column var contactInformation: String = contactInformation
         set(value) {field = value; notifyChange()}
 
 
-    fun getShowingName(): String {
-        if(nickname.isNotEmpty())
-            return nickname
-        if(lastName.isNotEmpty())
-            return firstName + " " + lastName
-        return firstName
-    }
+    fun getShowingName(): String = nickname
 
     fun getInitials(): String = getShowingName().createShort()
 
     fun getColor() = getColor(colorId)
 
     override fun doCopy(): Friend {
-        return Friend(id, nickname, firstName, lastName, colorId)
+        return Friend(id, nickname, paymentInformation, contactInformation, colorId)
     }
 
     fun setBy(friend: Friend) {
         nickname = friend.nickname
-        firstName = friend.firstName
-        lastName = friend.lastName
+        paymentInformation = friend.paymentInformation
+        contactInformation = friend.contactInformation
         colorId = friend.colorId
     }
 

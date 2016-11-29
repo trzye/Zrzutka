@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import trzye.zrzutka.R
 import trzye.zrzutka.fatclient.contributionsfragment.ContributionsFragment
+import trzye.zrzutka.fatclient.friendsfragment.FriendsFragment
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract.Presenter
 import trzye.zrzutka.fatclient.mainactivity.MainActivityContract.View
 import trzye.zrzutka.fatclient.menuactivity.AbstractMenuActivity
@@ -30,8 +31,20 @@ class MainActivity(private val parentActivity: AppCompatActivity) : AbstractMenu
         parentActivity.startActivity(intent)
     }
 
+    override fun startAsFriendsMainActivity(dismissOtherViews: Boolean) {
+        val intent = Intent(parentActivity, this.javaClass)
+        if(dismissOtherViews) waitingRoom.presenters.values.forEach { it.dismissView() }
+        waitingRoom.addJobForNextPresenter(Presenter::showFriends)
+        parentActivity.startActivity(intent)
+    }
+
     override fun showContributionsFragmentView(){
         val fragment = ContributionsFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment).commit()
+    }
+
+    override fun showFriendsFragmentView() {
+        val fragment = FriendsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment, fragment).commit()
     }
 

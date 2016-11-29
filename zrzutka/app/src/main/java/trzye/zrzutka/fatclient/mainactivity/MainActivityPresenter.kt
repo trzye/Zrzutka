@@ -15,5 +15,10 @@ class MainActivityPresenter : Presenter() {
         view.dismissView()
     }
 
+    override fun showFriends() {
+        view.showFriendsFragmentView()
+        view.hideMenu()
+    }
+
 }
 

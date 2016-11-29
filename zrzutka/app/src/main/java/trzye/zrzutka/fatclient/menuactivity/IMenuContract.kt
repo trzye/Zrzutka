@@ -9,5 +9,6 @@ interface IMenuContract : IContract {
     }
     abstract class IMenuPresenter<V : IMenuView<IMenuPresenter<V>>> : IContract.IPresenter<V>() {
         abstract fun showContributions()
+        abstract fun showFriends()
     }
 }

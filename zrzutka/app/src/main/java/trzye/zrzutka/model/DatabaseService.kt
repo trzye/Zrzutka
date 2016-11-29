@@ -26,6 +26,7 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
     val purchaseDao: Dao<Purchase, Long> = getDao(Purchase::class.java)
     val chargeDao: Dao<Charge, Long> = getDao(Charge::class.java)
 
+    override fun getAllFriends(): List<Friend> = friendDao.queryForAll()
 
     override fun getContribution(contributionId: Long?): Contribution =
             if (contributionId == null) Contribution("") else contributionDao.queryForId(contributionId).apply {
@@ -33,20 +34,6 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
                 _contributors.forEach { contributor ->
                     contributor.friend.setBy(friendDao.queryForId(contributor.friend.id))
                 }
-//                _purchases.forEach {
-//                    it._charges.forEach { charge ->
-//                        val id = charge.charged?.id
-//                        var contributor: Contributor? = null
-//                        this._contributors.forEach {
-//                            if(it.id == id) {
-//                                contributor = it
-//                            }
-//                        }
-//                        if(contributor != null){
-//                            charge.charged = contributor
-//                        }
-//                    }
-//                }
             }.doCopy().apply {
                 this._contributors.forEachIndexed { i, contributor ->
                     this._purchases.forEach { it._charges.forEachIndexed { j, charge ->
@@ -90,16 +77,6 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
             savePurchase(it)
             it.charges.forEach { saveCharge(it) }
         }
-//        contribution.purchases.forEach {
-//            it.charges.forEach { saveCharge(it) }
-//            savePurchase(it)
-//        }
-//        contribution.contributors.forEach {
-//            saveContributor(it)
-//            saveFriend(it.friend)
-//        }
-//        saveSummary(contribution.summary)
-//        saveContribution(contribution)
         return contribution.id ?: throw IllegalArgumentException("Database saving problem. Can't extract presenterId after saving.")
     }
 
