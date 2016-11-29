@@ -31,6 +31,14 @@
     <string name="contribution_edit_title_hint">Tytuł zrzutki</string>
     <string name="empty_title_warning">Tytuł nie może być pusty</string>
 
+    <!-- Purchase edit strings-->
+    <string name="empty_purchase_name_warning">Nazwa zakupu jest pusta</string>
+    <string name="wrong_format_cost_warning">Zły format kwoty zakupu</string>
+    <string name="wrong_format_paid_warning">Zły format kwoty należności</string>
+    <string name="wrong_format_to_pay_warning">Zły format kwoty do zapłaty</string>
+    <string name="wrong_sum_to_pay_warning">Suma należności nie zgadza się z kwotą</string>
+    <string name="wrong_sum_paid_warning">Suma wpłat nie zgadza się z kwotą</string>
+
     <!-- Alert dialogs strings -->
     <string name="alert_dialog_back_pressed_title">Czy jesteś pewny?</string>
 

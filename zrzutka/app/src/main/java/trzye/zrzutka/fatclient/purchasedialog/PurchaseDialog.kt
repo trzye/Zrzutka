@@ -18,6 +18,15 @@ import trzye.zrzutka.model.entity.purchase.Purchase
 
 class PurchaseDialog(private val activity: Activity) : Dialog(activity), PurchaseDialogContract.View {
 
+    override fun makeRedUnderPrice() {
+        binding.purchaseSubtitle.setBackgroundResource(R.color.colorErrorTransparent)
+    }
+
+    override fun notifyChange(position: Int) {
+        binding.chargesListItem.adapter.notifyItemChanged(position)
+    }
+
+
     override var presenterId: Long = 0
 
     override var presenter: PurchaseDialogContract.Presenter = PurchaseDialogPresenter()
@@ -32,10 +41,6 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
         this.presenter.show()
     }
 
-//    override fun startAsCreateNewPurchaseDialog(actionOnOKClicked: (Purchase) -> Unit) {
-//        show()
-//        presenter.createNewPurchase(actionOnOKClicked)
-//    }
 
     override fun startAsEditExistingPurchaseDialog(purchase: Purchase, actionOnSuccess: (Purchase) -> Unit, actionOnDismiss: () -> Unit) {
         show()
@@ -51,9 +56,15 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
         binding.actionSavePurchase.setOnClickListener{presenter.okClicked()}
         binding.actionSplitCosts.setOnClickListener { presenter.splitToPayCost() }
         binding.chargesListItem.layoutManager = LinearLayoutManager(activity)
+        binding.purchaseSubtitle.setTransparentBackgroundOnTouch()
     }
 
-//    override fun getPriceStringFromInput(): String = binding.purchaseSubtitle.text.toString()
+    private fun View.setTransparentBackgroundOnTouch() {
+        this.setOnTouchListener { view, motionEvent ->
+            this.setBackgroundResource(R.color.transparent)
+            this.onTouchEvent(motionEvent)
+        }
+    }
 
     override fun dismissView() = dismiss()
 
@@ -62,10 +73,34 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
         binding.chargesListItem.adapter = ChargesAdapter(dataHolder)
     }
 
-    override fun showEmptyTitleError() {
-        Snackbar.make(view, R.string.empty_title_warning, Snackbar.LENGTH_SHORT).apply {
+    override fun showEmptyPurchaseNameError() {
+        showErrorSnackBar(R.string.empty_purchase_name_warning)
+    }
+
+    override fun showWrongPaidSumFormatError() {
+        showErrorSnackBar(R.string.wrong_sum_paid_warning)
+    }
+
+    override fun showWrongPriceFormatError() {
+        showErrorSnackBar(R.string.wrong_format_cost_warning)
+    }
+
+    override fun showWrongToPayFormatError() {
+        showErrorSnackBar(R.string.wrong_format_to_pay_warning)
+    }
+
+    override fun showWrongToPaySumFormatError() {
+        showErrorSnackBar(R.string.wrong_sum_to_pay_warning)
+    }
+
+    private fun showErrorSnackBar(stringResource: Int) {
+        Snackbar.make(view, stringResource, Snackbar.LENGTH_SHORT).apply {
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorError))
         }.show()
+    }
+
+    override fun showWrongPaidFormatError() {
+        showErrorSnackBar(R.string.wrong_format_paid_warning)
     }
 
     override fun getPurchaseTitle() = binding.purchaseTitle.text.toString()
@@ -90,6 +125,16 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val binding = holder.binding
             binding.chargeDataHolder = purchase.charges[position]
+            if(purchase.charges[position].isWrongPaid)
+                binding.chargeContributorPaid.setBackgroundResource(R.color.colorErrorTransparent)
+            else
+                binding.chargeContributorPaid.setBackgroundResource(R.color.colorTextOnPrimary)
+            if(purchase.charges[position].isWrongToPay)
+                binding.chargeContributorToPay.setBackgroundResource(R.color.colorErrorTransparent)
+            else
+                binding.chargeContributorToPay.setBackgroundResource(R.color.colorTextOnPrimary)
+            binding.chargeContributorPaid.setTransparentBackgroundOnTouch()
+            binding.chargeContributorToPay.setTransparentBackgroundOnTouch()
         }
 
         override fun getItemCount(): Int = purchase.charges.size

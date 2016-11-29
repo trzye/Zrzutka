@@ -11,4 +11,6 @@ class PurchaseDialogDataHolderCharges(charge: Charge, toPayString: String, paidS
         set(value) {field = value; notifyChange()}
     var paidString = paidString
         set(value) {field = value; notifyChange()}
+    var isWrongPaid = false
+    var isWrongToPay = false
 }
