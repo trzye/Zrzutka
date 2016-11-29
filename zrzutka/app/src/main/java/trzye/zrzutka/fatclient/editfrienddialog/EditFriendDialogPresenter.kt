@@ -10,11 +10,13 @@ class EditFriendDialogPresenter() : EditFriendDialogContract.Presenter() {
     lateinit var actionOnDismiss: () -> Unit
     lateinit var dataHolder: EditFriendDialogDataHolder
     val databaseService = ModelProvider.databaseService
+    lateinit var friendNameBeforeEdit: String
 
     override fun editEditFriendData(friend: Friend, actionOnSuccess: (Friend) -> Unit, actionOnDismiss: () -> Unit) {
         this.dataHolder = EditFriendDialogDataHolder(friend, friend.getShowingName(), friend.paymentInformation, friend.contactInformation)
         this.actionOnSuccess = actionOnSuccess
         this.actionOnDismiss = actionOnDismiss
+        this.friendNameBeforeEdit = friend.nickname
         init()
     }
 
@@ -28,8 +30,10 @@ class EditFriendDialogPresenter() : EditFriendDialogContract.Presenter() {
             return
         }
         if(databaseService.getAllFriends().find { it.nickname == dataHolder.nameString } != null){
-            view.showUsedEditFriendNameError()
-            return
+            if(friendNameBeforeEdit != dataHolder.nameString) {
+                view.showUsedEditFriendNameError()
+                return
+            }
         }
         dataHolder.friend.nickname = dataHolder.nameString
         dataHolder.friend.contactInformation = dataHolder.contactString

@@ -52,6 +52,10 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
         }.sortedBy { -it.chargeUniqueNumberForSorting }
     }
 
+    override fun removeFriend(friend: Friend) {
+        friendDao.deleteById(friend.id)
+    }
+
     override fun removeContribution(contributionId: Long) {
         val contribution = contributionDao.queryForId(contributionId)
         if(contribution != null){

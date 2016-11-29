@@ -38,6 +38,7 @@ class ContributionsFragment() : AbstractFragment<ContributionsFragmentContract.V
 
         setHasOptionsMenu(true)
         toolbar = activity.findViewById(R.id.toolbar) as Toolbar
+        activity.title = resources.getString(R.string.menu_contribution_list)
         toolbar.setOnMenuItemClickListener { onMenuOptionsItemSelected(it) }
 
         contributionsRecyclerView = view.findViewById(R.id.contributionsRecyclerView) as RecyclerView

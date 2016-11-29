@@ -10,4 +10,5 @@ interface IDatabaseService {
     fun save(contribution: Contribution): Long
     fun getAllFriends(): List<Friend>
     fun save(friend: Friend)
+    fun removeFriend(friend: Friend)
 }

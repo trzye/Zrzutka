@@ -14,6 +14,8 @@ import trzye.zrzutka.R
 import trzye.zrzutka.databinding.ItemContributorBinding
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
+import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialog
+import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialogContract
 import trzye.zrzutka.model.entity.contribution.Contribution
 
 class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContributionFragment<ContributorsFragmentContract.View, ContributorsFragmentContract.Presenter>(ContributorsFragmentWaitingRoom, dataHolder), ContributorsFragmentContract.View {
@@ -25,6 +27,7 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
     private lateinit var actionButton: FloatingActionButton
     private lateinit var contributorsRecyclerView: RecyclerView
     private lateinit var snackbar: Snackbar
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_contributors, null)
@@ -39,7 +42,12 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
         }
         super.onCreateView(inflater,container, savedInstanceState)
         presenter.bindData()
+        presenter.startDialogIfExists()
         return view
+    }
+
+    override fun getReadFriendDialog(): ReadFriendDialogContract.View {
+        return ReadFriendDialog(activity)
     }
 
     override fun bindData(contribution: Contribution) {
@@ -129,6 +137,7 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
                     binding.contributorsRemove.visibility = View.VISIBLE
                     binding.contributorsRemove.setOnClickListener { presenter.removeContributor(holder.adapterPosition) }
                 }
+                binding.itemContributorId.setOnClickListener { presenter.showFriendData(holder.adapterPosition) }
             } else {
                 binding.itemContributorId.visibility = View.INVISIBLE
             }

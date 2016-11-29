@@ -5,7 +5,7 @@
     <string name="navigation_drawer_open">Otwórz nawigację</string>
     <string name="navigation_drawer_close">Zamknij nawigację</string>
 
-    <!-- Manu -->
+    <!-- Menu -->
     <string name="menu_contribution_list">Zrzutki</string>
     <string name="menu_friends_list">Znajomi</string>
     <string name="menu_others">Inne</string>
@@ -42,6 +42,9 @@
     <!-- EditFriendDialog -->
     <string name="empty_friend_name_warning">Nie podano nazwy znajomego</string>
     <string name="used_friend_name_warning">Znajomy o takiej nazwie już istnieje</string>
+
+    <!-- ReadFriendDialog -->
+    <string name="cant_delete_friend">Znajomy jest używany w zrzutkach</string>
 
     <!-- Alert dialogs strings -->
     <string name="alert_dialog_back_pressed_title">Czy jesteś pewny?</string>

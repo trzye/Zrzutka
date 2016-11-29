@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import trzye.zrzutka.databinding.ItemFriendBinding
 import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialog
 import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogContract
 import trzye.zrzutka.fatclient.friendsfragment.FriendsFragmentContract.Presenter
+import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialog
+import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialogContract
 import trzye.zrzutka.model.entity.friend.Friend
 
 class FriendsFragment() : AbstractFragment<FriendsFragmentContract.View, Presenter>(FriendsFragmentWaitingRoom), FriendsFragmentContract.View {
@@ -34,6 +37,8 @@ class FriendsFragment() : AbstractFragment<FriendsFragmentContract.View, Present
         friendsRecyclerView = view.findViewById(R.id.friendsRecyclerView) as RecyclerView
         friendsRecyclerView.layoutManager = LinearLayoutManager(activity)
 
+        activity.title = resources.getString(R.string.menu_friends_list)
+
         presenter.startDialogsIfExists()
         presenter.bindData()
         return view
@@ -44,7 +49,7 @@ class FriendsFragment() : AbstractFragment<FriendsFragmentContract.View, Present
     }
 
     override fun getReadFriendDialogView(): ReadFriendDialogContract.View {
-        throw UnsupportedOperationException()
+        return ReadFriendDialog(activity)
     }
 
     override fun getEditFriendDialogView(): EditFriendDialogContract.View {

@@ -1,0 +1,102 @@
+<layout>
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="friend"
+            type="trzye.zrzutka.model.entity.friend.Friend" />
+    </data>
+
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="@dimen/dialog_width"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/readFriendToolbar"
+                    app:title="@{friend.showingName}"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@{friend.color}"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dialog_width"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="?attr/actionBarSize">
+
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorSecondary"
+                    android:textStyle="bold"
+                    android:visibility="@{friend.paymentInformation.empty ? View.GONE : View.VISIBLE}"
+                    android:text="Informacja o sposobie płatności"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="2"
+                    android:visibility="@{friend.paymentInformation.empty ? View.GONE : View.VISIBLE}"
+                    android:text="@={friend.paymentInformation}"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:paddingLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorSecondary"
+                    android:textStyle="bold"
+                    android:text="Informacja o kontakcie"
+                    android:visibility="@{friend.contactInformation.empty ? View.GONE : View.VISIBLE}"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="2"
+                    android:text="@{friend.contactInformation}"
+                    android:visibility="@{friend.contactInformation.empty ? View.GONE : View.VISIBLE}"
+                    android:textSize="16sp" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/actionButton"
+                    android:layout_width="wrap_content"
+                    android:backgroundTint="@{friend.color}"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_mode_edit_white_24dp" />
+
+
+            </LinearLayout>
+
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </ScrollView>
+</layout>

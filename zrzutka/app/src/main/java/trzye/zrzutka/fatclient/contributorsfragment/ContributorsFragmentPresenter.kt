@@ -3,6 +3,8 @@ package trzye.zrzutka.fatclient.contributorsfragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract.Presenter
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract.View
+import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogContract
+import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialogContract
 import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contribution.addContributor
@@ -16,6 +18,8 @@ class ContributorsFragmentPresenter(private val databaseService: IDatabaseServic
 
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder
+    private var readFriendDialogPresenter: ReadFriendDialogContract.Presenter? = null
+
 
     override fun init(dataHolder: ContributionDataHolder) {
         this.dataHolder = dataHolder
@@ -57,7 +61,19 @@ class ContributorsFragmentPresenter(private val databaseService: IDatabaseServic
     override fun showFriendData(position: Int) {
         val contributor = dataHolder.contribution.contributors.getOrNull(position)
         if(contributor != null){
-            //TODO z uwzględnieniem isEditable
+            readFriendDialogPresenter = view.getReadFriendDialog().apply {
+                startAsReadExistingReadFriendDialog(
+                        friend = contributor.friend,
+                        actionOnDelete = {}
+                )
+            }.presenter
+        }
+    }
+
+    override fun startDialogIfExists() {
+        val readPresenter = readFriendDialogPresenter
+        if ((readPresenter != null) && (readPresenter.isDone() == false)) {
+            view.getReadFriendDialog().start(readPresenter)
         }
     }
 
