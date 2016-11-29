@@ -1,5 +1,7 @@
 package trzye.zrzutka.fatclient.purchasedialog
 
+import trzye.zrzutka.common.extensions.toMoneyDouble
+import trzye.zrzutka.common.extensions.toMoneyLong
 import trzye.zrzutka.common.extensions.toReadablePriceString
 import trzye.zrzutka.model.entity.purchase.Purchase
 import trzye.zrzutka.model.entity.purchase.PurchaseValidationStatus
@@ -19,7 +21,7 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
         init()
     }
 
-    private fun getPriceText(price: Double) = if (price <= 0) "" else price.toReadablePriceString()
+    private fun getPriceText(price: Long) = if (price <= 0) "" else price.toMoneyDouble().toReadablePriceString()
 
     private fun init() {
         view.bindData(dataHolder)
@@ -37,7 +39,8 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
     }
 
     private fun resetProblems() {
-        dataHolder.charges.forEach { it.isWrongToPay = false; it.isWrongPaid = false }
+        view.resetSubtitleError()
+        dataHolder.charges.forEachIndexed {i, it -> it.isWrongToPay = false; it.isWrongPaid = false ; view.notifyChange(i)}
     }
 
     private fun chargesValidation() : Boolean {
@@ -51,7 +54,7 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
 
     private fun paidValidation(i: Int, it: PurchaseDialogDataHolderCharges): Boolean {
         try {
-            it.charge.amountPaid = it.paidString.toDouble()
+            it.charge.amountPaid = it.paidString.toDouble().toMoneyLong()
         } catch (e: NumberFormatException) {
             dataHolder.charges[i].isWrongPaid = true
             view.notifyChange(i)
@@ -63,7 +66,7 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
 
     private fun toPayValidation(i: Int, it: PurchaseDialogDataHolderCharges): Boolean {
         try {
-            it.charge.amountToPay = it.toPayString.toDouble()
+            it.charge.amountToPay = it.toPayString.toDouble().toMoneyLong()
         } catch (e: NumberFormatException) {
             dataHolder.charges[i].isWrongToPay = true
             view.notifyChange(i)
@@ -75,7 +78,7 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
 
     private fun priceValidation(): Boolean {
         try {
-            dataHolder.purchase.price = dataHolder.priceString.toDouble()
+            dataHolder.purchase.price = dataHolder.priceString.toDouble().toMoneyLong()
         } catch (e: NumberFormatException) {
             view.makeRedUnderPrice()
             view.showWrongPriceFormatError()
@@ -87,13 +90,37 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
     override fun splitToPayCost() {
         resetProblems()
         try {
-            dataHolder.purchase.price = dataHolder.priceString.toDouble()
+            dataHolder.purchase.price = dataHolder.priceString.toDouble().toMoneyLong()
             dataHolder.charges.forEach {
                 it.charge.amountPaid = dataHolder.purchase.price / dataHolder.charges.size
-                it.toPayString = it.charge.amountPaid.toReadablePriceString()
+                it.toPayString = it.charge.amountPaid.toMoneyDouble().toReadablePriceString()
             }
+            alignBills()
         } catch (e: NumberFormatException) {
             view.showWrongPriceFormatError()
+        }
+    }
+
+    private fun alignBills() {
+        var remaining = dataHolder.purchase.price - dataHolder.charges.flatMap { listOf(it.charge.amountPaid) }.sum()
+        var iterator = dataHolder.charges.iterator()
+        while (remaining > 0) {
+            if (!iterator.hasNext())
+                iterator = dataHolder.charges.iterator()
+            iterator.next().apply {
+                charge.amountPaid++
+                toPayString = charge.amountPaid.toMoneyDouble().toReadablePriceString()
+            }
+            remaining--
+        }
+        while (remaining < 0) {
+            if (!iterator.hasNext())
+                iterator = dataHolder.charges.iterator()
+            iterator.next().apply {
+                charge.amountPaid--
+                toPayString = charge.amountPaid.toMoneyDouble().toReadablePriceString()
+            }
+            remaining++
         }
     }
 

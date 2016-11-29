@@ -18,6 +18,7 @@ interface PurchaseDialogContract : IContract {
         fun bindData(dataHolder: PurchaseDialogDataHolder)
         fun makeRedUnderPrice()
         fun notifyChange(position: Int)
+        fun resetSubtitleError()
     }
 
     abstract class Presenter : IContract.IPresenter<View>(){

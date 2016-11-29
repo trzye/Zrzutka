@@ -35,7 +35,7 @@ fun Contribution.addContributor(contributor: Contributor) {
     _contributors.add(contributor)
     _purchases.forEach {
         purchase ->
-        val newCharge = if (purchase._charges.isEmpty()) Charge(purchase.price, purchase.price) else Charge(0.0, 0.0)
+        val newCharge = if (purchase._charges.isEmpty()) Charge(purchase.price, purchase.price) else Charge(0, 0)
         link(contributor, newCharge, purchase)
     }
 }

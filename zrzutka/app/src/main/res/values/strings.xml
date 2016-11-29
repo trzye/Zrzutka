@@ -52,6 +52,7 @@
     <string name="contribution_deleted">Usunięto zrzutkę</string>
     <string name="contributions_deleted">Usunięto zrzutki</string>
     <string name="purchase_deleted">Usunięto zakup</string>
+    <string name="no_contributors_erros">Brak uczestników</string>
 
     <!-- Purchases item  -->
     <string name="contributor">Uczestnik</string>

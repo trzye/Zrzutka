@@ -1,7 +1,7 @@
 package trzye.zrzutka.fatclient.purchasesfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
-import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
+import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragmentContract
 import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
 import trzye.zrzutka.model.IDatabaseService
 import trzye.zrzutka.model.entity.contribution.Contribution
@@ -31,33 +31,25 @@ class PurchasesFragmentPresenter(private val databaseService: IDatabaseService) 
     }
 
     override fun addNewPurchase() {
+        if(dataHolder.contribution.contributors.isNotEmpty()) {
+            val toEdit = dataHolder.contribution.doCopy()
+            val purchaseToEdit = Purchase("", 0)
+            toEdit.addPurchase(purchaseToEdit)
 
-//        val actionOnOKClicked = { purchase: Purchase ->
-//            dataHolder.contribution.addPurchase(purchase)
-//            view.notifyPurchaseAdded(dataHolder.contribution.purchases.size-1, dataHolder.contribution.purchases.size)
-//            view.hidePurchaseRemovedInfoWithUndoOption()
-//        }
-//
-//        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
-//            startAsCreateNewPurchaseDialog(actionOnOKClicked)
-//        }.presenter
+            val actionOnOKClicked = { purchase: Purchase ->
+                dataHolder.contribution = toEdit
+                databaseService.save(dataHolder.contribution)
+                view.changeDataSet(dataHolder.contribution)
+            }
 
-        val toEdit = dataHolder.contribution.doCopy()
-        val purchaseToEdit = Purchase("", 0.0)
-        toEdit.addPurchase(purchaseToEdit)
+            val actionOnDismiss = {}
 
-        val actionOnOKClicked = { purchase: Purchase ->
-            dataHolder.contribution = toEdit
-            databaseService.save(dataHolder.contribution)
-            view.changeDataSet(dataHolder.contribution)
+            newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
+                startAsEditExistingPurchaseDialog(purchaseToEdit, actionOnOKClicked, actionOnDismiss)
+            }.presenter
+        } else {
+            view.showNoContributorsErrorMessage()
         }
-
-        val actionOnDismiss = {}
-
-        newPurchaseDialogPresenter = view.getPurchaseDialogView().apply {
-            startAsEditExistingPurchaseDialog(purchaseToEdit, actionOnOKClicked, actionOnDismiss)
-        }.presenter
-
     }
 
     override fun startDialogIfExists() {

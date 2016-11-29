@@ -15,7 +15,7 @@ import trzye.zrzutka.databinding.ItemChargeBinding
 import trzye.zrzutka.databinding.ItemPurchaseBinding
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
-import trzye.zrzutka.fatclient.contributorsfragment.PurchasesFragmentContract
+import trzye.zrzutka.fatclient.purchasesfragment.PurchasesFragmentContract
 import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialog
 import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
 import trzye.zrzutka.model.entity.contribution.Contribution
@@ -56,9 +56,9 @@ class PurchasesFragment(dataHolder: ContributionDataHolder?) : AbstractContribut
         purchasesRecyclerView.adapter = PurchasesAdapter(contribution)
     }
 
-//    override fun showPurchaseEditDialog(position: Int) {
-//        //TODO
-//    }
+    override fun showNoContributorsErrorMessage() {
+        Snackbar.make(fragmentView, R.string.no_contributors_erros, Snackbar.LENGTH_SHORT).show()
+    }
 
     override fun showPurchaseData(position: Int) {
         (purchasesRecyclerView.adapter as PurchasesAdapter).setVisible(position)

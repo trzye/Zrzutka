@@ -46,8 +46,8 @@ private fun Contribution.addMergedPurchase(mergedPurchase: Purchase) {
         val newCharge = Charge()
         if(friendInMergedPurchaseFound(contributor, mergedPurchase)){
             val foundCharge = mergedPurchase._charges.find { it.charged?.friend?.id == contributor.friend.id }
-            newCharge.amountPaid = foundCharge?.amountPaid ?: 0.0
-            newCharge.amountToPay = foundCharge?.amountToPay ?: 0.0
+            newCharge.amountPaid = foundCharge?.amountPaid ?: 0
+            newCharge.amountToPay = foundCharge?.amountToPay ?: 0
         }
         linkChargeAndPurchase(newCharge, newPurchase)
         linkChargeAndContributor(contributor, newCharge)

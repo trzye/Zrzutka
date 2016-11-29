@@ -8,8 +8,22 @@ import java.util.*
 
 fun Contribution.getDebtList() : List<DebtDTO>{
     val calculator: SummaryCalculator = SimpleSummaryCalculator()
-    val debtList = calculator.calculateDebtList(this)
+    var debtList = calculator.calculateDebtList(this)
+    debtList = preciseCalculation(debtList)
     return sortResult(summary.sortedColumn, summary.isSortedDescending, debtList)
+}
+
+private fun Contribution.preciseCalculation(debtList: MutableList<DebtDTO>): MutableList<DebtDTO> {
+    var debtList1 = debtList
+    if (summary.preciseCalculation.not()) {
+        debtList1.forEach {
+            val rest = it.amount % 100
+            if (rest > 49) it.amount += 100 - rest
+            else it.amount -= rest
+        }
+        debtList1 = debtList1.filter { it.amount > 0 }.toMutableList()
+    }
+    return debtList1
 }
 
 private fun sortResult(sortedColumn: SortedColumn, isSortedDescending: Boolean, debtList: List<DebtDTO>) =
@@ -30,16 +44,16 @@ private fun sortDescending(sortedColumn: SortedColumn, debtList: List<DebtDTO>) 
 //TODO
 private class SimpleSummaryCalculator : SummaryCalculator {
 
-    override fun calculateDebtList(contribution: Contribution): List<DebtDTO> {
+    override fun calculateDebtList(contribution: Contribution): MutableList<DebtDTO> {
         val debtList: MutableList<DebtDTO> = mutableListOf()
         val sortedDebts = getSortedDebts(contribution)
         debtList.addAll(sortedDebts.flatMap { listOf(DebtDTO(it.first.friend, it.first.friend, it.second)) })
         return debtList
     }
 
-    private fun getSortedDebts(contribution: Contribution): List<Pair<Contributor, Double>> {
-        val chargedAndDebt = HashMap<Contributor, Double>().apply {
-            putAll(contribution.contributors.map { it to 0.0 })
+    private fun getSortedDebts(contribution: Contribution): List<Pair<Contributor, Long>> {
+        val chargedAndDebt = HashMap<Contributor, Long>().apply {
+            putAll(contribution.contributors.map { it to 0L })
         }
         chargedAndDebt.entries.forEach {
             entry ->
@@ -48,12 +62,12 @@ private class SimpleSummaryCalculator : SummaryCalculator {
             }
         }
         val sortedDebts = sort(chargedAndDebt).flatMap { listOf(Pair(it.key, it.value)) }
-        return ArrayList<Pair<Contributor, Double>>().apply { addAll(sortedDebts) }
+        return ArrayList<Pair<Contributor, Long>>().apply { addAll(sortedDebts) }
     }
 
-    private fun sort(chargedAndDebt: MutableMap<Contributor, Double>) = chargedAndDebt.entries.sortedBy { it.value }
+    private fun sort(chargedAndDebt: MutableMap<Contributor, Long>) = chargedAndDebt.entries.sortedBy { it.value }
 }
 
 private interface SummaryCalculator {
-    fun calculateDebtList(contribution: Contribution): List<DebtDTO>
+    fun calculateDebtList(contribution: Contribution): MutableList<DebtDTO>
 }

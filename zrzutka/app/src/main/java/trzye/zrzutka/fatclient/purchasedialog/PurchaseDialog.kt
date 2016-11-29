@@ -41,6 +41,9 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
         this.presenter.show()
     }
 
+    override fun resetSubtitleError() {
+        binding.purchaseSubtitle.setBackgroundResource(R.color.transparent)
+    }
 
     override fun startAsEditExistingPurchaseDialog(purchase: Purchase, actionOnSuccess: (Purchase) -> Unit, actionOnDismiss: () -> Unit) {
         show()
@@ -128,11 +131,11 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
             if(purchase.charges[position].isWrongPaid)
                 binding.chargeContributorPaid.setBackgroundResource(R.color.colorErrorTransparent)
             else
-                binding.chargeContributorPaid.setBackgroundResource(R.color.colorTextOnPrimary)
+                binding.chargeContributorPaid.setBackgroundResource(R.color.transparent)
             if(purchase.charges[position].isWrongToPay)
                 binding.chargeContributorToPay.setBackgroundResource(R.color.colorErrorTransparent)
             else
-                binding.chargeContributorToPay.setBackgroundResource(R.color.colorTextOnPrimary)
+                binding.chargeContributorToPay.setBackgroundResource(R.color.transparent)
             binding.chargeContributorPaid.setTransparentBackgroundOnTouch()
             binding.chargeContributorToPay.setTransparentBackgroundOnTouch()
         }

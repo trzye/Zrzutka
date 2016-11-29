@@ -1,4 +1,4 @@
-package trzye.zrzutka.fatclient.contributorsfragment
+package trzye.zrzutka.fatclient.purchasesfragment
 
 import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
 import trzye.zrzutka.fatclient.purchasedialog.PurchaseDialogContract
@@ -6,7 +6,7 @@ import trzye.zrzutka.model.entity.contribution.Contribution
 
 interface PurchasesFragmentContract : IContributionContract {
 
-    interface View : IContributionContract.IContributionView<Presenter>{
+    interface View : IContributionContract.IContributionView<Presenter> {
         fun bindData(contribution: Contribution)
         fun changeDataSet(contribution: Contribution)
         fun notifyPurchaseAdded(position: Int, listSize: Int)
@@ -19,8 +19,8 @@ interface PurchasesFragmentContract : IContributionContract {
         fun hidePurchaseRemovedInfoWithUndoOption()
         fun showPurchaseData(position: Int)
         fun hidePurchaseData(position: Int)
-//        fun showPurchaseEditDialog(position: Int)
         fun getPurchaseDialogView() : PurchaseDialogContract.View
+        fun showNoContributorsErrorMessage()
     }
 
     abstract class Presenter : IContributionContract.IContributionPresenter<View>() {

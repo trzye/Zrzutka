@@ -4,8 +4,8 @@ fun Purchase.validate() : PurchaseValidationStatus{
     val price = this.price
     val sumToPay = this.charges.flatMap { listOf(it.amountToPay) }.sum()
     val sumPaid = this.charges.flatMap { listOf(it.amountPaid) }.sum()
-    if(!sumToPay.equalsRounded(price)) return PurchaseValidationStatus.WRONG_TO_PAY_SUM
-    if(!sumPaid.equalsRounded(price)) return PurchaseValidationStatus.WRONG_PAID_SUM
+    if(sumToPay != price) return PurchaseValidationStatus.WRONG_TO_PAY_SUM
+    if(sumPaid != price) return PurchaseValidationStatus.WRONG_PAID_SUM
     return PurchaseValidationStatus.OK
 }
 
