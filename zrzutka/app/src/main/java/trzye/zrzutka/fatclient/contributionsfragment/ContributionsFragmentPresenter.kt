@@ -82,7 +82,7 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
         if(contributionsDTO.checked.count { it == true } > 1) {
             val contributionsToMerge = mutableListOf<Contribution>()
             contributionsDTO.checked.forEachIndexed { i, isChecked ->
-                contributionsToMerge.add(contributionsDTO.contributions[i])
+                if(isChecked) contributionsToMerge.add(contributionsDTO.contributions[i])
             }
             var newContribution: Contribution = ContributionsMerger.merge(contributionsToMerge)
             val id = databaseService.save(newContribution)

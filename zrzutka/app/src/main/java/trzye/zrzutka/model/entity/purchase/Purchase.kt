@@ -16,7 +16,7 @@ class Purchase private constructor(
         name: String,
         price: Double,
         @OneToOne var contribution: Contribution?,
-        @Column val colorId: Int = randColor(),
+        @Column var colorId: Int = randColor(),
         @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
 ) : BaseObservable(), Copyable<Purchase> {
 
