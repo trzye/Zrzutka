@@ -42,6 +42,8 @@ class ChooseContributorsDialogPresenter() : ChooseContributorsDialogContract.Pre
         actionOnAddSelectedFriends(friends.flatMap {
             if(it.isChoosed) listOf(it.friend) else listOf()
         })
+        isDone = true
+        view.dismissView()
     }
 
     override fun startDialogsIfExists() {

@@ -111,7 +111,7 @@ class ChooseContributorsDialog(private val activity: Activity) : Dialog(activity
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding: ItemChooseContributorBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_friend, parent, false)
+            val binding: ItemChooseContributorBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_choose_contributor, parent, false)
             return ViewHolder(binding)
         }
 

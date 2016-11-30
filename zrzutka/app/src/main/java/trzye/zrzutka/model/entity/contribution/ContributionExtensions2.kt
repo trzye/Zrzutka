@@ -15,7 +15,7 @@ fun Contribution.getDebtList() : List<DebtDTO>{
 
 private fun Contribution.preciseCalculation(debtList: MutableList<DebtDTO>): MutableList<DebtDTO> {
     var debtList1 = debtList
-    if (summary.preciseCalculation.not()) {
+    if (!summary.preciseCalculation) {
         debtList1.forEach {
             val rest = it.amount % 100
             if (rest > 49) it.amount += 100 - rest
