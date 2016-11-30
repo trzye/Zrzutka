@@ -1,6 +1,5 @@
-package pl.edu.pw.ee.jereczem.krs.rest.services.hello
-
-data class ContributionDTO private constructor(
+package pl.edu.pw.ee.jereczem.krs.model
+data class ContributionSummaryDTO private constructor(
         val title: String,
         val subtitle: String,
         val preciseMode: String,
@@ -11,7 +10,7 @@ data class ContributionDTO private constructor(
     constructor() : this("","", "")
 }
 
-private data class DebtDTO private constructor(
+data class DebtDTO private constructor(
         val whoPays: String,
         val toWhom: String,
         val amount: String
@@ -19,7 +18,7 @@ private data class DebtDTO private constructor(
     constructor() : this("","", "")
 }
 
-private data class PurchaseDTO private constructor(
+data class PurchaseDTO private constructor(
         val name: String,
         val price: String,
         val charges: List<ChargeDTO> = emptyList()
@@ -27,7 +26,7 @@ private data class PurchaseDTO private constructor(
     constructor() : this("","")
 }
 
-private data class ChargeDTO private constructor(
+data class ChargeDTO private constructor(
         val charged: String,
         val paid: String,
         val toPay: String
@@ -35,7 +34,7 @@ private data class ChargeDTO private constructor(
     constructor() : this("","","")
 }
 
-private data class ContributorDTO private constructor(
+data class ContributorDTO private constructor(
         val nickname: String,
         val contactInformation: String,
         val paymentInformation: String
