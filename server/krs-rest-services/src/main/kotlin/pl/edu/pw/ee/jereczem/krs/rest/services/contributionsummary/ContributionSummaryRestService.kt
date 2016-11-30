@@ -2,7 +2,6 @@ package pl.edu.pw.ee.jereczem.krs.rest.services.contributionsummary
 
 import pl.edu.pw.ee.jereczem.krs.business.ContributionSummaryController
 import pl.edu.pw.ee.jereczem.krs.model.ContributionSummaryDTO
-import pl.edu.pw.ee.jereczem.krs.model.ContributorDTO
 import pl.edu.pw.ee.jereczem.krs.rest.BeanProvider
 import java.net.HttpURLConnection
 import javax.ws.rs.*
@@ -39,71 +38,149 @@ private fun ContributionSummaryDTO.createHtml(): String {
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>${this.title}</title>
-        <style type="text/css">body {
-            margin: 40px auto;
-            max-width: 650px;
-            line-height: 1.6;
-            font-size: 18px;
-            color: #444;
-            padding: 0 10px
-        }
-        h1, h2, h3 {
-            line-height: 1.2
-        }</style>
-    </head>
-    <body>
-        <h1>${this.title}</h1>
-        <p>Czas: ${this.subtitle}</p>
-    """)
-
-    if(this.preciseMode == "true")
-        htmlBuilder.append("""
-        <p>Tryb: dokładny</p>
-    """) else {
-        htmlBuilder.append("""
-        <p>Tryb: zaokrąglony</p>
-    """)
+        <title>Zrzutka: ${this.title}</title>
+    <style type="text/css">body {
+        margin: 40px auto;
+        max-width: 650px;
+        line-height: 1.6;
+        font-size: 18px;
+        color: #444;
+        padding: 0 10px
     }
 
-    if(this.contributors.isNotEmpty()) {
-        htmlBuilder.append("<h2>Uczestnicy</h2>")
-        htmlBuilder.append("<ol>")
-        this.contributors.forEach {
+    h1, h2, h3 {
+        line-height: 1.2
+    }
+
+    table, td, th {
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+
+    h2 {
+        color: #F90B6D;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 24px;
+    }
+
+    h3 {
+        color: #F90B6D;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+    }
+
+    th {
+        background-color: palevioletred;
+        color: white;
+    }
+
+    </style>
+    </head>
+    <body>
+        <h2>Dane zrzutki</h2>
+    """)
+
+    val type = if(this.preciseMode == "true") "dokładny" else "zaokrąglenie"
+
+    htmlBuilder.append("""
+    <table border="1" cellpadding="5">
+    <tr>
+        <th>Nazwa zrzutki</th>
+        <th>Data</th>
+        <th>Tryb</th>
+    </tr>
+    <tr>
+        <td>$title</td>
+        <td>$subtitle</td>
+        <td>$type</td>
+    </tr>
+    </table>
+    """)
+
+
+    if(this.debts.isNotEmpty()){
+        htmlBuilder.append("<h2>Rozliczenie</h2>")
+        htmlBuilder.append("""
+            <table border="1" cellpadding="5">
+            <tr>
+                <th>Kto?</th>
+                <th>Komu?</th>
+                <th>Ile?</th>
+            </tr>
+        """)
+        this.debts.forEach {
             htmlBuilder.append("""
-                    <li>${it.nickname}</li>
+            <tr>
+                <td>${it.whoPays}</td>
+                <td>${it.toWhom}</td>
+                <td>${it.amount}</td>
+            </tr>
             """)
-            if(it.contactInformation.isNotBlank() || it.paymentInformation.isNotBlank()){
-                htmlBuilder.append("<ul>")
-                if(it.contactInformation.isNotBlank()){
-                    htmlBuilder.append("""
-                        <li>Dane kontaktowe: ${it.contactInformation}</li>
-                    """)
-                }
-                if(it.paymentInformation.isNotBlank()){
-                    htmlBuilder.append("""
-                        <li>Dane płatności: ${it.paymentInformation}</li>
-                    """)
-                }
-                htmlBuilder.append("</ul>")
-            }
         }
-        htmlBuilder.append("</ol>")
+        htmlBuilder.append("</table>")
+    }
+
+    if(this.contributors.filter { it.contactInformation.isNotBlank() }.isNotEmpty()){
+        htmlBuilder.append("<h2>Dane kontaktowe</h2>")
+        htmlBuilder.append("""
+            <table border="1" cellpadding="5">
+            <tr>
+                <th>Uczestnik</th>
+                <th>Kontakt</th>
+            </tr>
+        """)
+        this.contributors.filter { it.contactInformation.isNotBlank() }.forEach {
+            htmlBuilder.append("""
+            <tr>
+                <td>${it.nickname}</td>
+                <td>${it.contactInformation}</td>
+            </tr>
+            """)
+        }
+        htmlBuilder.append("</table>")
+    }
+
+    if(this.contributors.filter { it.paymentInformation.isNotBlank() }.isNotEmpty()){
+        htmlBuilder.append("<h2>Dane płatności</h2>")
+        htmlBuilder.append("""
+            <table border="1" cellpadding="5">
+            <tr>
+                <th>Uczestnik</th>
+                <th>Płatność</th>
+            </tr>
+        """)
+        this.contributors.filter { it.paymentInformation.isNotBlank() }.forEach {
+            htmlBuilder.append("""
+            <tr>
+                <td>${it.nickname}</td>
+                <td>${it.paymentInformation}</td>
+            </tr>
+            """)
+        }
+        htmlBuilder.append("</table>")
     }
 
     if(this.purchases.isNotEmpty()){
         htmlBuilder.append("<h2>Zakupy</h2>")
-        htmlBuilder.append("<ol>")
         this.purchases.forEach {
             htmlBuilder.append("""
-                    <li>${it.name} - koszt: ${it.price}</li>
+                    <h3>${it.name} - ${it.price}</h3>
             """)
             htmlBuilder.append("""
-            <table cellpadding="6">
+            <table border="1" cellpadding="5">
             <tr>
-                <td><b>Uczestnik</b></td>
-                <td><b>Należność</b></td>
-                <td><b>Wpłata</b></td>
+                <th>Uczestnik</th>
+                <th>Należność</th>
+                <th>Wpłata</th>
             </tr>
             """)
             it.charges.forEach {
@@ -117,29 +194,6 @@ private fun ContributionSummaryDTO.createHtml(): String {
             }
             htmlBuilder.append("</table>")
         }
-        htmlBuilder.append("</ol>")
-    }
-
-    if(this.debts.isNotEmpty()){
-        htmlBuilder.append("<h2>Rozliczenie</h2>")
-        htmlBuilder.append("""
-            <table cellpadding="6">
-            <tr>
-                <td><b>Kto?</b></td>
-                <td><b>Komu?</b></td>
-                <td><b>Ile?</b></td>
-            </tr>
-        """)
-        this.debts.forEach {
-            htmlBuilder.append("""
-            <tr>
-                <td>${it.whoPays}</td>
-                <td>${it.toWhom}</td>
-                <td>${it.amount}</td>
-            </tr>
-            """)
-        }
-        htmlBuilder.append("</table>")
     }
 
     htmlBuilder.append("""

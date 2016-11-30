@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.summaryfragment.SummaryFragmentContract.View
 import trzye.zrzutka.model.IDatabaseService
+import trzye.zrzutka.model.ModelProvider
 import trzye.zrzutka.model.dto.web.ContributionDTO
 import trzye.zrzutka.model.entity.summary.SortedColumn
 
@@ -60,23 +61,8 @@ class SummaryFragmentPresenter(private val databaseService: IDatabaseService) : 
     private class Task : AsyncTask<ContributionDTO, Void, Long>(){
         override fun doInBackground(vararg params: ContributionDTO): Long {
             try {
-//                val restTemplate = RestTemplate().apply {
-//                    requestFactory = SimpleClientHttpRequestFactory().apply {
-//                        setConnectTimeout(6000) // 6 seconds
-//                    }
-//                }
-                val uri = UriComponentsBuilder.fromHttpUrl("http://192.168.1.10").port(8080).path("/krs-rest-services").build().toUri()
+                val uri = UriComponentsBuilder.fromHttpUrl("http://${ModelProvider.IP}").port(8080).path("/krs-rest-services").build().toUri()
                 val request = Gson().toJson(params[0])
-//
-//                val headers = HttpHeaders().apply {
-//                    contentType = MediaType.APPLICATION_JSON
-//                }
-//
-//                val entity = HttpEntity<String>(request, headers)
-//
-//                Log.d("D/Zrzutka", request)
-//
-//                return restTemplate.exchange(uri, HttpMethod.POST, entity, Long::class.java).body
 
                 val headers = HttpHeaders();
                 headers.contentType = MediaType.APPLICATION_JSON
