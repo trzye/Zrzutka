@@ -24,6 +24,7 @@ dependencies {
     earlib project(":krs-data-model")
     earlib project(":krs-request-transport-objects")
     compile "com.google.code.gson:gson:2.8.0"
+    compile group: 'com.googlecode.owasp-java-html-sanitizer', name: 'owasp-java-html-sanitizer', version: 'r239'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     providedCompile "javax:javaee-api:7.0"
 }

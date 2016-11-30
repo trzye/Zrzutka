@@ -1,5 +1,6 @@
 package pl.edu.pw.ee.jereczem.krs.rest.services.contributionsummary
 
+import org.owasp.html.HtmlPolicyBuilder
 import pl.edu.pw.ee.jereczem.krs.business.ContributionSummaryController
 import pl.edu.pw.ee.jereczem.krs.model.ContributionSummaryDTO
 import pl.edu.pw.ee.jereczem.krs.rest.BeanProvider
@@ -31,6 +32,10 @@ class ContributionSummaryRestService {
 
 }
 
+fun String.sanitize() : String {
+    return HtmlPolicyBuilder().toFactory().sanitize(this)
+}
+
 private fun ContributionSummaryDTO.createHtml(): String {
     val htmlBuilder = StringBuilder("""
     <!DOCTYPE html>
@@ -38,7 +43,7 @@ private fun ContributionSummaryDTO.createHtml(): String {
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Zrzutka: ${this.title}</title>
+        <title>Zrzutka: ${this.title.sanitize()}</title>
     <style type="text/css">body {
         margin: 40px auto;
         max-width: 650px;
@@ -99,8 +104,8 @@ private fun ContributionSummaryDTO.createHtml(): String {
         <th>Tryb</th>
     </tr>
     <tr>
-        <td>$title</td>
-        <td>$subtitle</td>
+        <td>${title.sanitize()}</td>
+        <td>${subtitle.sanitize()}</td>
         <td>$type</td>
     </tr>
     </table>
@@ -120,9 +125,9 @@ private fun ContributionSummaryDTO.createHtml(): String {
         this.debts.forEach {
             htmlBuilder.append("""
             <tr>
-                <td>${it.whoPays}</td>
-                <td>${it.toWhom}</td>
-                <td>${it.amount}</td>
+                <td>${it.whoPays.sanitize()}</td>
+                <td>${it.toWhom.sanitize()}</td>
+                <td>${it.amount.sanitize()}</td>
             </tr>
             """)
         }
@@ -141,8 +146,8 @@ private fun ContributionSummaryDTO.createHtml(): String {
         this.contributors.filter { it.contactInformation.isNotBlank() }.forEach {
             htmlBuilder.append("""
             <tr>
-                <td>${it.nickname}</td>
-                <td>${it.contactInformation}</td>
+                <td>${it.nickname.sanitize()}</td>
+                <td>${it.contactInformation.sanitize()}</td>
             </tr>
             """)
         }
@@ -161,8 +166,8 @@ private fun ContributionSummaryDTO.createHtml(): String {
         this.contributors.filter { it.paymentInformation.isNotBlank() }.forEach {
             htmlBuilder.append("""
             <tr>
-                <td>${it.nickname}</td>
-                <td>${it.paymentInformation}</td>
+                <td>${it.nickname.sanitize()}</td>
+                <td>${it.paymentInformation.sanitize()}</td>
             </tr>
             """)
         }
@@ -173,7 +178,7 @@ private fun ContributionSummaryDTO.createHtml(): String {
         htmlBuilder.append("<h2>Zakupy</h2>")
         this.purchases.forEach {
             htmlBuilder.append("""
-                    <h3>${it.name} - ${it.price}</h3>
+                    <h3>${it.name.sanitize()} - ${it.price.sanitize()}</h3>
             """)
             htmlBuilder.append("""
             <table border="1" cellpadding="5">
@@ -186,9 +191,9 @@ private fun ContributionSummaryDTO.createHtml(): String {
             it.charges.forEach {
                 htmlBuilder.append("""
                 <tr>
-                    <td>${it.charged}</td>
-                    <td>${it.toPay}</td>
-                    <td>${it.paid}</td>
+                    <td>${it.charged.sanitize()}</td>
+                    <td>${it.toPay.sanitize()}</td>
+                    <td>${it.paid.sanitize()}</td>
                 </tr>
                 """)
             }

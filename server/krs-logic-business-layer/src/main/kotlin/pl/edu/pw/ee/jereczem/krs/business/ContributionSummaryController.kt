@@ -1,6 +1,7 @@
 package pl.edu.pw.ee.jereczem.krs.business
 
 import com.google.gson.Gson
+import org.owasp.html.HtmlPolicyBuilder
 import pl.edu.pw.ee.jereczem.krs.dao.ContributionSummaryDAO
 import pl.edu.pw.ee.jereczem.krs.model.ContributionSummary
 import pl.edu.pw.ee.jereczem.krs.model.ContributionSummaryDTO
@@ -27,7 +28,9 @@ open class ContributionSummaryController {
     }
 
     open fun saveContributionSummary(summary: ContributionSummaryDTO) : Long {
-        val newContributionSummary = ContributionSummary(jsonData = gson.toJson(summary))
+        val newContributionSummary = ContributionSummary(
+                jsonData = gson.toJson(summary)
+        )
         return contributionSummaryDAO.saveContributionSummary(newContributionSummary)
     }
 
