@@ -1,5 +1,6 @@
 package trzye.zrzutka.fatclient.contributorsfragment
 
+import trzye.zrzutka.fatclient.choosecontributorsdialog.ChooseContributorsDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract.Presenter
 import trzye.zrzutka.fatclient.contributorsfragment.ContributorsFragmentContract.View
@@ -19,7 +20,7 @@ class ContributorsFragmentPresenter(private val databaseService: IDatabaseServic
     private lateinit var lastState: Contribution
     private lateinit var dataHolder: ContributionDataHolder
     private var readFriendDialogPresenter: ReadFriendDialogContract.Presenter? = null
-
+    private var chooseContributorsDialogPresenter: ChooseContributorsDialogContract.Presenter? = null
 
     override fun init(dataHolder: ContributionDataHolder) {
         this.dataHolder = dataHolder
@@ -32,12 +33,22 @@ class ContributorsFragmentPresenter(private val databaseService: IDatabaseServic
 
     override fun addNewContributor() {
         view.hideContributorRemovedInfoWithUndoOption()
-        val friend = Friend("TEST ${friendNo++}") //TODO
-        val contributor = Contributor(friend)//TODO
-//        friend._contributors?.add(contributor)//TODO
-        dataHolder.contribution.addContributor(contributor) ///TODO
-        view.notifyContributorAdded(dataHolder.contribution.contributors.size-1, dataHolder.contribution.contributors.size)
-        databaseService.save(dataHolder.contribution)
+
+        chooseContributorsDialogPresenter = view.getChooseContributorsDialog().apply {
+            startAsChooseContributorsDialog(
+                    withoutFriends = dataHolder.contribution.contributors.flatMap { listOf(it.friend) },
+                    actionOnAddSelectedFriends = {
+                        friends: List<Friend> ->
+                        friends.forEach { friend ->
+                            val contributor = Contributor(friend)
+                            dataHolder.contribution.addContributor(contributor)
+                            view.notifyContributorAdded(dataHolder.contribution.contributors.size-1, dataHolder.contribution.contributors.size)
+                            databaseService.save(dataHolder.contribution)
+                        }
+                    }
+            )
+        }.presenter
+
     }
 
     override fun removeContributor(position: Int) {
@@ -72,8 +83,12 @@ class ContributorsFragmentPresenter(private val databaseService: IDatabaseServic
 
     override fun startDialogIfExists() {
         val readPresenter = readFriendDialogPresenter
+        val choosePresenter = chooseContributorsDialogPresenter
         if ((readPresenter != null) && (readPresenter.isDone() == false)) {
             view.getReadFriendDialog().start(readPresenter)
+        }
+        if ((choosePresenter != null) && (choosePresenter.isDone() == false)) {
+            view.getChooseContributorsDialog().start(choosePresenter)
         }
     }
 

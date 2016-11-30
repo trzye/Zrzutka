@@ -1,7 +1,7 @@
 package trzye.zrzutka.fatclient.contributorsfragment
 
+import trzye.zrzutka.fatclient.choosecontributorsdialog.ChooseContributorsDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.IContributionContract
-import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialog
 import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialogContract
 import trzye.zrzutka.model.entity.contribution.Contribution
 
@@ -19,6 +19,7 @@ interface ContributorsFragmentContract : IContributionContract {
         fun showContributorRemovedInfoWithUndoOption()
         fun hideContributorRemovedInfoWithUndoOption()
         fun getReadFriendDialog() : ReadFriendDialogContract.View
+        fun getChooseContributorsDialog(): ChooseContributorsDialogContract.View
     }
 
     abstract class Presenter : IContributionContract.IContributionPresenter<View>() {

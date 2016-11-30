@@ -1,0 +1,77 @@
+<layout>
+
+    <data>
+
+        <variable
+            name="chooseContributor"
+            type="trzye.zrzutka.fatclient.choosecontributorsdialog.ChooseContributorsDataHolder" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_contributor_id"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp">
+
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/contributorCircle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@{chooseContributor.friend.color}" />
+
+                <TextView
+                    android:id="@+id/contributorInitials"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@{chooseContributor.friend.initials}"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/contributorsName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/frameLayout"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:text="@{chooseContributor.friend.showingName}"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/contributorsChoose"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:checked="@={chooseContributor.choosed}"
+                android:theme="@style/AppTheme" />
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginLeft="72dp"
+            android:alpha="0.12"
+            android:background="@color/colorBlack" />
+
+    </LinearLayout>
+</layout>

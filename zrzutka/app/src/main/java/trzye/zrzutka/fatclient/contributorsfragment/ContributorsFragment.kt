@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import trzye.zrzutka.R
 import trzye.zrzutka.databinding.ItemContributorBinding
+import trzye.zrzutka.fatclient.choosecontributorsdialog.ChooseContributorsDialog
+import trzye.zrzutka.fatclient.choosecontributorsdialog.ChooseContributorsDialogContract
 import trzye.zrzutka.fatclient.contributionfragment.AbstractContributionFragment
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
 import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialog
@@ -48,6 +50,10 @@ class ContributorsFragment(dataHolder: ContributionDataHolder?) : AbstractContri
 
     override fun getReadFriendDialog(): ReadFriendDialogContract.View {
         return ReadFriendDialog(activity)
+    }
+
+    override fun getChooseContributorsDialog(): ChooseContributorsDialogContract.View {
+        return ChooseContributorsDialog(activity)
     }
 
     override fun bindData(contribution: Contribution) {
