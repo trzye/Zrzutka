@@ -24,7 +24,7 @@ class ContributionSummaryRestService {
             throw WebApplicationException(HttpURLConnection.HTTP_NOT_FOUND)
     }
 
-    @PUT
+    @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
     fun saveSummary(contribution: ContributionSummaryDTO)

@@ -28,6 +28,7 @@ open class ContributionSummaryController {
     }
 
     open fun saveContributionSummary(summary: ContributionSummaryDTO) : Long {
+        logger.info(gson.toJson(summary))
         val newContributionSummary = ContributionSummary(
                 jsonData = gson.toJson(summary)
         )

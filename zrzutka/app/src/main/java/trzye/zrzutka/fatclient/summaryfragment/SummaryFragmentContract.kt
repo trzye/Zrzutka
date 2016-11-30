@@ -10,6 +10,10 @@ interface SummaryFragmentContract : IContributionContract {
         fun changeDataSet(contribution: Contribution)
         fun setPreciseModeSwitchActive()
         fun setPreciseModeSwitchInactive()
+        fun showLoadingView()
+        fun dismissLoadingView()
+        fun showConnectionErrorMessage()
+        fun showShareResultDialog(result: Long)
     }
 
     abstract class Presenter : IContributionContract.IContributionPresenter<View>() {

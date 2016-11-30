@@ -1,0 +1,17 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+    <TextView
+        android:paddingTop="32dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="TEST"
+        android:gravity="center"
+        android:autoLink="web"
+        android:id="@+id/linkTextView" />
+
+</LinearLayout>
