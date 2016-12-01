@@ -110,7 +110,7 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
     }
 
     override fun setPreciseModeSwitchInactive() {
-        switchPreciseMode.isEnabled = false
+        switchPreciseMode.isEnabled = true //better to be active always
     }
 
     override fun bindData(contribution: Contribution) {
@@ -119,6 +119,7 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
     }
 
     override fun changeDataSet(contribution: Contribution) {
+        switchPreciseMode.isChecked = contribution.summary.preciseCalculation
         (summaryRecyclerView.adapter as SummaryAdapter).apply {
             this.debts = contribution.getDebtList()
             notifyDataSetChanged()

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
+import android.widget.Toast
 import trzye.zrzutka.R
 import trzye.zrzutka.androidmvp.AbstractFragment
 import trzye.zrzutka.databinding.ItemContributionBinding
@@ -90,6 +91,10 @@ class ContributionsFragment() : AbstractFragment<ContributionsFragmentContract.V
 
     override fun getContributionActivityView(): ContributionActivityContract.View {
         return ContributionActivity(activity)
+    }
+
+    override fun showMergeAtLeastTwoContributions() {
+        Toast.makeText(activity, "Wybierz conajmniej dwie zrzutki", Toast.LENGTH_SHORT).show()
     }
 
     private fun makeContributionRemovedInfoSnackBar() : Snackbar {

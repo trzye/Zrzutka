@@ -9,7 +9,7 @@ class ApplicationSingleton : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        deleteDatabase(DATABASE_FILENAME)
+//        deleteDatabase(DATABASE_FILENAME)
         ModelProvider.databaseService = DatabaseService(this)
     }
 

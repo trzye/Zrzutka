@@ -18,6 +18,7 @@ interface ContributionsFragmentContract : IContract{
         fun showContributionsRemovedInfo()
         fun hideInformationAboutRemovingContribution()
         fun getContributionActivityView() : ContributionActivityContract.View
+        fun showMergeAtLeastTwoContributions()
     }
     abstract class Presenter : IContract.IPresenter<View>(){
         abstract fun bindData()

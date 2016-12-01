@@ -26,7 +26,7 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
     val purchaseDao: Dao<Purchase, Long> = getDao(Purchase::class.java)
     val chargeDao: Dao<Charge, Long> = getDao(Charge::class.java)
 
-    override fun getAllFriends(): List<Friend> = friendDao.queryForAll()
+    override fun getAllFriends(): List<Friend> = friendDao.queryForAll().asReversed()
 
     override fun save(friend: Friend) {
         saveFriend(friend)
@@ -48,8 +48,7 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
             }
 
     override fun getAllContributions(): List<Contribution> {
-        return contributionDao.queryForAll().flatMap { listOf(getContribution(it.id))
-        }.sortedBy { -it.chargeUniqueNumberForSorting }
+        return contributionDao.queryForAll().flatMap { listOf(getContribution(it.id)) }.asReversed()
     }
 
     override fun removeFriend(friend: Friend) {

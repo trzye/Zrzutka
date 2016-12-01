@@ -14,11 +14,13 @@ class ContributionActivityPresenter(private val databaseService: IDatabaseServic
     override fun editContribution(contributionId: Long) {
         init(contributionId)
         dataHolder.isEditable = true
+        dataHolder.isStartedAsRead = false
     }
 
     override fun readContribution(contributionId: Long) {
         init(contributionId)
         dataHolder.isEditable = false
+        dataHolder.isStartedAsRead = true
     }
 
     private fun init(contributionId: Long) {

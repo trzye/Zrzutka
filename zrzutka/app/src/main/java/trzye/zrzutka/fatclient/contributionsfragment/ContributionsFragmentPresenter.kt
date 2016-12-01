@@ -90,6 +90,8 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
             contributionsDTO.contributions.add(0, newContribution)
             contributionsDTO.checked.add(0, false)
             view.notifyContributionAdded(0, contributionsDTO.contributions.size)
+        } else {
+            view.showMergeAtLeastTwoContributions()
         }
     }
 

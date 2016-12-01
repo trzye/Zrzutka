@@ -127,9 +127,15 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
 
         if(dataHolder.views.isEmpty()) {
-            fragments.add(ContributorsFragment(dataHolder))
-            fragments.add(PurchasesFragment(dataHolder))
-            fragments.add(SummaryFragment(dataHolder))
+            if(!dataHolder.isStartedAsRead) {
+                fragments.add(ContributorsFragment(dataHolder))
+                fragments.add(PurchasesFragment(dataHolder))
+                fragments.add(SummaryFragment(dataHolder))
+            } else {
+                fragments.add(SummaryFragment(dataHolder))
+                fragments.add(PurchasesFragment(dataHolder))
+                fragments.add(ContributorsFragment(dataHolder))
+            }
             dataHolder.views.addAll(fragments)
         } else {
             fragments.clear()
