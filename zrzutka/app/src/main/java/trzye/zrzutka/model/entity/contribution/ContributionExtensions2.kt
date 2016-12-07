@@ -45,13 +45,28 @@ private fun sortDescending(sortedColumn: SortedColumn, debtList: List<DebtDTO>) 
 private class SimpleSummaryCalculator : SummaryCalculator {
 
     override fun calculateDebtList(contribution: Contribution): MutableList<DebtDTO> {
-        val debtList: MutableList<DebtDTO> = mutableListOf()
-        val sortedDebts = getSortedDebts(contribution)
-        debtList.addAll(sortedDebts.flatMap { listOf(DebtDTO(it.first.friend, it.first.friend, it.second)) })
-        return debtList
+        val resultDebtList: MutableList<DebtDTO> = mutableListOf()
+        val debts = getSortedDebts(contribution)
+
+        while (debts.find { it.debt != 0L } != null){
+            debts.sortByDescending { it.debt }
+            val debt = DebtDTO(
+                    debts.first().contributor.friend
+                    , debts.last().contributor.friend
+                    , if(debts.first().debt > (debts.last().debt * -1)) (debts.last().debt * -1) else debts.first().debt
+            )
+            resultDebtList.add(debt)
+            debts.first().debt -= debt.amount
+            debts.last().debt += debt.amount
+        }
+
+//        resultDebtList.addAll(debts.flatMap { listOf(DebtDTO(it.contributor.friend, it.contributor.friend, it.debt)) })
+        return resultDebtList
     }
 
-    private fun getSortedDebts(contribution: Contribution): List<Pair<Contributor, Long>> {
+    inner class DebtData(val contributor: Contributor, var debt: Long)
+
+    private fun getSortedDebts(contribution: Contribution): MutableList<DebtData> {
         val chargedAndDebt = HashMap<Contributor, Long>().apply {
             putAll(contribution.contributors.map { it to 0L })
         }
@@ -61,8 +76,8 @@ private class SimpleSummaryCalculator : SummaryCalculator {
                 chargedAndDebt.put(entry.key, entry.value + it.amountToPay - it.amountPaid)
             }
         }
-        val sortedDebts = sort(chargedAndDebt).flatMap { listOf(Pair(it.key, it.value)) }
-        return ArrayList<Pair<Contributor, Long>>().apply { addAll(sortedDebts) }
+        val sortedDebts = sort(chargedAndDebt).flatMap { listOf(DebtData(it.key, it.value)) }
+        return ArrayList<DebtData>().apply { addAll(sortedDebts) }
     }
 
     private fun sort(chargedAndDebt: MutableMap<Contributor, Long>) = chargedAndDebt.entries.sortedBy { it.value }
