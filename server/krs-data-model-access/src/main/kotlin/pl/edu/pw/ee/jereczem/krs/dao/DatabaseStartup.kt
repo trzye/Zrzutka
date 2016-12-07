@@ -11,13 +11,13 @@ import javax.persistence.PersistenceContext
 @Singleton
 open class DatabaseStartup {
 
-    @PersistenceContext(unitName = "krs-persistence-unit")
-    lateinit private var entityManager : EntityManager
+//    @PersistenceContext(unitName = "krs-persistence-unit")
+//    lateinit private var entityManager : EntityManager
 
     @PostConstruct
     open fun init(){
-        val user = User(username = "test", password = "pass")
-        entityManager.persist(user)
+//        val user = User(username = "test", password = "pass")
+//        entityManager.persist(user)
     }
 
 }

@@ -35,8 +35,9 @@ compileJava {
 }
 
 ear {
-    deploymentDescriptor {  
+    deploymentDescriptor {
         applicationName = "krs"
+        webModule("krs-rest-services.war", "zrzutka")
     }
 }
 buildscript {
