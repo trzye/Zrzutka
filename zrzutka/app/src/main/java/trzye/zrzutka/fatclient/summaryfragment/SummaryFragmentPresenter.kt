@@ -67,10 +67,10 @@ class SummaryFragmentPresenter(private val databaseService: IDatabaseService) : 
 
         override fun doInBackground(vararg params: ContributionDTO): Long {
             try {
-                val uri = UriComponentsBuilder.fromHttpUrl("http://${ModelProvider.IP}").port(8080).path("/krs-rest-services").build().toUri()
+                val uri = UriComponentsBuilder.fromHttpUrl("http://${ModelProvider.IP}").port(80).path("/zrzutka").build().toUri()
                 val request = Gson().toJson(params[0])
 
-                val headers = HttpHeaders();
+                val headers = HttpHeaders()
                 headers.contentType = MediaType.APPLICATION_JSON
 
                 Log.d("D/Zrzutka", request)

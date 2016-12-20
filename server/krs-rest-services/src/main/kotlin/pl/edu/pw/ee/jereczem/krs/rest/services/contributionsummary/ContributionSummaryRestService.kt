@@ -32,8 +32,13 @@ class ContributionSummaryRestService {
 
 }
 
+object HtmlPolicy {
+    val policy by lazy { HtmlPolicyBuilder().toFactory() }
+    fun sanitize(string: String) = policy.sanitize(string)
+}
+
 fun String.sanitize() : String {
-    return HtmlPolicyBuilder().toFactory().sanitize(this)
+    return HtmlPolicy.sanitize(this)
 }
 
 private fun ContributionSummaryDTO.createHtml(): String {

@@ -96,7 +96,7 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
     }
 
     override fun showShareResultDialog(result: Long) {
-        val url = "http://${ModelProvider.IP}:8080/krs-rest-services/$result"
+        val url = "http://${ModelProvider.IP}/zrzutka/$result"
         val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("url", url)
         clipboard.primaryClip = clip

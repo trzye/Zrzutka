@@ -16,7 +16,9 @@ open class ContributionSummaryDAO {
     open fun getContributionSummary(id: Long): ContributionSummary? {
         try {
             return entityManager
-                    .createQuery("select c from ContributionSummary c where c.id = :id", ContributionSummary::class.java)
+                    .createQuery(
+                            "select c from ContributionSummary c where c.id = :id",
+                            ContributionSummary::class.java)
                     .setParameter("id", id)
                     .singleResult
         } catch (e: NoResultException){

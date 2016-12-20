@@ -74,7 +74,9 @@ class ContributionActivity(private val parentActivity: Activity) : AbstractMenuA
 
     override fun startAsEditableContributionActivity(contributionId: Long) {
         val intent = Intent(parentActivity, this.javaClass)
-        waitingRoom.addJobForNextPresenter({ Presenter::editContribution.invoke(it, contributionId) })
+        waitingRoom.addJobForNextPresenter({
+            Presenter::editContribution.invoke(it, contributionId)
+        })
         parentActivity.startActivity(intent)
     }
 

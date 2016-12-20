@@ -4,5 +4,5 @@ object ModelProvider{
 
     lateinit var databaseService: IDatabaseService
 
-    var IP: String = "192.168.1.10"
+    var IP: String = "shafear.space"
 }

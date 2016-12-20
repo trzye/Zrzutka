@@ -38,5 +38,4 @@ abstract class PresentersWaitingRoom<P : IContract.IPresenter<*>> protected cons
             jobs.pop().invoke(presenter)
         }
     }
-
 }

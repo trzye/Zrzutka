@@ -21,11 +21,11 @@ abstract class AbstractMenuActivity<V : IMenuContract.IMenuView<P>, P : IMenuCon
         when(item.itemId) {
             R.id.menu_contribution_list -> { presenter.showContributions() }
             R.id.menu_about -> {
-                val textView = EditText(this).apply { setText(ModelProvider.IP) }
+//                val textView = EditText(this).apply { setText(ModelProvider.IP) }
                 AlertDialog.Builder(this)
                     .setTitle("O Aplikacji")
-                    .setMessage("Tutaj będzie coś więcej")
-                    .setView(textView).setPositiveButton("OK", {d, i -> ModelProvider.IP = textView.text.toString()})
+                    .setMessage("Aplikacja do rozliczeń między znajomymi. \nAutor: Michał Jereczek")
+//                    .setView(textView).setPositiveButton("OK", {d, i -> ModelProvider.IP = textView.text.toString()})
                     .create()
                     .show()
             }
