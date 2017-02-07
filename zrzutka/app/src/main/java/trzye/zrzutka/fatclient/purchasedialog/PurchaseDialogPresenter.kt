@@ -93,35 +93,26 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
         try {
             dataHolder.purchase.price = dataHolder.priceString.toDouble().toMoneyLong()
             dataHolder.charges.forEach {
-                it.charge.amountPaid = dataHolder.purchase.price / dataHolder.charges.size
-                it.toPayString = it.charge.amountPaid.toMoneyDouble().toReadablePriceString()
+                it.charge.amountToPay = dataHolder.purchase.price / dataHolder.charges.size
             }
             alignBills()
+            dataHolder.charges.forEach {
+                it.toPayString = it.charge.amountToPay.toMoneyDouble().toReadablePriceString()
+            }
         } catch (e: NumberFormatException) {
             view.showWrongPriceFormatError()
         }
     }
 
     private fun alignBills() {
-        var remaining = dataHolder.purchase.price - dataHolder.charges.flatMap { listOf(it.charge.amountPaid) }.sum()
+        var remaining = dataHolder.purchase.price - dataHolder.charges.flatMap { listOf(it.charge.amountToPay) }.sum()
         var iterator = dataHolder.charges.iterator()
         while (remaining > 0) {
             if (!iterator.hasNext())
                 iterator = dataHolder.charges.iterator()
-            iterator.next().apply {
-                charge.amountPaid++
-                toPayString = charge.amountPaid.toMoneyDouble().toReadablePriceString()
-            }
+            val it = iterator.next()
+            it.charge.amountToPay++
             remaining--
-        }
-        while (remaining < 0) {
-            if (!iterator.hasNext())
-                iterator = dataHolder.charges.iterator()
-            iterator.next().apply {
-                charge.amountPaid--
-                toPayString = charge.amountPaid.toMoneyDouble().toReadablePriceString()
-            }
-            remaining++
         }
     }
 
