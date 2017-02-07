@@ -19,6 +19,7 @@ interface PurchaseDialogContract : IContract {
         fun makeRedUnderPrice()
         fun notifyChange(position: Int)
         fun resetSubtitleError()
+        fun hideKeyboard()
     }
 
     abstract class Presenter : IContract.IPresenter<View>(){

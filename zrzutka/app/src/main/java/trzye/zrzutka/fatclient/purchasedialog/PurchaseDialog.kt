@@ -2,6 +2,7 @@ package trzye.zrzutka.fatclient.purchasedialog
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -15,6 +16,9 @@ import trzye.zrzutka.R
 import trzye.zrzutka.databinding.DialogPurchaseBinding
 import trzye.zrzutka.databinding.ItemEditChargeBinding
 import trzye.zrzutka.model.entity.purchase.Purchase
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.inputmethod.InputMethodManager
+
 
 class PurchaseDialog(private val activity: Activity) : Dialog(activity), PurchaseDialogContract.View {
 
@@ -26,6 +30,13 @@ class PurchaseDialog(private val activity: Activity) : Dialog(activity), Purchas
         binding.chargesListItem.adapter.notifyItemChanged(position)
     }
 
+    override fun hideKeyboard() {
+        val currentFocus = this.currentFocus
+        if (currentFocus != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
 
     override var presenterId: Long = 0
 

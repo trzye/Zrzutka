@@ -89,6 +89,7 @@ class PurchaseDialogPresenter() : PurchaseDialogContract.Presenter() {
 
     override fun splitToPayCost() {
         resetProblems()
+        view.hideKeyboard()
         try {
             dataHolder.purchase.price = dataHolder.priceString.toDouble().toMoneyLong()
             dataHolder.charges.forEach {
