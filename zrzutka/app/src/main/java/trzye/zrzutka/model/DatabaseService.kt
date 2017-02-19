@@ -137,6 +137,7 @@ class DatabaseService(context: Context): OrmLiteSqliteOpenHelper(context, DATABA
 
 
     override fun onCreate(database: SQLiteDatabase?, connectionSource: ConnectionSource?) {
+
         TableUtils.createTable(connectionSource, Contribution::class.java)
         TableUtils.createTable(connectionSource, Summary::class.java)
         TableUtils.createTable(connectionSource, Friend::class.java)

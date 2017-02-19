@@ -1,8 +1,9 @@
 package pl.edu.pw.ee.jereczem.krs.rest.services.contributionsummary
 
+import com.google.gson.Gson
 import org.owasp.html.HtmlPolicyBuilder
 import pl.edu.pw.ee.jereczem.krs.business.ContributionSummaryController
-import pl.edu.pw.ee.jereczem.krs.model.ContributionSummaryDTO
+import pl.edu.pw.ee.jereczem.krs.model.*
 import pl.edu.pw.ee.jereczem.krs.rest.BeanProvider
 import java.net.HttpURLConnection
 import javax.ws.rs.*
@@ -18,8 +19,29 @@ class ContributionSummaryRestService {
     @Produces(MediaType.TEXT_HTML)
     fun getSummaryPage(@PathParam("summaryId") summaryId: Long) : String {
         val summary = contributionSummaryController.getContributionSummaryBy(summaryId)
+        val summ =  ContributionSummaryDTO(
+                title = "Zrzutka",
+                subtitle = "20.01 - 12.03",
+                preciseMode = "false",
+                contributors = listOf(
+                        ContributorDTO("andrzej", "gg 123456", "$$$"),
+                        ContributorDTO("Ola", "gg 223456", "$$2$"),
+                        ContributorDTO("maciek", "gg 423456", "$1$$")
+                ),
+                purchases = listOf(
+                        PurchaseDTO("Coś fajnego", "100 zł", listOf(
+                                ChargeDTO("Andrzej", "20", "10"),
+                                ChargeDTO("Ola", "20", "10")
+                        ))
+                ),
+                debts = listOf(
+                        DebtDTO("Andrzej", "Ola", "20"),
+                        DebtDTO("Maciej", "Ola", "20")
+                )
+        )
+        return Gson().toJson(summ)
         if(summary != null)
-            return  summary.createHtml()
+            return  summary.toString()//.createHtml()
         else
             throw WebApplicationException(HttpURLConnection.HTTP_NOT_FOUND)
     }
@@ -213,3 +235,6 @@ private fun ContributionSummaryDTO.createHtml(): String {
     return htmlBuilder.toString()
 }
 
+fun main(args: Array<String>) {
+    String
+}

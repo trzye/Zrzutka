@@ -21,6 +21,7 @@ import trzye.zrzutka.model.ModelProvider
 import trzye.zrzutka.model.dto.DebtDTO
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.contribution.getDebtList
+import trzye.zrzutka.databinding.FragmentSummaryBinding
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.ClipData
 import android.R.attr.label
@@ -40,29 +41,26 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
 
     override val labelId: Int = R.string.tab_summary
     private lateinit var fragmentView: View
-    private lateinit var actionButton: FloatingActionButton
-    private lateinit var summaryRecyclerView: RecyclerView
-    private lateinit var switchPreciseMode: Switch
     private lateinit var loadingView: Dialog
 
+    lateinit var binding: FragmentSummaryBinding
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.fragment_summary, null)
-        fragmentView = view
+//        val view = inflater.inflate(R.layout.fragment_summary, null)
 
-        actionButton = view.findViewById(R.id.actionButton) as FloatingActionButton
-        actionButton.setOnClickListener { presenter.generateSummaryUrl() }
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_summary, container, false)
 
-        switchPreciseMode = view.findViewById(R.id.switchPreciseMode) as Switch
-        switchPreciseMode.setOnCheckedChangeListener { compoundButton, isOn -> presenter.changePreciseMode() }
+        binding.actionButton.setOnClickListener { presenter.generateSummaryUrl() }
+        binding.switchPreciseMode.setOnCheckedChangeListener { compoundButton, isOn -> presenter.changePreciseMode() }
 
-        view.findViewById(R.id.whoPaysHeader).setOnClickListener { presenter.orderByWhoPaysHeader() }
-        view.findViewById(R.id.toWhomHeader).setOnClickListener { presenter.orderByToWhomHeader() }
-        view.findViewById(R.id.amountHeader).setOnClickListener { presenter.orderByAmountHeader() }
+        binding.whoPaysHeader.setOnClickListener { presenter.orderByWhoPaysHeader() }
+        binding.toWhomHeader.setOnClickListener { presenter.orderByToWhomHeader() }
+        binding.amountHeader.setOnClickListener { presenter.orderByAmountHeader() }
 
-        summaryRecyclerView= view.findViewById(R.id.summaryRecyclerView) as RecyclerView
-        summaryRecyclerView.layoutManager = LinearLayoutManager(activity)
-        if(summaryRecyclerView.itemAnimator is SimpleItemAnimator){
-            (summaryRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        binding.summaryRecyclerView.layoutManager = LinearLayoutManager(activity)
+        if(binding.summaryRecyclerView.itemAnimator is SimpleItemAnimator){
+            (binding.summaryRecyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
         loadingView = ProgressDialog(activity).apply {
@@ -71,11 +69,11 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
 
         super.onCreateView(inflater,container, savedInstanceState)
         presenter.bindData()
-        return view
+        return binding.root
     }
 
     override fun setPreciseModeSwitchActive() {
-        switchPreciseMode.isEnabled = true
+        binding.switchPreciseMode.isEnabled = true
     }
 
     override fun showLoadingView() {
@@ -110,17 +108,16 @@ class SummaryFragment(dataHolder: ContributionDataHolder?) : AbstractContributio
     }
 
     override fun setPreciseModeSwitchInactive() {
-        switchPreciseMode.isEnabled = true //better to be active always
+        binding.switchPreciseMode.isEnabled = true //better to be active always
     }
 
     override fun bindData(contribution: Contribution) {
-        summaryRecyclerView.adapter = SummaryAdapter(contribution.getDebtList())
-        switchPreciseMode.isChecked = contribution.summary.preciseCalculation
+        binding.summary = contribution.summary
+        binding.summaryRecyclerView.adapter = SummaryAdapter(contribution.getDebtList())
     }
 
     override fun changeDataSet(contribution: Contribution) {
-        switchPreciseMode.isChecked = contribution.summary.preciseCalculation
-        (summaryRecyclerView.adapter as SummaryAdapter).apply {
+        (binding.summaryRecyclerView.adapter as SummaryAdapter).apply {
             this.debts = contribution.getDebtList()
             notifyDataSetChanged()
         }
