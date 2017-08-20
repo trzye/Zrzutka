@@ -24,7 +24,7 @@ data class ContributionDTO private constructor(
     )
 }
 
-private data class DebtDTO private constructor(
+data class DebtDTO private constructor(
         val whoPays: String,
         val toWhom: String,
         val amount: String
@@ -36,7 +36,7 @@ private data class DebtDTO private constructor(
     )
 }
 
-private data class PurchaseDTO private constructor(
+data class PurchaseDTO private constructor(
         val name: String,
         val price: String,
         val charges: List<ChargeDTO>
@@ -48,7 +48,7 @@ private data class PurchaseDTO private constructor(
     )
 }
 
-private data class ChargeDTO private constructor(
+data class ChargeDTO private constructor(
         val charged: String,
         val paid: String,
         val toPay: String
@@ -60,7 +60,7 @@ private data class ChargeDTO private constructor(
     )
 }
 
-private data class ContributorDTO private constructor(
+data class ContributorDTO private constructor(
         val nickname: String,
         val contactInformation: String,
         val paymentInformation: String

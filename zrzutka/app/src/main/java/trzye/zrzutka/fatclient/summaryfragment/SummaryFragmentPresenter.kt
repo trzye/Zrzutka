@@ -1,6 +1,7 @@
 package trzye.zrzutka.fatclient.summaryfragment
 
 import android.os.AsyncTask
+import android.os.Environment
 import android.util.Log
 import com.google.gson.Gson
 import org.springframework.http.HttpEntity
@@ -9,7 +10,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.http.converter.StringHttpMessageConverter
-import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
 import trzye.zrzutka.fatclient.contributionfragment.ContributionDataHolder
@@ -58,9 +58,8 @@ class SummaryFragmentPresenter(private val databaseService: IDatabaseService) : 
     }
 
     override fun generateSummaryUrl() {
-        val contributionDTO = ContributionDTO(dataHolder.contribution)
-        val task = Task()
-        task.execute(contributionDTO)
+        val html = ContributionDTO(dataHolder.contribution).createHtml()
+        HtmlToPdf().createPdf(Environment.getExternalStorageDirectory().path + "/test.pdf", html)
     }
 
     inner class Task : AsyncTask<ContributionDTO, Void, Long>(){
@@ -80,7 +79,7 @@ class SummaryFragmentPresenter(private val databaseService: IDatabaseService) : 
                     messageConverters.add(0, StringHttpMessageConverter(Charset.forName("UTF-8")))
                 }.exchange(uri, HttpMethod.POST, entity, String::class.java)
                 return response.body.toLong()
-            } catch (e: RestClientException){
+            } catch (e: Exception){
                 Log.d("D/Zrzutka", "$e\n${e.message}")
                 return -1L
             }
