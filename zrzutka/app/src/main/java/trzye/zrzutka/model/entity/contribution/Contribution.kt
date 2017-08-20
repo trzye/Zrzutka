@@ -12,35 +12,28 @@ import trzye.zrzutka.model.entity.summary.SortedColumn.WHO_PAYS
 import trzye.zrzutka.model.entity.summary.Summary
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.persistence.*
 
-@Entity
 class Contribution private constructor(
-        @Id @GeneratedValue val id: Long?,
         title: String,
         startDate: Date,
         endDate: Date,
-        @Column val colorId: Int = randColor(),
-        @OneToOne val summary: Summary = Summary(false, false, WHO_PAYS),
-        jooqContribution: trzye.zrzutka.jooq.model.tables.pojos.Contribution? = null,
-        @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
-        @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
+        val colorId: Int = randColor(),
+        val summary: Summary = Summary(false, false, WHO_PAYS),
+        private var jooqContribution: trzye.zrzutka.jooq.model.tables.pojos.Contribution? = null,
+        val _contributors: MutableCollection<Contributor> = mutableListOf(),
+        val _purchases: MutableCollection<Purchase> = mutableListOf()
 ) : BaseObservable(), Copyable<Contribution> {
 
     private constructor() : this("")
-    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(null, title, startDate, endDate)
+    constructor(title: String, startDate: Date = Date(), endDate: Date = startDate) : this(title, startDate, endDate, jooqContribution = null)
 
-//    var summary: Summary
-//    get() = _summary.first()
-//    set(value) {_summary.clear(); _summary.add(value); value.contribution = this}
-
-    @Column var title: String = title
+    var title: String = title
         set(value) {field = value; notifyChange()}
 
-    @Column(columnDefinition = "DATE") var startDate: Date = startDate
+    var startDate: Date = startDate
         set(value) {field = value; notifyChange()}
 
-    @Column(columnDefinition = "DATE") var endDate: Date = endDate
+    var endDate: Date = endDate
         set(value) {field = value; notifyChange()}
 
     val contributors: List<Contributor>
@@ -49,7 +42,7 @@ class Contribution private constructor(
     val purchases: List<Purchase>
         get() = _purchases.toList()
 
-    @Column val chargeUniqueNumberForSorting: Long  = UniqueNanoTimeGenerator.getUniqueValue()
+    val chargeUniqueNumberForSorting: Long  = UniqueNanoTimeGenerator.getUniqueValue()
 
     fun getReadableEndDate() : String = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(endDate)
 
@@ -68,15 +61,11 @@ class Contribution private constructor(
     }
 
     override fun doCopy(): Contribution {
-        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), colorId, summary.doCopy(), jooqContribution)
+        val clone = Contribution(title, startDate.doCopy(), endDate.doCopy(), colorId, summary.doCopy(), jooqContribution)
 
-        //prawdziwy do kopii
         val originToNewContributor : Map<Contributor, Contributor> = contributors.associate {
             Pair(it, it.doCopy().apply { clone._contributors.add(this); contribution = clone })
         }
-
-//        clone.summary = summary
-//        summary.contribution = clone
 
         purchases.forEach {
             val clonedCharges  = it.charges.doCopy()
@@ -97,24 +86,12 @@ class Contribution private constructor(
         return clone
     }
 
-    val jooqContribution = jooqContribution ?: trzye.zrzutka.jooq.model.tables.pojos.Contribution(
-            chargeUniqueNumberForSorting,
-            colorId,
-            java.sql.Date(endDate.time),
-            id?.toInt(),
-            java.sql.Date(startDate.time),
-            summary.id,
-            title
-    )
-
-    //TODO
     constructor(
             jooqContribution: trzye.zrzutka.jooq.model.tables.pojos.Contribution,
             jooqSummary: Summary,
             jooqContributors: MutableList<Contributor>,
             jooqPurchases: MutableList<Purchase>
     ) : this(
-        jooqContribution.id?.toLong(),
         jooqContribution.title,
             jooqContribution.startdate,
             jooqContribution.enddate,
@@ -125,7 +102,19 @@ class Contribution private constructor(
             jooqPurchases
     )
 
+    fun databasePojo() = trzye.zrzutka.jooq.model.tables.pojos.Contribution(
+            chargeUniqueNumberForSorting,
+            colorId,
+            java.sql.Date(endDate.time),
+            jooqContribution?.id,
+            java.sql.Date(startDate.time),
+            summary.databasePojo().id?.toLong(),
+            title
+    ).also { jooqContribution = it }
 
+    fun setId(id: Int) {
+        jooqContribution?.id =id
+    }
 }
 
 

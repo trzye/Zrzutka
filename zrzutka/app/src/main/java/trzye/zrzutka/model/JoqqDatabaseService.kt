@@ -1,13 +1,10 @@
 package trzye.zrzutka.model
 
 import android.content.Context
-import android.util.Log
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.jooq.*
 import org.jooq.impl.DAOImpl
 import org.jooq.impl.DSL
-import org.jooq.impl.DefaultDSLContext
-import trzye.zrzutka.jooq.model.Tables
 import trzye.zrzutka.jooq.model.Tables.*
 import trzye.zrzutka.jooq.model.tables.daos.*
 import trzye.zrzutka.model.entity.charge.Charge
@@ -31,7 +28,12 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
     val pruchaseDao = PurchaseDao(create.configuration())
 
     init {
-        create.deleteFrom(CONTRIBUTION).execute()
+//        create.deleteFrom(CONTRIBUTION).execute()
+//        create.deleteFrom(SUMMARY).execute()
+//        create.deleteFrom(CHARGE).execute()
+//        create.deleteFrom(PURCHASE).execute()
+//        create.deleteFrom(CONTRIBUTOR).execute()
+//        create.deleteFrom(FRIEND).execute()
     }
 
     private fun createConnection(applicationContext: Context): Connection? {
@@ -65,11 +67,14 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
 
     private fun getContributors(contributionId: Long?, charges: MutableList<Charge>): MutableList<Contributor> {
         return contributorDao.fetchByContributionId(contributionId).map {
+            cont ->
             Contributor(
-                    it,
-                    Friend(friendDao.findById(it.friendId.toInt())),
+                    cont,
+                    Friend(friendDao.findById(cont.friendId.toInt())),
                     null,
-                    charges
+                    charges.filter {
+                        it.databasePojo().chargedId.toInt() == cont.id
+                    }.toMutableList()
             ).also {
                 contributor ->
                 contributor._charges.forEach { it.charged = contributor }
@@ -82,8 +87,10 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
     private fun getCharges(purchases: MutableList<Purchase>): MutableList<Charge> {
         return purchases.flatMap {
             purchase ->
-            chargesDao.fetchByPurchaseId(purchase.jooqPurchase.id.toLong()).map {
-                Charge(it, null, purchase)
+            chargesDao.fetchByPurchaseId(purchase.databasePojo().id.toLong()).map {
+                Charge(it, null, purchase).also {
+                    purchase._charges.add(it)
+                }
             }
         }.toMutableList()
     }
@@ -122,33 +129,33 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
 
     override fun save(contribution: Contribution): Long {
         contribution.contributors.forEach {
-            it.jooqContributor.id = insert(it.jooqContributor, it.jooqContributor.id, contributorDao).id
+            it.setId(insert(it.databasePojo(), it.databasePojo().id, contributorDao).id)
         }
         contribution.purchases.forEach {
-            it.jooqPurchase.id = insert(it.jooqPurchase, it.jooqPurchase.id, pruchaseDao).id
+            it.setId(insert(it.databasePojo(), it.databasePojo().id, pruchaseDao).id)
         }
         contribution.contributors.forEach {
-            it.charges.forEach {
-                it.jooqCharge.id = insert(it.jooqCharge, it.jooqCharge.id, chargesDao).id
+            contributor -> contributor.charges.forEach {
+                it.charged = contributor
+                it.setId(insert(it.databasePojo(), it.databasePojo().id, chargesDao).id)
             }
         }
         contribution.purchases.forEach {
-            it.charges.forEach {
-                it.jooqCharge.id = insert(it.jooqCharge, it.jooqCharge.id, chargesDao).id
+            purchase -> purchase.charges.forEach {
+                it.purchase = purchase
+                it.setId(insert(it.databasePojo(), it.databasePojo().id, chargesDao).id)
             }
         }
-        contribution.summary.jooqSummary.id =
-                insert(contribution.summary.jooqSummary, contribution.summary.jooqSummary.id, summaryDao).id
-        contribution.jooqContribution.summaryId =  contribution.summary.jooqSummary.id.toLong()
-        contribution.jooqContribution.id =
-                insert(contribution.jooqContribution, contribution.jooqContribution.id, contributionDao).id
-        return contribution.jooqContribution.id.toLong()
+        contribution.summary
+                .setId(insert(contribution.summary.databasePojo(), contribution.summary.databasePojo().id, summaryDao).id)
+        contribution.setId(insert(contribution.databasePojo(), contribution.databasePojo().id, contributionDao).id)
+        return contribution.databasePojo().id.toLong()
     }
 
     override fun getAllFriends(): List<Friend> = friendDao.findAll().map { Friend(it) }
 
     override fun save(friend: Friend) {
-        insert(friend.jooqFriend, friend.id?.toInt(), friendDao)
+        insert(friend.databasePojo(), friend.databasePojo().id, friendDao)
     }
 
     private fun <TR : UpdatableRecord<TR>, R, I>insert(record: R, id: I?, dao: DAOImpl<TR, R, I>): R {
@@ -162,9 +169,9 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
     }
 
     override fun removeFriend(friend: Friend) {
-        if(friend.id != null)
-            if(friendDao.existsById(friend.id.toInt()))
-                friendDao.deleteById(friend.id.toInt())
+        if(friend.databasePojo().id != null)
+            if(friendDao.existsById(friend.databasePojo().id))
+                friendDao.deleteById(friend.databasePojo().id)
     }
 
 }

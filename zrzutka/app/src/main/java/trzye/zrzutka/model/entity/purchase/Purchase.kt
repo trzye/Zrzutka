@@ -8,49 +8,22 @@ import trzye.zrzutka.model.entity.charge.Charge
 import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.randColor
-import javax.persistence.*
 
-@Entity
 class Purchase private constructor(
-        @Id @GeneratedValue val id: Long? = null,
         name: String,
         price: Long,
-        @OneToOne var contribution: Contribution?,
-        @Column var colorId: Int = randColor(),
-        jooqPurchase: trzye.zrzutka.jooq.model.tables.pojos.Purchase? = null,
-        @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
-        ) : BaseObservable(), Copyable<Purchase> {
+        var contribution: Contribution?,
+        var colorId: Int = randColor(),
+        private var jooqPurchase: trzye.zrzutka.jooq.model.tables.pojos.Purchase? = null,
+        val _charges: MutableCollection<Charge> = mutableListOf()
+    ) : BaseObservable(), Copyable<Purchase> {
 
-    val jooqPurchase = jooqPurchase ?: trzye.zrzutka.jooq.model.tables.pojos.Purchase(
-            colorId,
-            contribution?.id,
-            id?.toInt(),
-            name,
-            price
-    )
+    constructor(name: String, price: Long) : this(name, price, null)
 
-    //TODO
-    constructor(
-            jooqPurchase: trzye.zrzutka.jooq.model.tables.pojos.Purchase,
-            jooqContribution: Contribution?,
-            jooqCharges: MutableList<Charge>
-    ) : this(
-            jooqPurchase.id?.toLong(),
-            jooqPurchase.name,
-            jooqPurchase.price,
-            jooqContribution,
-            jooqPurchase.colorid,
-            jooqPurchase = jooqPurchase,
-            _charges = jooqCharges
-    )
-
-    private constructor() : this("", 0)
-    constructor(name: String, price: Long) : this(null, name, price, null)
-
-    @Column var name: String = name
+    var name = name
         set(value) {field = value; notifyChange()}
 
-    @Column var price: Long = price
+    var price = price
         set(value) {field = value; notifyChange()}
 
     val charges: List<Charge>
@@ -61,9 +34,35 @@ class Purchase private constructor(
     fun getColor() = getColor(colorId)
 
     override fun doCopy(): Purchase {
-        val copy =  Purchase(id, name, price, null, colorId, jooqPurchase)
+        val copy =  Purchase(name, price, null, colorId, jooqPurchase)
         return copy
     }
 
+    constructor(
+            jooqPurchase: trzye.zrzutka.jooq.model.tables.pojos.Purchase,
+            contribution: Contribution?,
+            charges: MutableList<Charge>
+    ) : this(
+            jooqPurchase.name,
+            jooqPurchase.price,
+            contribution,
+            jooqPurchase.colorid,
+            jooqPurchase = jooqPurchase,
+            _charges = charges
+    )
+
+    fun databasePojo(): trzye.zrzutka.jooq.model.tables.pojos.Purchase {
+        return trzye.zrzutka.jooq.model.tables.pojos.Purchase(
+                colorId,
+                contribution?.databasePojo()?.id?.toLong(),
+                jooqPurchase?.id,
+                name,
+                price
+        ).also { jooqPurchase = it }
+    }
+
+    fun setId(id: Int) {
+        jooqPurchase?.id =id
+    }
 }
 

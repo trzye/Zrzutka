@@ -48,6 +48,23 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.0.+'
     testCompile 'junit:junit:4.12'
 
+    compile 'org.jooq:jooq:3.6.4'
+    //Needed for @Generated annotation
+    compile 'javax.annotation:javax.annotation-api:1.2'
+    compile 'org.sqldroid:sqldroid:1.0.3'
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jooq:jooq-codegen:3.6.4'
+        classpath 'org.xerial:sqlite-jdbc:3.8.11.2'
+    }
 }
 //
 //kapt {
@@ -59,4 +76,43 @@ repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
+}
+
+task generate << {
+    // Use your favourite XML builder to construct the code generation configuration file
+// ----------------------------------------------------------------------------------
+    def writer = new StringWriter()
+    def xml = new groovy.xml.MarkupBuilder(writer)
+            .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.6.0.xsd') {
+        jdbc() {
+            driver('org.sqlite.JDBC')
+            url("jdbc:sqlite:$projectDir/src/main/assets/databases/node.db")
+            /*user('sa')
+            password('')*/
+        }
+        generator() {
+            database() {
+            }
+
+            // Watch out for this caveat when using MarkupBuilder with "reserved names"
+            // - https://github.com/jOOQ/jOOQ/issues/4797
+            // - http://stackoverflow.com/a/11389034/521799
+            // - https://groups.google.com/forum/#!topic/jooq-user/wi4S9rRxk4A
+            generate([:]) {
+                deprecated false
+                pojos true
+                daos true
+            }
+            target() {
+                packageName('trzye.zrzutka.jooq.model')
+                directory("$buildDir/generated/source/jooq")
+            }
+        }
+    }
+
+// Run the code generator
+// ----------------------
+    org.jooq.util.GenerationTool.generate(
+            javax.xml.bind.JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
+    )
 }

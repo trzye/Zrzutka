@@ -7,7 +7,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.view.MotionEvent
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TextView
@@ -15,7 +14,7 @@ import trzye.zrzutka.R
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivity
 import trzye.zrzutka.fatclient.contributionactivity.ContributionActivityContract
 import trzye.zrzutka.databinding.DialogContributionBinding
-import trzye.zrzutka.model.DatabaseService
+import trzye.zrzutka.model.ModelProvider
 import trzye.zrzutka.model.entity.contribution.Contribution
 import java.util.*
 import java.util.Calendar.*
@@ -25,7 +24,7 @@ class ContributionDialog(private val activity: Activity) : Dialog(activity), Con
 
     override var presenterId: Long = 0
 
-    override var presenter: ContributionDialogContract.Presenter = ContributionDialogPresenter(DatabaseService(activity))
+    override var presenter: ContributionDialogContract.Presenter = ContributionDialogPresenter(ModelProvider.databaseService)
 
     lateinit var view: View
     lateinit var binding: DialogContributionBinding
@@ -71,7 +70,7 @@ class ContributionDialog(private val activity: Activity) : Dialog(activity), Con
         val calendar = getInstance().apply { time = Date(selectedDate.time) }
         DatePickerDialog(
                   context
-                , { dp: DatePicker, y: Int, m: Int, d: Int ->
+                , { _: DatePicker, y: Int, m: Int, d: Int ->
                         calendar.apply { set(YEAR, y); set(MONTH, m); set(DAY_OF_MONTH, d) }
                         action(calendar.time) }
                 , calendar.get(YEAR)

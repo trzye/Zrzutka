@@ -5,47 +5,27 @@ import trzye.zrzutka.common.extensions.Copyable
 import trzye.zrzutka.common.extensions.createShort
 import trzye.zrzutka.model.entity.getColor
 import trzye.zrzutka.model.entity.randColor
-import javax.persistence.*
 
-@Entity
 class Friend private constructor(
-        @Id @GeneratedValue val id: Long? = null,
         name: String,
         paymentInformation: String,
         contactInformation: String,
-        @Column var colorId: Int = randColor(),
-        jooqFriend: trzye.zrzutka.jooq.model.tables.pojos.Friend? = null
+        var colorId: Int = randColor(),
+        private var jooqFriend: trzye.zrzutka.jooq.model.tables.pojos.Friend? = null
 ) : BaseObservable(), Copyable<Friend>{
 
     private constructor() : this("")
 
-    val jooqFriend = jooqFriend ?: trzye.zrzutka.jooq.model.tables.pojos.Friend(
-            colorId,
-            contactInformation,
-            id?.toInt(),
-            name,
-            paymentInformation
-    )
+    constructor(nickname: String, firstName: String = "", lastName: String = "") : this(nickname, firstName, lastName, jooqFriend = null)
 
-    constructor(jooqFriend: trzye.zrzutka.jooq.model.tables.pojos.Friend) : this(
-            jooqFriend.id?.toLong(),
-            jooqFriend.nickname,
-            jooqFriend.paymentinformation,
-            jooqFriend.contactinformation,
-            jooqFriend.colorid,
-            jooqFriend = jooqFriend
-    )
+    var nickname = name
+        set(value) {field = value; notifyChange();}
 
-    constructor(nickname: String, firstName: String = "", lastName: String = "") : this(null, nickname, firstName, lastName)
+    var paymentInformation = paymentInformation
+        set(value) {field = value; notifyChange();}
 
-    @Column var nickname: String = name
-        set(value) {field = value; notifyChange(); jooqFriend.nickname = value}
-
-    @Column var paymentInformation: String = paymentInformation
-        set(value) {field = value; notifyChange(); jooqFriend.paymentinformation = value}
-
-    @Column var contactInformation: String = contactInformation
-        set(value) {field = value; notifyChange(); jooqFriend.contactinformation = value}
+    var contactInformation = contactInformation
+        set(value) {field = value; notifyChange();}
 
 
     fun getShowingName(): String = nickname
@@ -55,7 +35,7 @@ class Friend private constructor(
     fun getColor() = getColor(colorId)
 
     override fun doCopy(): Friend {
-        return Friend(id, nickname, paymentInformation, contactInformation, colorId, jooqFriend)
+        return Friend(nickname, paymentInformation, contactInformation, colorId, jooqFriend)
     }
 
     fun setBy(friend: Friend) {
@@ -65,6 +45,24 @@ class Friend private constructor(
         colorId = friend.colorId
     }
 
+    constructor(jooqFriend: trzye.zrzutka.jooq.model.tables.pojos.Friend) : this(
+            jooqFriend.nickname,
+            jooqFriend.paymentinformation,
+            jooqFriend.contactinformation,
+            jooqFriend.colorid,
+            jooqFriend = jooqFriend
+    )
 
+    fun databasePojo() = trzye.zrzutka.jooq.model.tables.pojos.Friend(
+            colorId,
+            contactInformation,
+            jooqFriend?.id,
+            nickname,
+            paymentInformation
+    ).also { jooqFriend = it }
+
+    fun setId(id: Int) {
+        jooqFriend?.id =id
+    }
 }
 

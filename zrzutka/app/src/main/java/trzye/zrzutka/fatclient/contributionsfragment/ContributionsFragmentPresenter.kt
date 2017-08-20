@@ -20,7 +20,7 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
 
     override fun startDialogIfExists() {
         val presenter = newContributionDialogPresenter
-        if ((presenter != null) && (presenter.isDone() == false)) {
+        if ((presenter != null) && !presenter.isDone()) {
             view.getContributionDialogView().start(presenter)
         }
     }
@@ -34,14 +34,14 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
 
     override fun openContributionInEditMode(position: Int) {
         val contribution = contributionsDTO.contributions.getOrNull(position)
-        if(contribution?.id != null)
-            view.getContributionActivityView().startAsEditableContributionActivity(contribution?.id)
+        if(contribution?.databasePojo()?.id != null)
+            view.getContributionActivityView().startAsEditableContributionActivity(contribution.databasePojo().id.toLong())
     }
 
     override fun openContributionInReadMode(position: Int){
         val contribution = contributionsDTO.contributions.getOrNull(position)
-        if(contribution?.id != null)
-            view.getContributionActivityView().startAsReadOnlyContributionActivity(contribution?.id)
+        if(contribution?.databasePojo()?.id != null)
+            view.getContributionActivityView().startAsReadOnlyContributionActivity(contribution.databasePojo().id.toLong())
     }
 
     override fun changeCheckedOption(position: Int) {
@@ -53,10 +53,10 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
     }
 
     override fun removeCheckedContributions() {
-        var indexOfFirstChecked = contributionsDTO.checked.indexOfFirst { it == true }
+        var indexOfFirstChecked = contributionsDTO.checked.indexOfFirst { it }
         lastState = contributionsDTO.doCopy()
         while(indexOfFirstChecked != -1){
-            databaseService.removeContribution(contributionsDTO.contributions[indexOfFirstChecked].id ?: 0)
+            databaseService.removeContribution(contributionsDTO.contributions[indexOfFirstChecked].databasePojo().id.toLong())
             contributionsDTO.contributions.removeAt(indexOfFirstChecked)
             contributionsDTO.checked.removeAt(indexOfFirstChecked)
             indexOfFirstChecked = contributionsDTO.checked.indexOfFirst { it == true }
@@ -96,7 +96,7 @@ class ContributionsFragmentPresenter(private val databaseService: IDatabaseServi
     }
 
     override fun setToolbar() {
-        if (contributionsDTO.checked.filter { it == true }.isNotEmpty()) {
+        if (contributionsDTO.checked.filter { it }.isNotEmpty()) {
             view.setToolbarForEdition()
         } else {
             view.setToolbarForStandardMode()

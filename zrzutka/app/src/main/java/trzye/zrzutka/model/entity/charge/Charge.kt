@@ -6,62 +6,32 @@ import trzye.zrzutka.common.extensions.Copyable
 import trzye.zrzutka.common.extensions.toMoneyDouble
 import trzye.zrzutka.common.extensions.toReadablePriceString
 import trzye.zrzutka.model.entity.contributor.Contributor
-import trzye.zrzutka.model.entity.constructOrNull
-import trzye.zrzutka.model.entity.contribution.Contribution
 import trzye.zrzutka.model.entity.purchase.Purchase
-import javax.persistence.*
 
-@Entity
 class Charge private constructor(
-        @Id @GeneratedValue val id: Long? = null,
         amountToPay: Long,
         amountPaid: Long,
-        @OneToOne var charged: Contributor? = null,
-        @OneToOne var purchase: Purchase? = null,
-        jooqCharge: trzye.zrzutka.jooq.model.tables.pojos.Charge? = null
+        var charged: Contributor? = null,
+        var purchase: Purchase? = null,
+        private var jooqCharge: trzye.zrzutka.jooq.model.tables.pojos.Charge? = null
 ) : BaseObservable(), Copyable<Charge>{
 
-    val jooqCharge = jooqCharge ?: trzye.zrzutka.jooq.model.tables.pojos.Charge(
-            amountPaid,
-            amountToPay,
-            UniqueNanoTimeGenerator.getUniqueValue(),
-            charged?.id,
-            id?.toInt(),
-            purchase?.id
-    )
-
-    constructor(
-            jooqCharge: trzye.zrzutka.jooq.model.tables.pojos.Charge,
-            jooqCharged: Contributor?,
-            jooqPurchase: Purchase?
-    ) : this(
-            jooqCharge.id?.toLong(),
-            jooqCharge.amounttopay,
-            jooqCharge.amountpaid,
-            jooqCharged,
-//            constructOrNull(jooqCharged, {Contributor(it)}),
-            jooqPurchase,
-            jooqCharge = jooqCharge
-    )
-
-
-
     private constructor() : this(0)
-    constructor(amountToPay: Long = 0, amountPaid: Long = 0) : this(null,  amountToPay, amountPaid)
+    constructor(amountToPay: Long = 0, amountPaid: Long = 0) : this(amountToPay, amountPaid, jooqCharge = null)
 
-    @Column val chargeUniqueNumberForSorting: Long  = UniqueNanoTimeGenerator.lastGeneratedValue
+    val chargeUniqueNumberForSorting = UniqueNanoTimeGenerator.getUniqueValue()
 
-    @Column var amountToPay: Long = amountToPay
+    var amountToPay = amountToPay
         set(value) {field = value; notifyChange()}
 
-    @Column var amountPaid: Long = amountPaid
+    var amountPaid = amountPaid
         set(value) {field = value; notifyChange()}
 
     fun getReadableAmountPaid() = amountPaid.toMoneyDouble().toReadablePriceString()
     fun getReadableAmountToPay() = amountToPay.toMoneyDouble().toReadablePriceString()
 
     override fun doCopy(): Charge {
-        return Charge(id, amountToPay, amountPaid, charged, purchase, jooqCharge)
+        return Charge(amountToPay, amountPaid, charged, purchase, jooqCharge)
     }
 
     fun setBy(charge: Charge) {
@@ -71,5 +41,29 @@ class Charge private constructor(
         purchase = charge.purchase
     }
 
+    constructor(
+            jooqCharge: trzye.zrzutka.jooq.model.tables.pojos.Charge,
+            jooqCharged: Contributor?,
+            jooqPurchase: Purchase?
+    ) : this(
+            jooqCharge.amounttopay,
+            jooqCharge.amountpaid,
+            jooqCharged,
+            jooqPurchase,
+            jooqCharge = jooqCharge
+    )
+
+    fun databasePojo() = trzye.zrzutka.jooq.model.tables.pojos.Charge(
+            amountPaid,
+            amountToPay,
+            chargeUniqueNumberForSorting,
+            jooqCharge?.chargedId,
+            jooqCharge?.id,
+            jooqCharge?.purchaseId
+    ).also { jooqCharge = it }
+
+    fun setId(id: Int) {
+        jooqCharge?.id =id
+    }
 }
 

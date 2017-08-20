@@ -5,7 +5,7 @@ import trzye.zrzutka.fatclient.readfrienddialog.ReadFriendDialogContract
 import trzye.zrzutka.model.ModelProvider
 import trzye.zrzutka.model.entity.friend.Friend
 
-class ChooseContributorsDialogPresenter() : ChooseContributorsDialogContract.Presenter() {
+class ChooseContributorsDialogPresenter : ChooseContributorsDialogContract.Presenter() {
 
     private var isDone = false
     private var addFriendDialogPresenter: EditFriendDialogContract.Presenter? = null
@@ -25,10 +25,7 @@ class ChooseContributorsDialogPresenter() : ChooseContributorsDialogContract.Pre
     private fun getFriendsWithoutUsed(): List<ChooseContributorsDataHolder> {
         return databaseService.getAllFriends().filter {
             friend ->
-            if (withoutFriends.find { it.id == friend.id } == null)
-                true
-            else
-                false
+            withoutFriends.find { it.databasePojo().id == friend.databasePojo().id } == null
         }.flatMap {
             listOf(ChooseContributorsDataHolder(it))
         }
@@ -49,9 +46,9 @@ class ChooseContributorsDialogPresenter() : ChooseContributorsDialogContract.Pre
     override fun startDialogsIfExists() {
         val editPresenter = addFriendDialogPresenter
         val readPresenter = readFiendDialogPresenter
-        if ((editPresenter != null) && (editPresenter.isDone() == false)) {
+        if ((editPresenter != null) && !editPresenter.isDone()) {
             view.getEditFriendDialog().start(editPresenter)
-        } else if ((readPresenter != null) && (readPresenter.isDone() == false)) {
+        } else if ((readPresenter != null) && !readPresenter.isDone()) {
             view.getReadFriendDialog().start(readPresenter)
         }
     }

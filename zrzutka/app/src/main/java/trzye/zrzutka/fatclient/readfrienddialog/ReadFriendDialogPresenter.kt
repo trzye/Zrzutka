@@ -4,7 +4,7 @@ import trzye.zrzutka.fatclient.editfrienddialog.EditFriendDialogContract
 import trzye.zrzutka.model.ModelProvider
 import trzye.zrzutka.model.entity.friend.Friend
 
-class ReadFriendDialogPresenter() : ReadFriendDialogContract.Presenter() {
+class ReadFriendDialogPresenter : ReadFriendDialogContract.Presenter() {
 
     private var isDone = false
     lateinit var friend: Friend
@@ -37,13 +37,13 @@ class ReadFriendDialogPresenter() : ReadFriendDialogContract.Presenter() {
 
     override fun startDialogsIfExists() {
         val editPresenter = editFriendDialogPresenter
-        if ((editPresenter != null) && (editPresenter.isDone() == false)) {
+        if ((editPresenter != null) && !editPresenter.isDone()) {
             view.getEditFriendDialog().start(editPresenter)
         }
     }
 
     override fun deleteClicked() {
-        if(databaseService.getAllContributions().flatMap { it._contributors }.find { it.friend.id == friend.id } == null){
+        if(databaseService.getAllContributions().flatMap { it._contributors }.find { it.friend.databasePojo().id == friend.databasePojo().id } == null){
             fun deleteAction() = {
                 databaseService.removeFriend(friend)
                 actionOnDelete()
