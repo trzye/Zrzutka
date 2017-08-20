@@ -62,8 +62,18 @@ class Charge private constructor(
             jooqCharge?.purchaseId
     ).also { jooqCharge = it }
 
-    fun setId(id: Int) {
+    fun setId(id: Int): trzye.zrzutka.jooq.model.tables.pojos.Charge {
         jooqCharge?.id =id
+        return databasePojo()
     }
+
+    fun setContributorId(contributor: Contributor) {
+        jooqCharge?.chargedId = contributor.databasePojo().id.toLong()
+    }
+
+    fun setPurchaseId(purchase: Purchase) {
+        jooqCharge?.purchaseId = purchase.databasePojo().id.toLong()
+    }
+
 }
 

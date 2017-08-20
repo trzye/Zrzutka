@@ -61,8 +61,9 @@ class Friend private constructor(
             paymentInformation
     ).also { jooqFriend = it }
 
-    fun setId(id: Int) {
+    fun setId(id: Int): trzye.zrzutka.jooq.model.tables.pojos.Friend {
         jooqFriend?.id =id
+        return databasePojo()
     }
 }
 

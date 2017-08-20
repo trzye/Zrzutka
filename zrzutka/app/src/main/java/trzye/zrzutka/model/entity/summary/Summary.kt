@@ -63,8 +63,9 @@ class Summary private constructor(
         ).also { jooqSummary = it }
     }
 
-    fun setId(id: Int) {
+    fun setId(id: Int): trzye.zrzutka.jooq.model.tables.pojos.Summary {
         jooqSummary?.id =id
+        return databasePojo()
     }
 }
 

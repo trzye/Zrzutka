@@ -20,20 +20,20 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
 
     val connection = createConnection(applicationContext)
     val create = DSL.using(connection, SQLDialect.SQLITE)
-    val friendDao = FriendDao(create.configuration())
-    val contributionDao = ContributionDao(create.configuration())
-    val summaryDao = SummaryDao(create.configuration())
-    val contributorDao = ContributorDao(create.configuration())
-    val chargesDao = ChargeDao(create.configuration())
-    val pruchaseDao = PurchaseDao(create.configuration())
+//    val friendDao = FriendDao(create.configuration())
+//    val contributionDao = ContributionDao(create.configuration())
+//    val summaryDao = SummaryDao(create.configuration())
+//    val contributorDao = ContributorDao(create.configuration())
+//    val chargesDao = ChargeDao(create.configuration())
+//    val pruchaseDao = PurchaseDao(create.configuration())
 
     init {
-//        create.deleteFrom(CONTRIBUTION).execute()
-//        create.deleteFrom(SUMMARY).execute()
-//        create.deleteFrom(CHARGE).execute()
-//        create.deleteFrom(PURCHASE).execute()
-//        create.deleteFrom(CONTRIBUTOR).execute()
-//        create.deleteFrom(FRIEND).execute()
+        create.deleteFrom(CONTRIBUTION).execute()
+        create.deleteFrom(SUMMARY).execute()
+        create.deleteFrom(CHARGE).execute()
+        create.deleteFrom(PURCHASE).execute()
+        create.deleteFrom(CONTRIBUTOR).execute()
+        create.deleteFrom(FRIEND).execute()
     }
 
     private fun createConnection(applicationContext: Context): Connection? {
@@ -44,28 +44,37 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
     }
 
     override fun getContribution(contributionId: Long?): Contribution {
-        if(contributionId != null) {
-            val contributionJooQ = contributionDao.findById(contributionId.toInt())
-            if(contributionJooQ != null){
-                val purchases = getPurchases(contributionId)
-                val charges = getCharges(purchases)
-                val contributors = getContributors(contributionId, charges)
-                return Contribution(
-                        contributionJooQ,
-                        Summary(summaryDao.findById(contributionJooQ.summaryId.toInt())),
-                        contributors,
-                        purchases
-                ).also {
-                    contribution ->
+        var contributionResult = Contribution("")
+        create.transaction({ ctx ->
+            val contributionDao = ContributionDao(ctx)
+            val summaryDao = SummaryDao(ctx)
+            val contributorDao = ContributorDao(ctx)
+            val friendDao = FriendDao(ctx)
+            val chargesDao = ChargeDao(ctx)
+            val pruchaseDao = PurchaseDao(ctx)
+            if (contributionId != null) {
+                val contributionJooQ = contributionDao.findById(contributionId.toInt())
+                if (contributionJooQ != null) {
+                    val purchases = getPurchases(contributionId, pruchaseDao)
+                    val charges = getCharges(purchases, chargesDao)
+                    val contributors = getContributors(contributionId, charges, contributorDao, friendDao)
+                    contributionResult = Contribution(
+                            contributionJooQ,
+                            Summary(summaryDao.findById(contributionJooQ.summaryId.toInt())),
+                            contributors,
+                            purchases
+                    ).also {
+                        contribution ->
                         purchases.forEach { it.contribution = contribution }
                         contributors.forEach { it.contribution = contribution }
+                    }
                 }
             }
-        }
-        return Contribution("")
+        })
+        return contributionResult
     }
 
-    private fun getContributors(contributionId: Long?, charges: MutableList<Charge>): MutableList<Contributor> {
+    private fun getContributors(contributionId: Long?, charges: MutableList<Charge>, contributorDao: ContributorDao, friendDao: FriendDao): MutableList<Contributor> {
         return contributorDao.fetchByContributionId(contributionId).map {
             cont ->
             Contributor(
@@ -84,7 +93,7 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
         }
     }
 
-    private fun getCharges(purchases: MutableList<Purchase>): MutableList<Charge> {
+    private fun getCharges(purchases: MutableList<Purchase>, chargesDao: ChargeDao): MutableList<Charge> {
         return purchases.flatMap {
             purchase ->
             chargesDao.fetchByPurchaseId(purchase.databasePojo().id.toLong()).map {
@@ -95,83 +104,131 @@ class JoqqDatabaseService(applicationContext: Context) : IDatabaseService {
         }.toMutableList()
     }
 
-    private fun getPurchases(contributionId: Long?): MutableList<Purchase> {
+    private fun getPurchases(contributionId: Long?, pruchaseDao: PurchaseDao): MutableList<Purchase> {
         return pruchaseDao.fetchByContributionId(contributionId).map {
             Purchase(it, null, mutableListOf())
         }.toMutableList()
     }
 
     override fun removeContribution(contributionId: Long) {
-        contributionDao.findAll().forEach {
-            contributionDao.deleteById(it.id)
-            summaryDao.deleteById(it.summaryId.toInt())
-        }
-        pruchaseDao.fetchByContributionId(contributionId).forEach {
-            chargesDao.fetchByPurchaseId(it.id.toLong()).forEach {
-                chargesDao.deleteById(it.id)
+        create.transaction({ ctx ->
+            val contributionDao = ContributionDao(ctx)
+            val summaryDao = SummaryDao(ctx)
+            val contributorDao = ContributorDao(ctx)
+            val chargesDao = ChargeDao(ctx)
+            val pruchaseDao = PurchaseDao(ctx)
+            contributionDao.fetchById(contributionId.toInt()).forEach {
+                contributionDao.deleteById(it.id)
+                summaryDao.deleteById(it.summaryId.toInt())
             }
-        }
-        contributorDao.fetchByContributionId(contributionId).forEach {
-            chargesDao.fetchByPurchaseId(it.id.toLong()).forEach {
-                chargesDao.deleteById(it.id)
+            pruchaseDao.fetchByContributionId(contributionId).forEach {
+                chargesDao.fetchByPurchaseId(it.id.toLong()).forEach {
+                    chargesDao.deleteById(it.id)
+                }
             }
-        }
-        pruchaseDao.fetchByContributionId(contributionId).forEach {
-            pruchaseDao.deleteById(it.id)
-        }
-        contributorDao.fetchByContributionId(contributionId).forEach {
-            contributorDao.deleteById(it.id)
-        }
+            contributorDao.fetchByContributionId(contributionId).forEach {
+                chargesDao.fetchByPurchaseId(it.id.toLong()).forEach {
+                    chargesDao.deleteById(it.id)
+                }
+            }
+            pruchaseDao.fetchByContributionId(contributionId).forEach {
+                pruchaseDao.deleteById(it.id)
+            }
+            contributorDao.fetchByContributionId(contributionId).forEach {
+                contributorDao.deleteById(it.id)
+            }
+        })
     }
 
-    override fun getAllContributions(): List<Contribution>
-            = contributionDao.findAll().map { getContribution(it.id.toLong()) }
+    override fun getAllContributions(): List<Contribution> {
+        val contributionList = mutableListOf<Contribution>()
+        create.transaction({ ctx ->
+            val contributionDao = ContributionDao(ctx)
+            contributionList.addAll(
+                    contributionDao.findAll().map { getContribution(it.id.toLong()) }
+            )
+        })
+        return contributionList
+    }
 
     override fun save(contribution: Contribution): Long {
-        contribution.contributors.forEach {
-            it.setId(insert(it.databasePojo(), it.databasePojo().id, contributorDao).id)
-        }
-        contribution.purchases.forEach {
-            it.setId(insert(it.databasePojo(), it.databasePojo().id, pruchaseDao).id)
-        }
-        contribution.contributors.forEach {
-            contributor -> contributor.charges.forEach {
-                it.charged = contributor
-                it.setId(insert(it.databasePojo(), it.databasePojo().id, chargesDao).id)
+        create.transaction({ ctx ->
+            val contributionDao = ContributionDao(ctx)
+            val summaryDao = SummaryDao(ctx)
+            val contributorDao = ContributorDao(ctx)
+            val chargesDao = ChargeDao(ctx)
+            val pruchaseDao = PurchaseDao(ctx)
+            if(contribution.databasePojo().id != null)
+                removeContribution(contribution.databasePojo().id.toLong())
+            contribution.contributors.forEach {
+                insert(it.databasePojo(), it.databasePojo().id, contributorDao, it::setId)
             }
-        }
-        contribution.purchases.forEach {
-            purchase -> purchase.charges.forEach {
-                it.purchase = purchase
-                it.setId(insert(it.databasePojo(), it.databasePojo().id, chargesDao).id)
+            contribution.purchases.forEach {
+                insert(it.databasePojo(), it.databasePojo().id, pruchaseDao, it::setId)
             }
-        }
-        contribution.summary
-                .setId(insert(contribution.summary.databasePojo(), contribution.summary.databasePojo().id, summaryDao).id)
-        contribution.setId(insert(contribution.databasePojo(), contribution.databasePojo().id, contributionDao).id)
+            contribution.contributors.forEach {
+                contributor ->
+                contributor.charges.forEach {
+                    it.charged = contributor
+                    it.setContributorId(contributor)
+                    insert(it.databasePojo(), it.databasePojo().id, chargesDao, it::setId)
+                }
+            }
+            contribution.purchases.forEach {
+                purchase ->
+                purchase.charges.forEach {
+                    it.purchase = purchase
+                    it.setPurchaseId(purchase)
+                    insert(it.databasePojo(), it.databasePojo().id, chargesDao, it::setId)
+                }
+            }
+            insert(contribution.summary.databasePojo(), contribution.summary.databasePojo().id, summaryDao, contribution.summary::setId)
+            insert(contribution.databasePojo(), contribution.databasePojo().id, contributionDao, contribution::setId)
+            contribution.databasePojo().id.toLong()
+        })
         return contribution.databasePojo().id.toLong()
     }
 
-    override fun getAllFriends(): List<Friend> = friendDao.findAll().map { Friend(it) }
-
-    override fun save(friend: Friend) {
-        insert(friend.databasePojo(), friend.databasePojo().id, friendDao)
+    override fun getAllFriends(): List<Friend> {
+        val friendList = mutableListOf<Friend>()
+        create.transaction({
+            ctx ->
+            val friendDao = FriendDao(ctx)
+            friendList.addAll(friendDao.findAll().map { Friend(it) })
+        })
+        return friendList
     }
 
-    private fun <TR : UpdatableRecord<TR>, R, I>insert(record: R, id: I?, dao: DAOImpl<TR, R, I>): R {
+    override fun save(friend: Friend) {
+        create.transaction({
+            ctx ->
+            val friendDao = FriendDao(ctx)
+            insert(friend.databasePojo(), friend.databasePojo().id, friendDao, friend::setId)
+        })
+    }
+
+    private fun <TR : UpdatableRecord<TR>, R, I>insert(record: R, id: I?, dao: DAOImpl<TR, R, I>, setId: (id: Int) -> R) {
         if (id != null) {
-            dao.update(record)
-            return record
+            if(dao.existsById(id)){
+                dao.update(record)
+            } else {
+                dao.insert(record)
+            }
         } else {
-            dao.insert(record)
-            return dao.findAll().last()
+            val defaultRecord = create.insertInto(dao.table).defaultValues().returning(dao.table.field("id")).fetchOne()
+            val newId: Int = defaultRecord.getValue("id") as Int
+            dao.update(setId(newId))
         }
     }
 
     override fun removeFriend(friend: Friend) {
-        if(friend.databasePojo().id != null)
-            if(friendDao.existsById(friend.databasePojo().id))
-                friendDao.deleteById(friend.databasePojo().id)
+        create.transaction({
+            ctx ->
+            val friendDao = FriendDao(ctx)
+            if(friend.databasePojo().id != null)
+                if(friendDao.existsById(friend.databasePojo().id))
+                    friendDao.deleteById(friend.databasePojo().id)
+        })
     }
 
 }

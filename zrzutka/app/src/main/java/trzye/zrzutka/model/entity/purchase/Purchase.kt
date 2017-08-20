@@ -61,8 +61,10 @@ class Purchase private constructor(
         ).also { jooqPurchase = it }
     }
 
-    fun setId(id: Int) {
+    fun setId(id: Int): trzye.zrzutka.jooq.model.tables.pojos.Purchase {
         jooqPurchase?.id =id
+        return databasePojo()
     }
+
 }
 

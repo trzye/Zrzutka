@@ -41,8 +41,10 @@ class Contributor private constructor (
             jooqContributor?.id
     ).also { jooqContributor = it }
 
-    fun setId(id: Int) {
+    fun setId(id: Int): trzye.zrzutka.jooq.model.tables.pojos.Contributor {
         jooqContributor?.id =id
+        return databasePojo()
     }
+
 }
 

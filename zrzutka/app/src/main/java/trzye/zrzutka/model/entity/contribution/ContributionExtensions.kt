@@ -42,6 +42,7 @@ fun Contribution.addContributor(contributor: Contributor) {
 
 fun Contribution.removeContributor(contributor: Contributor) {
     contributor.contribution = null
+//    contributor.removeFromContribution()
     _contributors.remove(contributor)
     contributor._charges.forEach {
         charge ->
@@ -57,6 +58,7 @@ fun Contribution.removeContributor(contributor: Contributor) {
         }
 
         charge.purchase = null
+//        charge.removeFromContributorAndPurchase()
     }
     contributor._charges.clear()
 }
@@ -64,6 +66,7 @@ fun Contribution.removeContributor(contributor: Contributor) {
 fun Contribution.removePurchase(purchase: Purchase) {
     _purchases.remove(purchase)
     purchase.contribution = null
+//    purchase.removeFromContribution()
 }
 
 fun Contribution.addPurchase(purchase: Purchase) {
