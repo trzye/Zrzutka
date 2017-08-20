@@ -3,19 +3,19 @@ package trzye.zrzutka.fatclient.summaryfragment
 //import org.owasp.html.HtmlPolicyBuilder
 //import org.owasp.html.PolicyFactory
 import android.os.Environment
-import com.itextpdf.text.Document
-import com.itextpdf.text.DocumentException
-import com.itextpdf.text.Paragraph
+import android.util.Log
+import com.itextpdf.text.*
 import com.itextpdf.text.pdf.PdfWriter
+import com.itextpdf.tool.xml.XMLWorkerFontProvider
 import com.itextpdf.tool.xml.XMLWorkerHelper
 import trzye.zrzutka.model.dto.web.ContributionDTO
 import java.io.ByteArrayInputStream
-import java.io.FileInputStream
+//import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.charset.StandardCharsets
-
-
+//import java.nio.charset.Charset
+//import java.nio.charset.StandardCharsets
+//import com.itextpdf.text.pdf.BaseFont
 
 
 class HtmlToPdf {
@@ -24,7 +24,19 @@ class HtmlToPdf {
         val document = Document()
         val writer = PdfWriter.getInstance(document, FileOutputStream(filePath))
         document.open()
-        XMLWorkerHelper.getInstance().parseXHtml(writer, document, html.byteInputStream())
+        val inputStream = ByteArrayInputStream(html.toByteArray(Charsets.UTF_8))
+//        val bfComic = BaseFont.createFont("/assets/fonts/FreeSans.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED)
+//        val font = Font(bfComic, 24f, Font.NORMAL, BaseColor.BLACK)
+
+        val fontProvider = XMLWorkerFontProvider(XMLWorkerFontProvider.DONTLOOKFORFONTS)
+        fontProvider.register("/assets/fonts/FreeSans.ttf")
+        for (s in fontProvider.registeredFamilies) {
+            Log.i("FONTYYY", s)
+        }
+        FontFactory.setFontImp(fontProvider)
+
+        XMLWorkerHelper.getInstance().parseXHtml(writer, document, inputStream, null, Charsets.UTF_8, fontProvider)
+//        document.add(Paragraph("żółw lololo", font))
         document.close()
     }
 }
@@ -32,6 +44,7 @@ class HtmlToPdf {
 
 fun ContributionDTO.createHtml(): String {
     val htmlBuilder = StringBuilder("""
+    <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE html>
     <html>
     <head>
@@ -39,6 +52,7 @@ fun ContributionDTO.createHtml(): String {
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
         <title>Zrzutka: ${this.title.sanitize()}</title>
     <style type="text/css">body {
+        font-family: Arial Unicode MS, FreeSans;
         margin: 40px auto;
         max-width: 650px;
         line-height: 1.6;
@@ -67,13 +81,11 @@ fun ContributionDTO.createHtml(): String {
 
     h2 {
         color: #F90B6D;
-        font-family: 'Open Sans', sans-serif;
         font-size: 24px;
     }
 
     h3 {
         color: #F90B6D;
-        font-family: 'Open Sans', sans-serif;
         font-size: 16px;
     }
 
