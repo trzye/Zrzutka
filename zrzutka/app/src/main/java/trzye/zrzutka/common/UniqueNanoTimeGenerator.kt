@@ -2,7 +2,7 @@ package trzye.zrzutka.common
 
 object UniqueNanoTimeGenerator {
 
-    private var lastGeneratedValue: Long? = null
+    var lastGeneratedValue: Long = 0L
 
     fun getUniqueValue(): Long = synchronized(this, {
         var res = System.nanoTime()

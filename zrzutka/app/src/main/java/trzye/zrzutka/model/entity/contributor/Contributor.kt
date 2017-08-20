@@ -11,6 +11,7 @@ class Contributor private constructor (
         @Id @GeneratedValue val id: Long? = null,
         @OneToOne val friend: Friend,
         @OneToOne var contribution: Contribution?,
+        jooqContributor: trzye.zrzutka.jooq.model.tables.pojos.Contributor? = null,
         @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
 ) : Copyable<Contributor>{
 
@@ -21,8 +22,28 @@ class Contributor private constructor (
         get() = _charges.toList()
 
     override fun doCopy(): Contributor {
-        val copy = Contributor(id, friend.doCopy(), contribution)
+        val copy = Contributor(id, friend.doCopy(), contribution, jooqContributor)
         return copy
     }
+
+    val jooqContributor = jooqContributor ?: trzye.zrzutka.jooq.model.tables.pojos.Contributor(
+            contribution?.id,
+            friend.id,
+            id?.toInt()
+    )
+
+    //TODO
+    constructor(
+            jooqContributor: trzye.zrzutka.jooq.model.tables.pojos.Contributor,
+            jooqFriend: Friend,
+            jooqContribution: Contribution?,
+            jooqCharges: MutableList<Charge>
+    ) : this(
+            jooqContributor.id?.toLong(),
+            jooqFriend,
+            jooqContribution,
+            jooqContributor,
+            jooqCharges
+    )
 }
 

@@ -22,6 +22,7 @@ class Contribution private constructor(
         endDate: Date,
         @Column val colorId: Int = randColor(),
         @OneToOne val summary: Summary = Summary(false, false, WHO_PAYS),
+        jooqContribution: trzye.zrzutka.jooq.model.tables.pojos.Contribution? = null,
         @ManyToOne val _contributors: MutableCollection<Contributor> = mutableListOf(),
         @ManyToOne val _purchases: MutableCollection<Purchase> = mutableListOf()
 ) : BaseObservable(), Copyable<Contribution> {
@@ -67,7 +68,7 @@ class Contribution private constructor(
     }
 
     override fun doCopy(): Contribution {
-        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), colorId, summary.doCopy())
+        val clone = Contribution(id, title, startDate.doCopy(), endDate.doCopy(), colorId, summary.doCopy(), jooqContribution)
 
         //prawdziwy do kopii
         val originToNewContributor : Map<Contributor, Contributor> = contributors.associate {
@@ -95,6 +96,35 @@ class Contribution private constructor(
         }
         return clone
     }
+
+    val jooqContribution = jooqContribution ?: trzye.zrzutka.jooq.model.tables.pojos.Contribution(
+            chargeUniqueNumberForSorting,
+            colorId,
+            java.sql.Date(endDate.time),
+            id?.toInt(),
+            java.sql.Date(startDate.time),
+            summary.id,
+            title
+    )
+
+    //TODO
+    constructor(
+            jooqContribution: trzye.zrzutka.jooq.model.tables.pojos.Contribution,
+            jooqSummary: Summary,
+            jooqContributors: MutableList<Contributor>,
+            jooqPurchases: MutableList<Purchase>
+    ) : this(
+        jooqContribution.id?.toLong(),
+        jooqContribution.title,
+            jooqContribution.startdate,
+            jooqContribution.enddate,
+            jooqContribution.colorid,
+            jooqSummary,
+            jooqContribution,
+            jooqContributors,
+            jooqPurchases
+    )
+
 
 }
 

@@ -17,8 +17,32 @@ class Purchase private constructor(
         price: Long,
         @OneToOne var contribution: Contribution?,
         @Column var colorId: Int = randColor(),
+        jooqPurchase: trzye.zrzutka.jooq.model.tables.pojos.Purchase? = null,
         @ManyToOne val _charges: MutableCollection<Charge> = mutableListOf()
-) : BaseObservable(), Copyable<Purchase> {
+        ) : BaseObservable(), Copyable<Purchase> {
+
+    val jooqPurchase = jooqPurchase ?: trzye.zrzutka.jooq.model.tables.pojos.Purchase(
+            colorId,
+            contribution?.id,
+            id?.toInt(),
+            name,
+            price
+    )
+
+    //TODO
+    constructor(
+            jooqPurchase: trzye.zrzutka.jooq.model.tables.pojos.Purchase,
+            jooqContribution: Contribution?,
+            jooqCharges: MutableList<Charge>
+    ) : this(
+            jooqPurchase.id?.toLong(),
+            jooqPurchase.name,
+            jooqPurchase.price,
+            jooqContribution,
+            jooqPurchase.colorid,
+            jooqPurchase = jooqPurchase,
+            _charges = jooqCharges
+    )
 
     private constructor() : this("", 0)
     constructor(name: String, price: Long) : this(null, name, price, null)
@@ -37,7 +61,7 @@ class Purchase private constructor(
     fun getColor() = getColor(colorId)
 
     override fun doCopy(): Purchase {
-        val copy =  Purchase(id, name, price, null, colorId)
+        val copy =  Purchase(id, name, price, null, colorId, jooqPurchase)
         return copy
     }
 
